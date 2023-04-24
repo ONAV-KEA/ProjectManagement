@@ -1,0 +1,31 @@
+name: Issue Branch Merge
+
+on:
+  push:
+    branches:
+      - 'feature/*'
+      - 'bugfix/*'
+
+jobs:
+  merge_and_deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Main Branch
+      uses: actions/checkout@v2
+      with:
+        ref: 'main'
+
+    - name: Merge Issue Branch
+      run: |
+        git config user.name 'Github Actions'
+        git config user.email '<>'
+        git merge --no-ff "${{ github.event.ref }}"
+
+    - name: Build with Maven
+      run: mvn clean verify
+
+    - name: Push Changes to Main Branch
+      if: success()
+      run: |
+        git push origin main
