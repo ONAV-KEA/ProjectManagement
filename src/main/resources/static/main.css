@@ -1,0 +1,33 @@
+body{
+    color: #093D65;
+    font-family: 'IBM Plex Sans Condensed', serif;
+}
+
+nav {
+    background-image: linear-gradient(#ffeee5, #fcd3bd);
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.nav-link{color: #093D65;}
+.nav-link:hover{color: #d75d1b;}
+
+.container {
+    background-image: linear-gradient(#ffeee5, #fcd3bd);
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border-radius: 10px;
+}
+
+.main-color {color: #093D65;}
+.second-color {color: #d75d1b;}
+.main-color-bg {background-color: #093D65; color: #ffffff;}
+.main-color-bg:hover {background-color: #ffffff; color: #093D65; border: 1px solid #093D65;}
+.second-color-bg {background-color: #d75d1b;}
+.main-color-bg:hover {background-color: #ffffff; color: #093D65; border: 1px solid #093D65;}
+
+
+.field {
+    border: 1px solid #adadad;
+    text-align: center;
+    width: 15vw;
+    margin: 3px;
+}
