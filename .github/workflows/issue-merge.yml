@@ -26,6 +26,9 @@ jobs:
           else
             echo "No merge conflicts"
           fi
+          
+      - name: Build with Maven and run tests
+        run: mvn clean verify    
 
       - name: Push changes to main branch
         if: success()
