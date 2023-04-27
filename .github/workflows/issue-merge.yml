@@ -1,14 +1,12 @@
-name: Merge issue branch into main
+name: Merge branch into main
 
 on:
   push:
-    branches:
-      - issue/*
+    branches: [ issue/* ]
 
 jobs:
-  merge:
+  merge-into-main:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -17,16 +15,15 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: 17
-          distribution: temurin
 
       - name: Build with Maven
-        run: mvn clean install
+        run: mvn --batch-mode --update-snapshots package
 
       - name: Merge branch into main
         run: |
           git config user.name 'Github Actions'
           git config user.email '<>'
-          git checkout main
+          git checkout origin/main
           git merge --no-ff "${GITHUB_REF#refs/heads/}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
