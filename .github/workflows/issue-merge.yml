@@ -1,8 +1,8 @@
 name: Merge issue branch to main branch
 on:
-  push:
-    branches:
-      - 'issue/*'
+  pull_request:
+    types: [opened, synchronize]
+
 jobs:
   merge-branch:
     runs-on: ubuntu-latest
@@ -18,11 +18,13 @@ jobs:
       - name: Build with Maven
         run: mvn --batch-mode --update-snapshots package
 
+      - name: Run the Maven verify phase
+        run: mvn --batch-mode --update-snapshots verify
 
       - name: Merge issue/* -> main
         uses: devmasx/merge-branch@master
         with:
           type: now
           target_branch: main
-          message: merging ${{ github.event.ref }} into main
+          message: 'merging ${{ github.event.ref }} into main'
           github_token: ${{ secrets.TOKEN }}
