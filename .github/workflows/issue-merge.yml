@@ -46,14 +46,8 @@ jobs:
           mvn clean verify
 
       - name: Push changes to main branch
-        if: success()
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: "Merging branch ${{ github.event.ref }} into main"
-          commit_options: "--no-verify"
-          branch: main
-          file_pattern: ""
-          author_name: "Github Actions"
-          author_email: "<>"
+        run: |
+          git fetch
+          git push origin main
         env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
