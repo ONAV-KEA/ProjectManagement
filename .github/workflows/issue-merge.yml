@@ -20,11 +20,15 @@ jobs:
       - name: Build with Maven
         run: mvn --batch-mode --update-snapshots package
 
+      - name: Checkout main branch
+        uses: actions/checkout@v2
+        with:
+          ref: main
+
       - name: Merge branch into main
         run: |
           git config user.name 'Github Actions'
           git config user.email '<>'
-          git checkout origin/main
           git merge --no-ff "${GITHUB_REF#refs/heads/}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
