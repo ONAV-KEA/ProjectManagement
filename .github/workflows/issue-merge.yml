@@ -13,9 +13,11 @@ jobs:
         with:
           ref: main
 
-      - name: Merge pull request into main branch
+      - name: Merge PR Branch
         run: |
-          git merge --no-commit --no-ff "refs/pull/${{ github.event.pull_request.number }}/merge"
+          git config user.name 'Github Actions'
+          git config user.email '<>'
+          git merge --no-ff "${{ github.event.pull_request.head.ref }}"
       
       - name: Check for merge conflicts
         run: |
