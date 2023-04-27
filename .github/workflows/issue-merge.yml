@@ -48,4 +48,5 @@ jobs:
       - name: Push changes to main branch
         if: success()
         run: |
-          git push origin main
+          git fetch
+          git push origin HEAD:main
