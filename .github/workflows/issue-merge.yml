@@ -33,6 +33,8 @@ jobs:
             exit 1
           else
             echo "No merge conflicts"
+          fi
+
           
       - name: Build with Maven and run tests
         run: |
