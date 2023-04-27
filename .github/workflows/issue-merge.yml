@@ -24,4 +24,5 @@ jobs:
         with:
           type: now
           target_branch: main
+          message: merging ${{ github.event.ref }} into main
           github_token: ${{ secrets.TOKEN }}
