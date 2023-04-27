@@ -1,41 +1,26 @@
-name: Merge branch into main
-
+name: Merge issue branch to main branch
 on:
   push:
-    branches: [ issue/* ]
-
+    branches:
+      - 'issue/*'
 jobs:
-  merge-into-main:
+  merge-branch:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Set up Java 17
         uses: actions/setup-java@v2
         with:
           java-version: 17
-          distribution: temurin
 
       - name: Build with Maven
         run: mvn --batch-mode --update-snapshots package
 
-      - name: Checkout main branch
-        uses: actions/checkout@v2
+
+      - name: Merge issue/* -> main
+        uses: devmasx/merge-branch@master
         with:
-          ref: main
-
-      - name: Merge branch into main
-        run: |
-          git config user.name 'Github Actions'
-          git config user.email '<>'
-          git merge --no-ff "${GITHUB_REF#refs/heads/}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Push changes to main branch
-        run: |
-          git fetch
-          git push origin main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          type: now
+          target_branch: main
+          github_token: ${{ secrets.TOKEN }}
