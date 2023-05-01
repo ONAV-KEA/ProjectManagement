@@ -26,5 +26,8 @@ jobs:
         with:
           type: now
           target_branch: main
-          message: 'merging ${{ github.event.ref }} into main'
-          github_token: ${{ secrets.TOKEN }}
+          message: 'merging (${ISSUE_NAME}) into main (${ISSUE_TITLE})'
+        env:
+          ISSUE_NAME: ${{ github.event.ref }}
+          ISSUE_TITLE: ${{ github.event.pull_request.title }}
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
