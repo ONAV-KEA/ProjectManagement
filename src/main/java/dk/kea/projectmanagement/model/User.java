@@ -11,8 +11,7 @@ public class User {
     private LocalDate birthday;
     private String role;
 
-    public User(int id, String username, String password, String firstName, String lastName, LocalDate birthday, String role) {
-        this.id = id;
+    public User(String username, String password, String firstName, String lastName, LocalDate birthday, String role) {
         this.username = username;
         this.password = password;
         this.firstName = firstName;
