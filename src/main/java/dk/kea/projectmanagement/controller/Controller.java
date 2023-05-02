@@ -28,7 +28,11 @@ public class Controller {
             User user = repository.login(form.getUsername(), form.getPassword());
 
             session.setAttribute("id", user.getId());
-            return "redirect:/dashboard";
+            if (user.getRole().equals("admin")){
+                return "redirect:/admin";
+            }else{
+                return "redirect:/dashboard";
+            }
 
         } catch (LoginSampleException e) {
             model.addAttribute("errorMessage", "An error occurred: " + e.getMessage());
