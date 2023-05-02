@@ -99,7 +99,7 @@ public class DBRepository {
             String SQL = "SELECT project.* " +
                     "FROM project_user " +
                     "INNER JOIN project ON project_user.project_id = project.id " +
-                    "WHERE project_user.user_id = <user_id>;";
+                    "WHERE project_user.user_id = ?;";
             PreparedStatement ps = con.prepareStatement(SQL);
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
@@ -109,7 +109,7 @@ public class DBRepository {
                 String name = rs.getString("name");
                 String description = rs.getString("description");
                 LocalDate startDate = rs.getDate("start_date").toLocalDate();
-                LocalDate endDate = rs.getDate("end_date").toLocalDate();
+                LocalDate endDate = rs.getDate("end_date") == null ? null : rs.getDate("end_date").toLocalDate();
                 Project project = new Project(projectId, name, description, startDate, endDate);
                 projects.add(project);
             }
