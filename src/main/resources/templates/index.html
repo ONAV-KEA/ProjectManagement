@@ -43,17 +43,22 @@
     </div>
 </nav>
 
+<!-- error message for failed login -->
+<div th:if="${errorMessage}" class="error-message">
+    <p th:text="${errorMessage}" style="color: red; font-size: 20px; font-weight: bold; text-align: center;"></p>
+</div>
+
 <div class="container-fluid mt-5 text-center">
     <div class="container p-3 mt-4">
         <h3>Login <i class="fa fa-sign-in"></i></h3>
         <main class="form-signin w-100 m-auto">
-            <form>
+            <form method="post" th:action="@{/}">
                 <div class="form-floating">
-                    <input type="text" class="form-control" id="floatingInput" placeholder="Username">
+                    <input type="text" class="form-control" id="floatingInput" name="username" placeholder="Username">
                     <label for="floatingInput">Username</label>
                 </div>
                 <div class="form-floating mt-3">
-                    <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
+                    <input type="password" class="form-control" id="floatingPassword" name="password" placeholder="Password">
                     <label for="floatingPassword">Password</label>
                 </div>
 
