@@ -4,6 +4,7 @@ import dk.kea.projectmanagement.model.User;
 import dk.kea.projectmanagement.repository.DBRepository;
 import dk.kea.projectmanagement.utility.LoginSampleException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -22,12 +23,16 @@ public class Controller {
     }
 
     @PostMapping({"/",""})
-    public String indexPost(HttpServletRequest request, @ModelAttribute User form, Model model) {
+    public String indexPost(HttpSession session, @ModelAttribute User form, Model model) {
         try {
             User user = repository.login(form.getUsername(), form.getPassword());
 
-            request.getSession().setAttribute("id", user.getId());
-            return "redirect:/dashboard";
+            session.setAttribute("user", user);
+            if (user.getRole().equals("admin")){
+                return "redirect:/admin";
+            }else{
+                return "redirect:/dashboard";
+            }
 
         } catch (LoginSampleException e) {
             model.addAttribute("errorMessage", "An error occurred: " + e.getMessage());
@@ -42,12 +47,12 @@ public class Controller {
     }
 
     @GetMapping("/dashboard")
-    public String dashboard(Model model, HttpServletRequest request){
-        int id = (int) request.getSession().getAttribute("id");
-        model.addAttribute("user", repository.getUserByID(id).getUsername());
+    public String dashboard(Model model, HttpSession session){
+        User user = (User) session.getAttribute("user");
+        model.addAttribute("user", user);
 
         // Redirects to login site if user is not logged in
-        if (id == 0){
+        if (user.getId() == 0){
             return "redirect:/";
         }
 
