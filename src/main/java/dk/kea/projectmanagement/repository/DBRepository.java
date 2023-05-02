@@ -1,5 +1,6 @@
 package dk.kea.projectmanagement.repository;
 
+import dk.kea.projectmanagement.model.Project;
 import dk.kea.projectmanagement.model.User;
 import dk.kea.projectmanagement.utility.DBManager;
 import dk.kea.projectmanagement.utility.LoginSampleException;
@@ -88,5 +89,41 @@ public class DBRepository {
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
         }
+    }
+
+    public List<Project> getProjectByUserId(int id) {
+        Connection con = null;
+        try {
+            con = DBManager.getConnection();
+            con.setAutoCommit(false);
+            String SQL = "SELECT project.* " +
+                    "FROM project_user " +
+                    "INNER JOIN project ON project_user.project_id = project.id " +
+                    "WHERE project_user.user_id = <user_id>;";
+            PreparedStatement ps = con.prepareStatement(SQL);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            List<Project> projects = new ArrayList<>();
+            while (rs.next()) {
+                int projectId = rs.getInt("id");
+                String name = rs.getString("name");
+                String description = rs.getString("description");
+                LocalDate startDate = rs.getDate("start_date").toLocalDate();
+                LocalDate endDate = rs.getDate("end_date").toLocalDate();
+                Project project = new Project(projectId, name, description, startDate, endDate);
+                projects.add(project);
+            }
+            con.commit();
+            return projects;
+        } catch (SQLException e) {
+            if (con != null) {
+                try {
+                    con.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+        return null;
     }
 }
