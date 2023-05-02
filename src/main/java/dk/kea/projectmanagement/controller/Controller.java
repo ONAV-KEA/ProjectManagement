@@ -50,6 +50,7 @@ public class Controller {
     public String dashboard(Model model, HttpSession session){
         User user = (User) session.getAttribute("user");
         model.addAttribute("user", user);
+        model.addAttribute("projects", repository.getProjectByUserId(user.getId()));
 
         // Redirects to login site if user is not logged in
         if (user.getId() == 0){
