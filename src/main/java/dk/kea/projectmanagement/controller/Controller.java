@@ -27,7 +27,7 @@ public class Controller {
         try {
             User user = repository.login(form.getUsername(), form.getPassword());
 
-            session.setAttribute("id", user.getId());
+            session.setAttribute("user", user);
             if (user.getRole().equals("admin")){
                 return "redirect:/admin";
             }else{
@@ -48,11 +48,11 @@ public class Controller {
 
     @GetMapping("/dashboard")
     public String dashboard(Model model, HttpSession session){
-        int id = (int) session.getAttribute("id");
-        model.addAttribute("user", repository.getUserByID(id).getUsername());
+        User user = (User) session.getAttribute("user");
+        model.addAttribute("user", user);
 
         // Redirects to login site if user is not logged in
-        if (id == 0){
+        if (user.getId() == 0){
             return "redirect:/";
         }
 
