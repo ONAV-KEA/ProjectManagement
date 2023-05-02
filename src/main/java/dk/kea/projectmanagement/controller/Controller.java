@@ -4,6 +4,7 @@ import dk.kea.projectmanagement.model.User;
 import dk.kea.projectmanagement.repository.DBRepository;
 import dk.kea.projectmanagement.utility.LoginSampleException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -22,11 +23,11 @@ public class Controller {
     }
 
     @PostMapping({"/",""})
-    public String indexPost(HttpServletRequest request, @ModelAttribute User form, Model model) {
+    public String indexPost(HttpSession session, @ModelAttribute User form, Model model) {
         try {
             User user = repository.login(form.getUsername(), form.getPassword());
 
-            request.getSession().setAttribute("id", user.getId());
+            session.setAttribute("id", user.getId());
             return "redirect:/dashboard";
 
         } catch (LoginSampleException e) {
