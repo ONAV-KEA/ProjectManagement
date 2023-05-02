@@ -47,8 +47,8 @@ public class Controller {
     }
 
     @GetMapping("/dashboard")
-    public String dashboard(Model model, HttpServletRequest request){
-        int id = (int) request.getSession().getAttribute("id");
+    public String dashboard(Model model, HttpSession session){
+        int id = (int) session.getAttribute("id");
         model.addAttribute("user", repository.getUserByID(id).getUsername());
 
         // Redirects to login site if user is not logged in
