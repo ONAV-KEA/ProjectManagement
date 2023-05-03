@@ -42,6 +42,12 @@ public class Controller {
         }
     }
 
+    @GetMapping("/logout")
+    public String logout(HttpSession session){
+        session.invalidate();
+        return "redirect:/";
+    }
+
     @GetMapping("/template")
     public String template(Model model){
         model.addAttribute("users", repository.getAllUsers());
@@ -73,6 +79,40 @@ public class Controller {
         Project project = repository.createProject(form);
 
         return "redirect:/createProject";
+    }
+
+
+    @GetMapping("/admin")
+    public String admin(Model model, HttpSession session){
+        User user = (User) session.getAttribute("user");
+        model.addAttribute("user", user);
+        model.addAttribute("users", repository.getAllUsers());
+
+        // Redirects to login site if user is not logged in
+        if (user.getId() == 0){
+            return "redirect:/";
+        }
+
+        //Redirects to dashboard if user is not admin
+        if (!user.getRole().equals("admin")){
+            return "redirect:/dashboard";
+        }
+
+        return "admin";
+    }
+
+    @GetMapping("/projects")
+    public String projects(Model model, HttpSession session){
+        User user = (User) session.getAttribute("user");
+        model.addAttribute("user", user);
+        model.addAttribute("projects", repository.getProjectByUserId(user.getId()));
+
+        // Redirects to login site if user is not logged in
+        if (user.getId() == 0){
+            return "redirect:/";
+        }
+
+        return "projects";
     }
 
 }
