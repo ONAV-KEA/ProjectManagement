@@ -71,6 +71,11 @@ public class Controller {
             return "redirect:/";
         }
 
+        //Redirects to dashboard if user is not admin
+        if (!user.getRole().equals("admin")){
+            return "redirect:/dashboard";
+        }
+
         return "admin";
     }
 }
