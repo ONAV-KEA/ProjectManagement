@@ -68,17 +68,18 @@ public class Controller {
         return "dashboard";
     }
 
-    @GetMapping("/project")
+    @GetMapping("/createproject")
     public String project(HttpSession session, Model model) {
         model.addAttribute("project", new ProjectFormDTO());
-        return "createProject";
+        return "createproject";
     }
 
-    @PostMapping ("/Project")
+    @PostMapping ("/createproject")
     public String returnProject (@ModelAttribute ProjectFormDTO form, HttpSession session) {
-        Project project = repository.createProject(form);
+        User user = (User) session.getAttribute("user");
+        Project project = repository.createProject(form, user);
 
-        return "redirect:/createProject";
+        return "redirect:/createproject";
     }
 
 

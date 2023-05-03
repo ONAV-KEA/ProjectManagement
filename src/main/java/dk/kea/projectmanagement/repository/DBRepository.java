@@ -128,9 +128,11 @@ public class DBRepository {
         return null;
     }
 
-    public Project createProject(ProjectFormDTO form) {
+    public Project createProject(ProjectFormDTO form, User user) {
+        Connection con = null;
         try {
-            Connection con = DBManager.getConnection();
+            con = DBManager.getConnection();
+            con.setAutoCommit(false);
             String SQL = "INSERT INTO project (name, description, start_date, end_date) VALUES (?, ?, ?, ?);";
             PreparedStatement ps = con.prepareStatement(SQL);
             ps.setString(1, form.getName());
@@ -142,12 +144,25 @@ public class DBRepository {
             if (rs.next()) {
                 int id = rs.getInt(1);
                 Project project = new Project(id, form.getName(), form.getDescription(), form.getStartDate(), form.getEndDate());
+                String SQL2 = "INSERT INTO project_user (project_id, user_id) VALUES (?, ?);";
+                PreparedStatement ps2 = con.prepareStatement(SQL2);
+                ps2.setInt(1, id);
+                ps2.setInt(2, user.getId());
+                ps2.executeUpdate();
+                con.commit();
                 return project;
             } else {
                 throw new RuntimeException("Could not create project");
             }
-        } catch (SQLException ex) {
-            throw new RuntimeException(ex);
+        } catch (SQLException e) {
+            if (con != null) {
+                try {
+                    con.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
         }
+        return null;
     }
 }
