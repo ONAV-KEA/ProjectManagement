@@ -76,7 +76,7 @@
           </tbody>
         </table>
         <div th:if="${user.role == ('project_manager')}">
-          <button class="w-100 btn btn-lg main-color-bg">Create a new project</button>
+          <button class="w-100 btn btn-lg main-color-bg" th:href="/createproject">Create a new project</button>
         </div>
       </div>
 

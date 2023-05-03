@@ -78,6 +78,7 @@ public class Controller {
     public String returnProject (@ModelAttribute ProjectFormDTO form, HttpSession session) {
         User user = (User) session.getAttribute("user");
         Project project = repository.createProject(form, user);
+        System.out.println("Project: " + project.getName() + " created");
 
         return "redirect:/createproject";
     }
