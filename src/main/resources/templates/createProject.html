@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" th:href="@{/main.css}" href="/static/main.css">
+  <link rel="icon" type="image/x-icon" href="../src/main/resources/static/images/favicon.png" th:src="@{images/favicon.png}">
+  <link href='https://fonts.googleapis.com/css?family=IBM Plex Sans Condensed' rel='stylesheet'>
+</head>
+<body>
+<nav class="navbar sticky-lg-top  text-end p-3">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/">
+      <img src="../src/main/resources/static/images/projectplanner-logo.png" th:src="@{images/projectplanner-logo.png}" alt="Logo" width="220px" class="d-inline-block align-text-top">
+    </a>
+
+    <ul class="nav justify-content-end">
+      <li class="nav-item">
+        <a class="nav-link" href="/">
+          Home
+          <i class="fa fa-home"></i>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link main-color" href="/projects">Projects
+          <i class="fa fa-folder-open"></i>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link main-color" href="/organisations">Organisations
+          <i class="fa fa-group"></i>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link main-color" href="/profile">Profile
+          <i class="fa fa-user-circle"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container-fluid mt-5 text-center">
+  <div class="container p-3 mt-4">
+    <h3>Template page</h3>
+  </div>
+
+  <div class="mt-5">
+    <h3>With basic design</h3>
+  </div>
+
+  <div class="container-fluid text-center">
+    <table class="table table-striped mt-5">
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Name</th>
+        <th scope="col">Description</th>
+        <th scope="col">StartDate</th>
+        <th scope="col">EndDate</th>
+      </tr>
+
+      <tr th:each="users : ${users}">
+        <td th:text="${users.id}"></td>
+        <td th:text="${users.username}"></td>
+        <td th:text="${users.password}"></td>
+        <td th:text="${users.firstName}"></td>
+        <td th:text="${users.lastName}"></td>
+        <td th:text="${users.birthday}"></td>
+        <td th:text="${users.role}"></td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<footer>
+  <div class="container-fluid text-center">
+    <p class="mt-5 mb-3 text-body-secondary">&copy; 2023 - KEA</p>
+  </div>
+</footer>

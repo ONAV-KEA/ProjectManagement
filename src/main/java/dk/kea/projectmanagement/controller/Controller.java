@@ -1,8 +1,10 @@
 package dk.kea.projectmanagement.controller;
 
+import dk.kea.projectmanagement.model.Project;
 import dk.kea.projectmanagement.model.User;
 import dk.kea.projectmanagement.repository.DBRepository;
 import dk.kea.projectmanagement.utility.LoginSampleException;
+import dto.ProjectFormDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.ui.Model;
@@ -59,4 +61,18 @@ public class Controller {
 
         return "dashboard";
     }
+
+    @GetMapping("/project")
+    public String project(HttpSession session, Model model) {
+        model.addAttribute("project", new ProjectFormDTO());
+        return "createProject";
+    }
+
+    @PostMapping ("/Project")
+    public String returnProject (@ModelAttribute ProjectFormDTO form, HttpSession session) {
+        Project project = repository.createProject(form);
+
+        return "redirect:/createProject";
+    }
+
 }

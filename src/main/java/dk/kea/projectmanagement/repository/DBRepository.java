@@ -4,6 +4,7 @@ import dk.kea.projectmanagement.model.Project;
 import dk.kea.projectmanagement.model.User;
 import dk.kea.projectmanagement.utility.DBManager;
 import dk.kea.projectmanagement.utility.LoginSampleException;
+import dto.ProjectFormDTO;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
@@ -125,5 +126,28 @@ public class DBRepository {
             }
         }
         return null;
+    }
+
+    public Project createProject(ProjectFormDTO form) {
+        try {
+            Connection con = DBManager.getConnection();
+            String SQL = "INSERT INTO project (name, description, start_date, end_date) VALUES (?, ?, ?, ?);";
+            PreparedStatement ps = con.prepareStatement(SQL);
+            ps.setString(1, form.getName());
+            ps.setString(2, form.getDescription());
+            ps.setDate(3, java.sql.Date.valueOf(form.getStartDate()));
+            ps.setDate(4, java.sql.Date.valueOf(form.getEndDate()));
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                int id = rs.getInt(1);
+                Project project = new Project(id, form.getName(), form.getDescription(), form.getStartDate(), form.getEndDate());
+                return project;
+            } else {
+                throw new RuntimeException("Could not create project");
+            }
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 }
