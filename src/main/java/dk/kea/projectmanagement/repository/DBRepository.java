@@ -7,10 +7,7 @@ import dk.kea.projectmanagement.utility.LoginSampleException;
 import dto.ProjectFormDTO;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -124,6 +121,14 @@ public class DBRepository {
                     ex.printStackTrace();
                 }
             }
+        } finally {
+            if (con != null) {
+                try {
+                    con.setAutoCommit(true);
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
         }
         return null;
     }
@@ -134,23 +139,32 @@ public class DBRepository {
             con = DBManager.getConnection();
             con.setAutoCommit(false);
             String SQL = "INSERT INTO project (name, description, start_date, end_date) VALUES (?, ?, ?, ?);";
-            PreparedStatement ps = con.prepareStatement(SQL);
+            PreparedStatement ps = con.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, form.getName());
             ps.setString(2, form.getDescription());
             ps.setDate(3, java.sql.Date.valueOf(form.getStartDate()));
             ps.setDate(4, java.sql.Date.valueOf(form.getEndDate()));
 
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                int id = rs.getInt(1);
-                Project project = new Project(id, form.getName(), form.getDescription(), form.getStartDate(), form.getEndDate());
-                String SQL2 = "INSERT INTO project_user (project_id, user_id) VALUES (?, ?);";
-                PreparedStatement ps2 = con.prepareStatement(SQL2);
-                ps2.setInt(1, id);
-                ps2.setInt(2, user.getId());
-                ps2.executeUpdate();
-                con.commit();
-                return project;
+            int affectedRows = ps.executeUpdate();
+            if (affectedRows == 1) {
+                ResultSet rs = ps.getGeneratedKeys();
+                if (rs.next()) {
+                    int id = rs.getInt(1);
+                    Project project = new Project(id, form.getName(), form.getDescription(), form.getStartDate(), form.getEndDate());
+                    String SQL2 = "INSERT INTO project_user (project_id, user_id) VALUES (?, ?);";
+                    PreparedStatement ps2 = con.prepareStatement(SQL2);
+                    ps2.setInt(1, id);
+                    ps2.setInt(2, user.getId());
+                    int affectedRows2 = ps2.executeUpdate();
+                    if (affectedRows2 == 1) {
+                        con.commit();
+                        return project;
+                    } else {
+                        throw new RuntimeException("Could not create project");
+                    }
+                } else {
+                    throw new RuntimeException("Could not create project");
+                }
             } else {
                 throw new RuntimeException("Could not create project");
             }
@@ -162,7 +176,16 @@ public class DBRepository {
                     ex.printStackTrace();
                 }
             }
+            throw new RuntimeException("Could not create project", e);
+        } finally {
+            try {
+                con.setAutoCommit(true);
+                con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
-        return null;
     }
+
+
 }
