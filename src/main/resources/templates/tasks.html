@@ -88,8 +88,9 @@
       </tbody>
     </table>
     <div th:if="${user.role == ('project_manager')}">
-      <a href="/createTask" class="w-100 btn btn-lg main-color-bg">Create a new task</a>
+      <a th:href="@{'/createTask?projectId=' + ${project.id}}" class="w-100 btn btn-lg main-color-bg">Create a new task</a>
     </div>
+
   </div>
 </div>
 

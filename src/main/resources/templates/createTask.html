@@ -88,6 +88,7 @@
         <label for="projectId" class="form-label">Project ID:</label>
         <input type="number" class="form-control" id="projectId" name="projectId" required>
       </div>
+      <input type="hidden" th:value="${param.projectId}" name="projectId">
       <button type="submit" class="w-100 btn btn-lg main-color-bg">Create Task</button>
     </form>
   </div>
