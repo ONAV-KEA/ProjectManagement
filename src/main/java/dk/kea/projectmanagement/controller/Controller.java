@@ -1,16 +1,18 @@
 package dk.kea.projectmanagement.controller;
 
 import dk.kea.projectmanagement.model.Project;
+import dk.kea.projectmanagement.model.Task;
 import dk.kea.projectmanagement.model.User;
 import dk.kea.projectmanagement.repository.DBRepository;
 import dk.kea.projectmanagement.utility.LoginSampleException;
-import dto.ProjectFormDTO;
+import dto.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @org.springframework.stereotype.Controller
 public class Controller {
@@ -114,6 +116,34 @@ public class Controller {
         }
 
         return "projects";
+    }
+
+    @GetMapping("/createTask")
+    public String createTask(HttpSession session, Model model) {
+        model.addAttribute("task", new TaskFormDTO());
+        return "createTask";
+    }
+
+    @PostMapping("/createTask")
+    public String returnTask(@ModelAttribute TaskFormDTO form, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        Task task = repository.createTask(form, user);
+
+        return "redirect:/tasks?projectId=" + form.getProjectId();
+    }
+
+    @GetMapping("/tasks")
+    public String tasks(@RequestParam("projectId") int projectId, Model model, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        model.addAttribute("user", user);
+        model.addAttribute("tasks", repository.getTasksByProjectId(projectId, user));
+
+        // Redirects to login site if user is not logged in
+        if (user.getId() == 0) {
+            return "redirect:/";
+        }
+
+        return "tasks";
     }
 
 }
