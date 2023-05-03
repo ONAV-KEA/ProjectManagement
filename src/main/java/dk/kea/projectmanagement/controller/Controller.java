@@ -59,4 +59,18 @@ public class Controller {
 
         return "dashboard";
     }
+
+    @GetMapping("/admin")
+    public String admin(Model model, HttpSession session){
+        User user = (User) session.getAttribute("user");
+        model.addAttribute("user", user);
+        model.addAttribute("users", repository.getAllUsers());
+
+        // Redirects to login site if user is not logged in
+        if (user.getId() == 0){
+            return "redirect:/";
+        }
+
+        return "admin";
+    }
 }
