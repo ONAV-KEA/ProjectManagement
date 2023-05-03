@@ -106,13 +106,14 @@ public class DBRepository {
                 int projectId = rs.getInt("id");
                 String name = rs.getString("name");
                 String description = rs.getString("description");
-                LocalDate startDate = rs.getDate("start_date").toLocalDate();
+                LocalDate startDate = rs.getDate("start_date")== null ? null : rs.getDate("start_date").toLocalDate();
                 LocalDate endDate = rs.getDate("end_date") == null ? null : rs.getDate("end_date").toLocalDate();
                 Project project = new Project(projectId, name, description, startDate, endDate);
                 projects.add(project);
             }
             con.commit();
             return projects;
+        // Catch block will rollback the transaction if it fails
         } catch (SQLException e) {
             if (con != null) {
                 try {
@@ -121,6 +122,7 @@ public class DBRepository {
                     ex.printStackTrace();
                 }
             }
+        // Finally block will always run and commit the transaction if it was successful
         } finally {
             if (con != null) {
                 try {
@@ -142,8 +144,8 @@ public class DBRepository {
             PreparedStatement ps = con.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, form.getName());
             ps.setString(2, form.getDescription());
-            ps.setDate(3, java.sql.Date.valueOf(form.getStartDate()));
-            ps.setDate(4, java.sql.Date.valueOf(form.getEndDate()));
+            ps.setDate(3, form.getStartDate() != null ? Date.valueOf(form.getStartDate()) : null);
+            ps.setDate(4, form.getEndDate() != null ? Date.valueOf(form.getEndDate()) : null);
 
             int affectedRows = ps.executeUpdate();
             if (affectedRows == 1) {
@@ -168,6 +170,7 @@ public class DBRepository {
             } else {
                 throw new RuntimeException("Could not create project");
             }
+        // Catch block will rollback the transaction if it fails
         } catch (SQLException e) {
             if (con != null) {
                 try {
@@ -177,6 +180,7 @@ public class DBRepository {
                 }
             }
             throw new RuntimeException("Could not create project", e);
+        // Finally block will always run and commit the transaction if it was successful
         } finally {
             try {
                 con.setAutoCommit(true);
