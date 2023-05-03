@@ -66,12 +66,12 @@
         <td th:text="${project.description}"></td>
         <td th:text="${project.startDate}"></td>
         <td th:text="${project.endDate}"></td>
-        <td>
-          <a th:href="@{'/editProject/' + ${project.id}}" class="btn main-color-bg btn-sm">
+        <td th:if="${user.role == ('project_manager')}">
+          <a class="btn main-color-bg btn-sm">
           Edit</a>
         </td>
-        <td>
-          <a th:href="" class="btn btn-outline-danger btn-sm">
+        <td th:if="${user.role == ('project_manager')}">
+          <a class="btn btn-outline-danger btn-sm">
           Delete</a>
         </td>
       </tr>
