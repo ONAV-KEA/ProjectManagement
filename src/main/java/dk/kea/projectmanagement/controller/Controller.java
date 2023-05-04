@@ -1,16 +1,15 @@
 package dk.kea.projectmanagement.controller;
 
 import dk.kea.projectmanagement.model.Project;
+import dk.kea.projectmanagement.model.Task;
 import dk.kea.projectmanagement.model.User;
 import dk.kea.projectmanagement.repository.DBRepository;
 import dk.kea.projectmanagement.utility.LoginSampleException;
-import dto.ProjectFormDTO;
+import dto.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 @org.springframework.stereotype.Controller
 public class Controller {
@@ -114,6 +113,21 @@ public class Controller {
         }
 
         return "projects";
+    }
+
+    @GetMapping("/project/{projectId}/createtask")
+    public String createTask(@PathVariable int projectId, Model model) {
+        model.addAttribute("task", new TaskFormDTO());
+        model.addAttribute("projectId", projectId);
+        return "createtask";
+    }
+
+    @PostMapping("/project/{projectId}/createtask")
+    public String returnTask(@PathVariable int projectId, @ModelAttribute TaskFormDTO form, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        Task task = repository.createTask(form, projectId);
+
+        return "redirect:/project/" + projectId + "/tasks";
     }
 
 }
