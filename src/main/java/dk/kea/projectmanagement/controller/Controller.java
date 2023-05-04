@@ -8,15 +8,15 @@ import dk.kea.projectmanagement.utility.LoginSampleException;
 import dto.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @org.springframework.stereotype.Controller
 public class Controller {
     DBRepository repository = new DBRepository();
+    private final Logger logger = LoggerFactory.getLogger(Controller.class);
 
     @GetMapping({"/",""})
     public String index(HttpServletRequest request){
@@ -118,25 +118,27 @@ public class Controller {
         return "projects";
     }
 
-    @GetMapping("/createTask")
-    public String createTask(HttpSession session, Model model) {
+
+    @GetMapping("/project/{projectId}/createtask")
+    public String createTask(@PathVariable int projectId, Model model) {
         model.addAttribute("task", new TaskFormDTO());
-        return "createTask";
+        model.addAttribute("projectId", projectId);
+        return "createtask";
     }
 
-    @PostMapping("/createTask")
-    public String returnTask(@ModelAttribute TaskFormDTO form, HttpSession session) {
+    @PostMapping("/project/{projectId}/createtask")
+    public String returnTask(@PathVariable int projectId, @ModelAttribute TaskFormDTO form, HttpSession session) {
         User user = (User) session.getAttribute("user");
-        Task task = repository.createTask(form, user);
+        Task task = repository.createTask(form, projectId);
 
-        return "redirect:/tasks?projectId=" + form.getProjectId();
+        return "redirect:/project/" + projectId + "/tasks";
     }
 
-    @GetMapping("/tasks")
-    public String tasks(@RequestParam("projectId") int projectId, Model model, HttpSession session) {
+    @GetMapping("/project/{projectId}/tasks")
+    public String tasks(@PathVariable int projectId, Model model, HttpSession session) {
         User user = (User) session.getAttribute("user");
         model.addAttribute("user", user);
-        model.addAttribute("tasks", repository.getTasksByProjectId(projectId, user));
+        model.addAttribute("tasks", repository.getTasksByProjectId(projectId));
 
         // Redirects to login site if user is not logged in
         if (user.getId() == 0) {
@@ -145,5 +147,6 @@ public class Controller {
 
         return "tasks";
     }
+
 
 }

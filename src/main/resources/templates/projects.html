@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -68,7 +68,7 @@
         <td th:text="${project.startDate}"></td>
         <td th:text="${project.endDate}"></td>
         <td>
-          <a th:href="@{'/tasks?projectId=' + ${project.id}}" class="btn btn-primary btn-sm">
+          <a th:href="@{/project/{projectId}/tasks(projectId=${project.id})}" class="btn main-color-bg btn-sm">
             View Tasks
           </a>
         </td>
