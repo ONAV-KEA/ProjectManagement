@@ -1,0 +1,89 @@
+CREATE TABLE `user` (
+  `id` INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+  `username` VARCHAR(250) NOT NULL,
+  `password` VARCHAR(250) NOT NULL,
+  `first_name` VARCHAR(255) NOT NULL,
+  `last_name` VARCHAR(255) NOT NULL,
+  `birthday` DATE,
+  `role` ENUM('admin', 'project_member', 'project_manager') NOT NULL
+);
+
+CREATE TABLE `project_user` (
+  `project_id` INT UNSIGNED,
+  `user_id` INT UNSIGNED
+);
+
+CREATE TABLE `project` (
+  `id` INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+  `name` VARCHAR(250) NOT NULL,
+  `description` TEXT,
+  `start_date` DATE,
+  `end_date` DATE
+);
+
+CREATE TABLE `task` (
+  `id` INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+  `title` VARCHAR(250) NOT NULL,
+  `description` TEXT,
+  `start_date` DATE,
+  `end_date` DATE,
+  `assignee_id` INT UNSIGNED,
+  `cost` DECIMAL,
+  `status` ENUM('todo', 'in_progress', 'completed') NOT NULL,
+  `comment` TEXT,
+  `project_id` INT UNSIGNED
+);
+
+CREATE TABLE `subtask` (
+  `id` INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+  `title` VARCHAR(250) NOT NULL,
+  `description` TEXT,
+  `start_date` DATE,
+  `end_date` DATE,
+  `assignee_id` INT UNSIGNED,
+  `cost` DECIMAL,
+  `status` ENUM('todo', 'in_progress', 'completed') NOT NULL,
+  `comment` TEXT,
+  `task_id` INT UNSIGNED
+);
+
+CREATE TABLE `organization` (
+  `id` INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+  `name` VARCHAR(250) NOT NULL
+);
+
+CREATE TABLE `organization_user` (
+  `organization_id` INT UNSIGNED,
+  `user_id` INT UNSIGNED
+);
+
+CREATE TABLE `project_organization` (
+  `project_id` INT UNSIGNED,
+  `organization_id` INT UNSIGNED
+);
+
+CREATE TABLE `gantt_chart` (
+  `id` INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+  `start_date` DATE,
+  `end_date` DATE,
+  `task_id` INT UNSIGNED,
+  `subtask_id` INT UNSIGNED
+);
+
+CREATE INDEX `project_user_project_id_idx` ON `project_user` (`project_id`);
+CREATE INDEX `project_user_user_id_idx` ON `project_user` (`user_id`);
+
+CREATE INDEX `task_assignee_id_idx` ON `task` (`assignee_id`);
+CREATE INDEX `task_project_id_idx` ON `task` (`project_id`);
+
+CREATE INDEX `subtask_assignee_id_idx` ON `subtask` (`assignee_id`);
+CREATE INDEX `subtask_task_id_idx` ON `subtask` (`task_id`);
+
+CREATE INDEX `organization_user_organization_id_idx` ON `organization_user` (`organization_id`);
+CREATE INDEX `organization_user_user_id_idx` ON `organization_user` (`user_id`);
+
+CREATE INDEX `project_organization_project_id_idx` ON `project_organization` (`project_id`);
+CREATE INDEX `project_organization_organization_id_idx` ON `project_organization` (`organization_id`);
+
+CREATE INDEX `gantt_chart_task_id_idx` ON `gantt_chart` (`task_id`);
+CREATE INDEX `gantt_chart_subtask_id_idx` ON `gantt_chart` (`subtask_id`);
