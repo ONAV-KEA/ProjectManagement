@@ -1,10 +1,13 @@
-package dk.kea.projectmanagement.model;
+package dto;
+
+import dk.kea.projectmanagement.model.Subtask;
 
 import java.time.LocalDate;
+import java.util.List;
 
-public class Subtask {
+public class TaskAndSubtaskDTO {
     private int id;
-    private String title;
+    private String name;
     private String description;
     private LocalDate startDate;
     private LocalDate endDate;
@@ -12,11 +15,12 @@ public class Subtask {
     private double cost;
     private String status;
     private String comment;
-    private int taskId;
+    private int projectId;
+    private List<Subtask> subtasks;
 
-    public Subtask(int id, String title, String description, LocalDate startDate, LocalDate endDate, int assigneeId, double cost, String status, String comment, int taskId) {
+    public TaskAndSubtaskDTO(int id, String name, String description, LocalDate startDate, LocalDate endDate, int assigneeId, double cost, String status, String comment, int projectId, List<Subtask> subtasks) {
         this.id = id;
-        this.title = title;
+        this.name = name;
         this.description = description;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -24,7 +28,11 @@ public class Subtask {
         this.cost = cost;
         this.status = status;
         this.comment = comment;
-        this.taskId = taskId;
+        this.projectId = projectId;
+        this.subtasks = subtasks;
+    }
+
+    public TaskAndSubtaskDTO() {
     }
 
     public int getId() {
@@ -35,12 +43,12 @@ public class Subtask {
         this.id = id;
     }
 
-    public String getTitle() {
-        return title;
+    public String getName() {
+        return name;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDescription() {
@@ -65,6 +73,14 @@ public class Subtask {
 
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
+    }
+
+    public List<Subtask> getSubtasks() {
+        return subtasks;
+    }
+
+    public void setSubtasks(List<Subtask> subtasks) {
+        this.subtasks = subtasks;
     }
 
     public int getAssigneeId() {
@@ -99,11 +115,11 @@ public class Subtask {
         this.comment = comment;
     }
 
-    public int getTaskId() {
-        return taskId;
+    public int getProjectId() {
+        return projectId;
     }
 
-    public void setTaskId(int taskId) {
-        this.taskId = taskId;
+    public void setProjectId(int projectId) {
+        this.projectId = projectId;
     }
 }
