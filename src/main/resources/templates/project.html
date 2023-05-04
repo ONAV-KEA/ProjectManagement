@@ -10,17 +10,12 @@
   <link rel="icon" type="image/x-icon" href="../src/main/resources/static/images/favicon.png" th:src="@{images/favicon.png}">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <link href='https://fonts.googleapis.com/css?family=IBM Plex Sans Condensed' rel='stylesheet'>
-  <style>
-    .subtask-table {
-      display: none;
-    }
-  </style>
 </head>
 <body>
 <nav class="navbar sticky-lg-top text-end p-3">
   <div class="container-fluid">
     <a class="navbar-brand" href="/dashboard">
-      <img src="../src/main/resources/static/images/projectplanner-logo.png" th:src="@{images/projectplanner-logo.png}" alt="Logo" width="220px" class="d-inline-block align-text-top">
+      <img src="../src/main/resources/static/images/projectplanner-logo.png" th:src="@{/images/projectplanner-logo.png}" alt="Logo" width="220px" class="d-inline-block align-text-top">
     </a>
     <ul class="nav justify-content-end">
       <li class="nav-item">
@@ -56,8 +51,7 @@
   <table class="table">
     <thead>
     <tr>
-      <th scope="col">Task</th>
-      <th scope="col">Subtasks</th>
+      <th></th>
     </tr>
     </thead>
     <tbody>
@@ -66,8 +60,9 @@
       <td>
         <!-- Display the task name and add a dropdown button to toggle subtasks -->
         <div>
-          <button class="btn btn-link toggle-subtasks" type="button" data-bs-toggle="collapse" th:data-bs-target="'#subtasks-' + ${task.id}" aria-expanded="false" aria-controls="subtasks">
+          <button class="btn main-color-bg toggle-subtasks" type="button" data-bs-toggle="collapse" th:data-bs-target="'#subtasks-' + ${task.id}" aria-expanded="false" aria-controls="subtasks">
             <span th:text="${task.name}"></span>
+            <i class="fa fa-arrow-down"></i>
           </button>
         </div>
       </td>
@@ -77,12 +72,12 @@
           <table class="table">
             <thead>
             <tr>
-              <th scope="col">Subtask</th>
+              <th scope="col"><h5>Subtasks:</h5></th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="subtask : ${task.subtasks}">
-              <td th:text="${subtask.title}"></td>
+              <td th:text="'- ' + ${subtask.title}"></td>
             </tr>
             </tbody>
           </table>

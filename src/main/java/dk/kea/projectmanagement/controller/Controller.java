@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.*;
 
 @org.springframework.stereotype.Controller
 public class Controller {
@@ -71,13 +70,13 @@ public class Controller {
         return "dashboard";
     }
 
-    @GetMapping("/createproject")
+    @GetMapping("/createProject")
     public String project(HttpSession session, Model model) {
         model.addAttribute("project", new ProjectFormDTO());
-        return "createproject";
+        return "createProject";
     }
 
-    @PostMapping ("/createproject")
+    @PostMapping ("/createProject")
     public String returnProject (@ModelAttribute ProjectFormDTO form, HttpSession session) {
         User user = (User) session.getAttribute("user");
         Project project = repository.createProject(form, user);
