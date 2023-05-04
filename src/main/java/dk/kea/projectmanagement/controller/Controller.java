@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 @org.springframework.stereotype.Controller
@@ -114,6 +115,20 @@ public class Controller {
         }
 
         return "projects";
+    }
+
+    @GetMapping("/project/{id}")
+    public String project(Model model, HttpSession session, @PathVariable("id") int id){
+        User user = (User) session.getAttribute("user");
+        model.addAttribute("user", user);
+        model.addAttribute("project", repository.getProjectById(id));
+
+        // Redirects to login site if user is not logged in
+        if (user.getId() == 0){
+            return "redirect:/";
+        }
+
+        return "project";
     }
 
 }
