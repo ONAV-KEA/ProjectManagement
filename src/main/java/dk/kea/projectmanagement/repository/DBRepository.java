@@ -1,6 +1,7 @@
 package dk.kea.projectmanagement.repository;
 
 import dk.kea.projectmanagement.model.Project;
+import dk.kea.projectmanagement.model.Task;
 import dk.kea.projectmanagement.model.User;
 import dk.kea.projectmanagement.utility.DBManager;
 import dk.kea.projectmanagement.utility.LoginSampleException;
@@ -188,6 +189,18 @@ public class DBRepository {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    public void removeTask(int id) {
+        try (Connection connection = DBManager.getConnection()) {
+            String SQL = "DELETE FROM task WHERE id = ?";
+            try (PreparedStatement statement = connection.prepareStatement(SQL)) {
+                statement.setInt(1, id);
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 

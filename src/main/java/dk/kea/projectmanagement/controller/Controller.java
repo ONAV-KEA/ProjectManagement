@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 @org.springframework.stereotype.Controller
@@ -114,6 +115,13 @@ public class Controller {
         }
 
         return "projects";
+    }
+
+    @GetMapping ("/deletetask/{id}")
+    public String deletetask (@PathVariable("id") int id) {
+        repository.removeTask(id);
+        System.out.println("Task deleted " + id);
+        return "redirect:/";
     }
 
 }
