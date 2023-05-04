@@ -89,6 +89,14 @@
         </div>
       </td>
     </tr>
+    <!-- Add a button to create a new task -->
+    <tr>
+      <td colspan="2">
+        <div>
+          <a class="btn btn-primary" th:href="@{'/project/' + ${project.id} + '/createtask'}">Create Task</a>
+        </div>
+      </td>
+    </tr>
     </tbody>
   </table>
 </div>

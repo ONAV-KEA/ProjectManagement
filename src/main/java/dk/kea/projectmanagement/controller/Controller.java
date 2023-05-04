@@ -146,7 +146,7 @@ public class Controller {
         User user = (User) session.getAttribute("user");
         Task task = repository.createTask(form, projectId);
 
-        return "redirect:/project/" + projectId + "/tasks";
+        return "redirect:/project/" + projectId;
     }
 
 }
