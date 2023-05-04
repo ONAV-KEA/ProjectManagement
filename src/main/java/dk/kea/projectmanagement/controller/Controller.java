@@ -122,6 +122,7 @@ public class Controller {
         User user = (User) session.getAttribute("user");
         model.addAttribute("user", user);
         model.addAttribute("project", repository.getProjectById(id));
+        model.addAttribute("tasks", repository.getTasksWithSubtasksByProjectId(id));
 
         // Redirects to login site if user is not logged in
         if (user.getId() == 0){

@@ -219,9 +219,9 @@ public class DBRepository {
     public List<TaskAndSubtaskDTO> getTasksWithSubtasksByProjectId(int id){
         try{
             Connection con = DBManager.getConnection();
-            String SQL = "SELECT " + "t.id AS task_id," + " t.title AS task_name, " + "t.description AS task_description, " + "t.start_date AS task_start_date, " +
+            String SQL = "SELECT " + "t.id AS task_id," + " t.title AS task_title, " + "t.description AS task_description, " + "t.start_date AS task_start_date, " +
                     "t.end_date AS task_end_date, " + "t.assignee_id AS task_assignee_id, " + "t.cost AS task_cost, " + "t.status AS task_status, " +
-                    "t.comment AS task_comment, " + "st.id AS subtask_id, " + "st.title AS subtask_name, " + "st.description AS subtask_description, " +
+                    "t.comment AS task_comment, " + "st.id AS subtask_id, " + "st.title AS subtask_title, " + "st.description AS subtask_description, " +
                     "st.start_date AS subtask_start_date, " + "st.end_date AS subtask_end_date, " + "st.assignee_id AS subtask_assignee_id, " +
                     "st.cost AS subtask_cost, " + "st.status AS subtask_status, " + "st.comment AS subtask_comment " +
                     "FROM task t " +
@@ -239,8 +239,8 @@ public class DBRepository {
                 if (!taskMap.containsKey(taskId)) {
                     String title = rs.getString("task_title");
                     String description = rs.getString("task_description");
-                    LocalDate startDate = rs.getDate("task_start_date") == null ? null : rs.getDate("start_date").toLocalDate();
-                    LocalDate endDate = rs.getDate("task_end_date") == null ? null : rs.getDate("end_date").toLocalDate();
+                    LocalDate startDate = rs.getDate("task_start_date") == null ? null : rs.getDate("task_start_date").toLocalDate();
+                    LocalDate endDate = rs.getDate("task_end_date") == null ? null : rs.getDate("task_end_date").toLocalDate();
                     int assigneeId = rs.getInt("task_assignee_id");
                     double cost = rs.getDouble("task_cost");
                     String status = rs.getString("task_status");
@@ -253,7 +253,7 @@ public class DBRepository {
 
                 int subtaskId = rs.getInt("subtask_id");
                 if (subtaskId > 0) {
-                    String subtaskTitle = rs.getString("subtask_name");
+                    String subtaskTitle = rs.getString("subtask_title");
                     String subtaskDescription = rs.getString("subtask_description");
                     LocalDate subtaskStartDate = rs.getDate("subtask_start_date") == null ? null : rs.getDate("subtask_start_date").toLocalDate();
                     LocalDate subtaskEndDate = rs.getDate("subtask_end_date") == null ? null : rs.getDate("subtask_end_date").toLocalDate();

@@ -31,3 +31,7 @@ nav {
     width: 15vw;
     margin: 3px;
 }
+
+.subtask-table {
+    display: none;
+}
