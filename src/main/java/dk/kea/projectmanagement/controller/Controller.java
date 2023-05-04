@@ -8,15 +8,12 @@ import dk.kea.projectmanagement.utility.LoginSampleException;
 import dto.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @org.springframework.stereotype.Controller
 public class Controller {
     DBRepository repository = new DBRepository();
-    private final Logger logger = LoggerFactory.getLogger(Controller.class);
 
     @GetMapping({"/",""})
     public String index(HttpServletRequest request){
@@ -118,7 +115,6 @@ public class Controller {
         return "projects";
     }
 
-
     @GetMapping("/project/{projectId}/createtask")
     public String createTask(@PathVariable int projectId, Model model) {
         model.addAttribute("task", new TaskFormDTO());
@@ -133,20 +129,5 @@ public class Controller {
 
         return "redirect:/project/" + projectId + "/tasks";
     }
-
-    @GetMapping("/project/{projectId}/tasks")
-    public String tasks(@PathVariable int projectId, Model model, HttpSession session) {
-        User user = (User) session.getAttribute("user");
-        model.addAttribute("user", user);
-        model.addAttribute("tasks", repository.getTasksByProjectId(projectId));
-
-        // Redirects to login site if user is not logged in
-        if (user.getId() == 0) {
-            return "redirect:/";
-        }
-
-        return "tasks";
-    }
-
 
 }

@@ -76,7 +76,11 @@
       </div>
       <div class="mb-3">
         <label for="status" class="form-label">Status</label>
-        <input type="text" class="form-control" id="status" name="status" th:value="*{status}">
+        <select class="form-select" id="status" name="status" th:value="*{status}">
+          <option value="todo">To Do</option>
+          <option value="in_progress">In Progress</option>
+          <option value="complete">Complete</option>
+        </select>
       </div>
       <div class="mb-3">
         <label for="comment" class="form-label">Comment</label>
