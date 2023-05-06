@@ -51,33 +51,86 @@
   <table class="table">
     <thead>
     <tr>
-      <th></th>
+      <th>Task</th>
+      <th>Subtasks</th>
     </tr>
     </thead>
     <tbody>
     <!-- Iterate over the tasks -->
     <tr th:each="task : ${tasks}">
       <td>
-        <!-- Display the task name and add a dropdown button to toggle subtasks -->
-        <div>
-          <button class="btn main-color-bg toggle-subtasks" type="button" data-bs-toggle="collapse" th:data-bs-target="'#subtasks-' + ${task.id}" aria-expanded="false" aria-controls="subtasks">
-            <span th:text="${task.name}"></span>
-            <i class="fa fa-arrow-down"></i>
-          </button>
+        <!-- Display the task name and add a button to open a modal with task info -->
+        <button class="btn main-color-bg" type="button" data-bs-toggle="modal" th:data-bs-target="'#taskModal-' + ${task.id}" th:text="${task.name}"></button>
+        <!-- Task Modal -->
+        <div class="modal fade" th:id="'taskModal-' + ${task.id}" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="taskModalLabel" th:text="${task.name} + ' Info'"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <p th:text="${task.description}"></p>
+                <p th:text="'Start Date: ' + ${task.startDate}"></p>
+                <p th:text="'End Date: ' + ${task.endDate}"></p>
+                <p th:text="'Status: ' + ${task.status}"></p>
+                <p th:text="'Cost: ' + ${task.cost}"></p>
+                <p th:text="'Assignee: ' + ${task.assigneeId}"></p>
+                <h3 th:text="'Comment'"></h3>
+                <p th:text="${task.comment}"></p>
+                <!-- Add other task info here -->
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
         </div>
       </td>
       <td>
+        <!-- Add a dropdown button to toggle subtasks -->
+        <button class="btn main-color-bg toggle-subtasks" type="button" data-bs-toggle="collapse" th:data-bs-target="'#subtasks-' + ${task.id}" aria-expanded="false" aria-controls="subtasks">
+          Subtasks <i class="fa fa-arrow-down"></i>
+        </button>
         <!-- Iterate over the subtasks and add them to the corresponding task -->
         <div class="collapse subtasks" th:id="'subtasks-' + ${task.id}">
           <table class="table">
             <thead>
             <tr>
-              <th scope="col"><h5>Subtasks:</h5></th>
+              <th scope="col">
+                <h5>Subtasks:</h5>
+              </th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="subtask : ${task.subtasks}">
-              <td th:text="'- ' + ${subtask.title}"></td>
+              <td>
+                <button class="btn btn-link" type="button" data-bs-toggle="modal" th:data-bs-target="'#subtaskModal-' + ${subtask.id}" th:text="'- ' + ${subtask.title}"></button>
+                <!-- Subtask Modal -->
+                <div class="modal fade" th:id="'subtaskModal-' + ${subtask.id}" tabindex="-1" aria-labelledby="subtaskModalLabel" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="subtaskModalLabel" th:text="${subtask.title} + ' Info'"></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <p th:text="${subtask.description}"></p>
+                        <p th:text="'Start Date: ' + ${subtask.startDate}"></p>
+                        <p th:text="'End Date: ' + ${subtask.endDate}"></p>
+                        <p th:text="'Status: ' + ${subtask.status}"></p>
+                        <p th:text="'Cost: ' + ${subtask.cost}"></p>
+                        <p th:text="'Assignee: ' + ${subtask.assigneeId}"></p>
+                        <h3 th:text="'Comment'"></h3>
+                        <p th:text="${subtask.comment}"></p>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </td>
             </tr>
             </tbody>
           </table>
@@ -122,7 +175,6 @@
     });
   });
 </script>
-
 
 <footer>
   <div class="container-fluid text-center">
