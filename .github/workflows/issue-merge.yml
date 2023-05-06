@@ -26,5 +26,6 @@ jobs:
         with:
           type: now
           target_branch: main
+          message: Merged issue branch into main branch
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
