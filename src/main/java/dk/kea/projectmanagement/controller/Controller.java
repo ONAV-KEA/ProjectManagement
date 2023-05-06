@@ -58,26 +58,33 @@ public class Controller {
 
     @GetMapping("/dashboard")
     public String dashboard(Model model, HttpSession session){
+        // Redirects to login site if user is not logged in
+        if (!isLoggedIn(session)){
+            return "redirect:/";
+        }
         User user = (User) session.getAttribute("user");
         model.addAttribute("user", user);
         model.addAttribute("projects", repository.getProjectByUserId(user.getId()));
-
-        // Redirects to login site if user is not logged in
-        if (user.getId() == 0){
-            return "redirect:/";
-        }
 
         return "dashboard";
     }
 
     @GetMapping("/createProject")
     public String project(HttpSession session, Model model) {
+        // Redirects to login site if user is not logged in
+        if (!isLoggedIn(session)){
+            return "redirect:/";
+        }
         model.addAttribute("project", new ProjectFormDTO());
         return "createProject";
     }
 
     @PostMapping ("/createProject")
     public String returnProject (@ModelAttribute ProjectFormDTO form, HttpSession session) {
+        // Redirects to login site if user is not logged in
+        if (!isLoggedIn(session)){
+            return "redirect:/";
+        }
         User user = (User) session.getAttribute("user");
         Project project = repository.createProject(form, user);
 
@@ -87,14 +94,13 @@ public class Controller {
 
     @GetMapping("/admin")
     public String admin(Model model, HttpSession session){
+        // Redirects to login site if user is not logged in
+        if (!isLoggedIn(session)){
+            return "redirect:/";
+        }
         User user = (User) session.getAttribute("user");
         model.addAttribute("user", user);
         model.addAttribute("users", repository.getAllUsers());
-
-        // Redirects to login site if user is not logged in
-        if (user.getId() == 0){
-            return "redirect:/";
-        }
 
         //Redirects to dashboard if user is not admin
         if (!user.getRole().equals("admin")){
@@ -106,46 +112,57 @@ public class Controller {
 
     @GetMapping("/projects")
     public String projects(Model model, HttpSession session){
+        // Redirects to login site if user is not logged in
+        if (!isLoggedIn(session)){
+            return "redirect:/";
+        }
         User user = (User) session.getAttribute("user");
         model.addAttribute("user", user);
         model.addAttribute("projects", repository.getProjectByUserId(user.getId()));
-
-        // Redirects to login site if user is not logged in
-        if (user.getId() == 0){
-            return "redirect:/";
-        }
 
         return "projects";
     }
 
     @GetMapping("/project/{id}")
     public String project(Model model, HttpSession session, @PathVariable("id") int id){
+        // Redirects to login site if user is not logged in
+        if (!isLoggedIn(session)){
+            return "redirect:/";
+        }
         User user = (User) session.getAttribute("user");
         model.addAttribute("user", user);
         model.addAttribute("project", repository.getProjectById(id));
         model.addAttribute("tasks", repository.getTasksWithSubtasksByProjectId(id));
 
-        // Redirects to login site if user is not logged in
-        if (user.getId() == 0){
-            return "redirect:/";
-        }
-
         return "project";
     }
 
     @GetMapping("/project/{projectId}/createtask")
-    public String createTask(@PathVariable int projectId, Model model) {
+    public String createTask(@PathVariable int projectId, Model model, HttpSession session) {
+        // Redirects to login site if user is not logged in
+        if (!isLoggedIn(session)){
+            return "redirect:/";
+        }
         model.addAttribute("task", new TaskFormDTO());
         model.addAttribute("projectId", projectId);
+        User user = (User) session.getAttribute("user");
         return "createtask";
     }
 
     @PostMapping("/project/{projectId}/createtask")
     public String returnTask(@PathVariable int projectId, @ModelAttribute TaskFormDTO form, HttpSession session) {
+        // Redirects to login site if user is not logged in
+        if (!isLoggedIn(session)){
+            return "redirect:/";
+        }
         User user = (User) session.getAttribute("user");
         Task task = repository.createTask(form, projectId);
 
         return "redirect:/project/" + projectId;
+    }
+
+    private boolean isLoggedIn(HttpSession session) {
+        return session.getAttribute("user") != null;
     }
 
 }
