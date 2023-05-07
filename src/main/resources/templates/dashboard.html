@@ -67,7 +67,9 @@
           </thead>
           <tbody>
           <tr th:each="project : ${projects}">
-            <td th:text="${project.id}"></td>
+            <td>
+              <a th:href="@{/project/{projectId}(projectId=${project.id})}" th:text="${project.name}"></a>
+            </td>
             <td th:text="${project.name}"></td>
             <td th:text="${project.description}"></td>
             <td th:text="${project.startDate}"></td>
@@ -76,7 +78,7 @@
           </tbody>
         </table>
         <div th:if="${user.role == ('project_manager')}">
-          <a class="w-100 btn btn-lg main-color-bg" href="/createproject">Create a new project</a>
+          <a class="w-100 btn btn-lg main-color-bg" href="/createProject">Create a new project</a>
         </div>
       </div>
 
