@@ -27,6 +27,16 @@ public Task(int id, String title, String description, LocalDate startDate, Local
         this.projectId = projectId;
     }
 
+    public Task(int id, String title, String description, LocalDate startDate, double cost, int projectId) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.startDate = startDate;
+        this.cost = cost;
+        this.projectId = projectId;
+        this.status = "todo";
+    }
+
     public int getId() {
         return id;
     }
