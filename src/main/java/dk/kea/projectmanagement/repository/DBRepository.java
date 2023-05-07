@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.Map;
 
 
-@Repository("database")
-public class DBRepository {
+@Repository("db_repo")
+public class DBRepository implements IRepository {
     private final Logger logger = LoggerFactory.getLogger(DBRepository.class);
 
     public List<User> getAllUsers() {
