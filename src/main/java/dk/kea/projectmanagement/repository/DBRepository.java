@@ -252,24 +252,20 @@ public class DBRepository implements IRepository {
         try {
             con = DBManager.getConnection();
             con.setAutoCommit(false);
-            String SQL = "INSERT INTO task (title, description, start_date, end_date, assignee_id, cost, status, comment, project_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
+            String SQL = "INSERT INTO task (title, description, start_date, cost, project_id) VALUES (?, ?, ?, ?, ?);";
             PreparedStatement ps = con.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, form.getTitle());
             ps.setString(2, form.getDescription());
             ps.setDate(3, form.getStartDate() != null ? Date.valueOf(form.getStartDate()) : null);
-            ps.setDate(4, form.getEndDate() != null ? Date.valueOf(form.getEndDate()) : null);
-            ps.setInt(5, form.getAssigneeId());
-            ps.setDouble(6, form.getCost());
-            ps.setString(7, form.getStatus());
-            ps.setString(8, form.getComment());
-            ps.setInt(9, projectId);
+            ps.setDouble(4, form.getCost());
+            ps.setInt(5, projectId);
 
             int affectedRows = ps.executeUpdate();
             if (affectedRows == 1) {
                 ResultSet rs = ps.getGeneratedKeys();
                 if (rs.next()) {
                     int id = rs.getInt(1);
-                    Task task = new Task(id, form.getTitle(), form.getDescription(), form.getStartDate(), form.getEndDate(), form.getAssigneeId(), form.getCost(), form.getStatus(), form.getComment(), projectId);
+                    Task task = new Task(id, form.getTitle(), form.getDescription(), form.getStartDate(), form.getCost(), projectId);
                     con.commit();
                     return task;
                 } else {

@@ -9,23 +9,15 @@ public class TaskFormDTO {
     private String title;
     private String description;
     private LocalDate startDate;
-    private LocalDate endDate;
-    private int assigneeId;
     private double cost;
-    private String status;
-    private String comment;
     private int projectId;
 
-    public TaskFormDTO(int id, String title, String description, LocalDate startDate, LocalDate endDate, int assigneeId, double cost, String status, String comment, int projectId) {
+    public TaskFormDTO(int id, String title, String description, LocalDate startDate,double cost, int projectId) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.startDate = startDate;
-        this.endDate = endDate;
-        this.assigneeId = assigneeId;
         this.cost = cost;
-        this.status = status;
-        this.comment = comment;
         this.projectId = projectId;
     }
 
@@ -64,21 +56,6 @@ public class TaskFormDTO {
         this.startDate = startDate;
     }
 
-    public LocalDate getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(LocalDate endDate) {
-        this.endDate = endDate;
-    }
-
-    public int getAssigneeId() {
-        return assigneeId;
-    }
-
-    public void setAssigneeId(int assigneeId) {
-        this.assigneeId = assigneeId;
-    }
 
     public double getCost() {
         return cost;
@@ -88,21 +65,7 @@ public class TaskFormDTO {
         this.cost = cost;
     }
 
-    public String getStatus() {
-        return status;
-    }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
 
     public int getProjectId() {
         return projectId;
