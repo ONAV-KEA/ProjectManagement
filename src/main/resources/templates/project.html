@@ -145,7 +145,8 @@
             </tbody>
           </table>
           <div>
-            <a class="btn btn-primary" th:href="@{'/project/' + ${project.id} + '/createsubtask'}">Create Subtask</a>
+            <a class="btn btn-primary" th:href="@{'/project/' + ${project.id} + '/createsubtask/' + ${task.id}}">Create Subtask</a>
+            <input type="hidden" name="taskId" th:value="${task.id}" />
           </div>
         </div>
       </td>

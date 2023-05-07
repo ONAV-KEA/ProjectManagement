@@ -1,6 +1,7 @@
 package dk.kea.projectmanagement.controller;
 
 import dk.kea.projectmanagement.model.Project;
+import dk.kea.projectmanagement.model.Subtask;
 import dk.kea.projectmanagement.model.Task;
 import dk.kea.projectmanagement.model.User;
 import dk.kea.projectmanagement.repository.DBRepository;
@@ -176,6 +177,31 @@ public class Controller {
 
         return "redirect:/project/" + projectId;
 
+    }
+
+    @GetMapping("/project/{projectId}/createsubtask/{taskId}")
+    public String createSubtask(@PathVariable int projectId, @PathVariable int taskId, Model model, HttpSession session) {
+        // Redirects to login site if user is not logged in
+        if (!isLoggedIn(session)){
+            return "redirect:/";
+        }
+        model.addAttribute("subtask", new SubtaskFormDTO());
+        model.addAttribute("projectId", projectId);
+        model.addAttribute("taskId", taskId);
+        User user = (User) session.getAttribute("user");
+        return "createsubtask";
+    }
+
+    @PostMapping("/project/{projectId}/createsubtask/{taskId}")
+    public String returnSubtask(@PathVariable int projectId, @PathVariable int taskId, @ModelAttribute SubtaskFormDTO form, HttpSession session) {
+        // Redirects to login site if user is not logged in
+        if (!isLoggedIn(session)){
+            return "redirect:/";
+        }
+        User user = (User) session.getAttribute("user");
+        Subtask subtask = repository.createSubtask(form, taskId);
+
+        return "redirect:/project/" + projectId;
     }
 
     private boolean isLoggedIn(HttpSession session) {

@@ -8,15 +8,15 @@ public class SubtaskFormDTO {
     private String description;
     private LocalDate startDate;
     private double cost;
-    private int projectId;
+    private int taskId;
 
-    public SubtaskFormDTO(int id, String title, String description, LocalDate startDate,double cost, int projectId) {
+    public SubtaskFormDTO(int id, String title, String description, LocalDate startDate,double cost, int taskId) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.startDate = startDate;
         this.cost = cost;
-        this.projectId = projectId;
+        this.taskId = taskId;
     }
 
     public SubtaskFormDTO() {
@@ -63,13 +63,11 @@ public class SubtaskFormDTO {
         this.cost = cost;
     }
 
-
-
-    public int getProjectId() {
-        return projectId;
+    public int getTaskId() {
+        return taskId;
     }
 
-    public void setProjectId(int projectId) {
-        this.projectId = projectId;
+    public void setTaskId(int taskId) {
+        this.taskId = taskId;
     }
 }
