@@ -7,6 +7,7 @@ import dk.kea.projectmanagement.model.User;
 import dk.kea.projectmanagement.utility.DBManager;
 import dk.kea.projectmanagement.utility.LoginSampleException;
 import dto.ProjectFormDTO;
+import dto.SubtaskFormDTO;
 import dto.TaskFormDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -292,6 +293,53 @@ public class DBRepository implements IRepository {
             }
         }
     }
+    @Override
+    public Subtask createSubtask(SubtaskFormDTO form, int taskId) {
+        Connection con = null;
+        try {
+            con = DBManager.getConnection();
+            con.setAutoCommit(false);
+            String SQL = "INSERT INTO subtask (title, description, start_date, cost, task_id) VALUES (?, ?, ?, ?, ?);";
+            PreparedStatement ps = con.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, form.getTitle());
+            ps.setString(2, form.getDescription());
+            ps.setDate(3, form.getStartDate() != null ? Date.valueOf(form.getStartDate()) : null);
+            ps.setDouble(4, form.getCost());
+            ps.setInt(5, taskId);
+
+            int affectedRows = ps.executeUpdate();
+            if (affectedRows == 1) {
+                ResultSet rs = ps.getGeneratedKeys();
+                if (rs.next()) {
+                    int id = rs.getInt(1);
+                    Subtask subtask = new Subtask(id, form.getTitle(), form.getDescription(), form.getStartDate(), form.getCost(), taskId);
+                    con.commit();
+                    return subtask;
+                } else {
+                    throw new RuntimeException("Could not create subtask");
+                }
+            } else {
+                throw new RuntimeException("Could not create subtask");
+            }
+        } catch (SQLException e) {
+            if (con != null) {
+                try {
+                    con.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            throw new RuntimeException("Could not create subtask", e);
+        } finally {
+            try {
+                con.setAutoCommit(true);
+                con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public Project getProjectById(int id) {
             try {
                 Connection con = DBManager.getConnection();
@@ -395,7 +443,42 @@ public class DBRepository implements IRepository {
                     ex.printStackTrace();
                 }
             }
-            throw new RuntimeException("Could not create task", e);
+            throw new RuntimeException("Could not add comment to subtask", e);
+        } finally {
+            try {
+                con.setAutoCommit(true);
+                con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void addCommentToSubtask(int subtaskId, String comment) {
+        Connection con = null;
+        try {
+            con = DBManager.getConnection();
+            con.setAutoCommit(false);
+            String SQL = "UPDATE subtask SET comment = ? WHERE id = ?;";
+            PreparedStatement ps = con.prepareStatement(SQL);
+            ps.setString(1, comment);
+            ps.setInt(2, subtaskId);
+
+            int affectedRows = ps.executeUpdate();
+            if (affectedRows == 0) {
+                throw new RuntimeException("Could not add comment to subtask");
+            }
+            con.commit();
+        } catch (SQLException e) {
+            if (con != null) {
+                try {
+                    con.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            throw new RuntimeException("Could not add comment to subtask", e);
         } finally {
             try {
                 con.setAutoCommit(true);
