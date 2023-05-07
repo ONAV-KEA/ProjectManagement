@@ -68,7 +68,7 @@
         <td th:text="${project.startDate}"></td>
         <td th:text="${project.endDate}"></td>
         <td>
-          <a th:href="@{/project/{projectId}/tasks(projectId=${project.id})}" class="btn main-color-bg btn-sm">
+          <a th:href="@{/project/{projectId}(projectId=${project.id})}" class="btn main-color-bg btn-sm">
             View Tasks
           </a>
         </td>
