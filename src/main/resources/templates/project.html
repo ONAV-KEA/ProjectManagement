@@ -170,17 +170,22 @@
         </div>
       </td>
     </tr>
-    <!-- Add a button to create a new task -->
+    <!-- Add a button to create and delete a task -->
     <tr>
       <td colspan="2">
         <div>
           <a class="btn btn-primary" th:href="@{'/project/' + ${project.id} + '/createtask'}">Create Task</a>
+          <a action="/tasks/{taskId}" method="post">
+            <input type="hidden" name="_method" value="delete">
+            <button type="submit">Delete Task</button>
+          </a>
         </div>
       </td>
     </tr>
     </tbody>
   </table>
 </div>
+
 
 <footer>
   <div class="container-fluid text-center">
