@@ -372,7 +372,7 @@ public class DBRepository implements IRepository {
     }
 
     @Override
-    public Void addCommentToTask(int taskId, String comment) {
+    public void addCommentToTask(int taskId, String comment) {
         Connection con = null;
         try {
             con = DBManager.getConnection();
@@ -404,7 +404,6 @@ public class DBRepository implements IRepository {
                 e.printStackTrace();
             }
         }
-        return null;
     }
 }
 
