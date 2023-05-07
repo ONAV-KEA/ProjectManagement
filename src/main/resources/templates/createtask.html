@@ -63,28 +63,8 @@
         <input type="date" class="form-control" id="startDate" name="startDate" th:value="*{startDate}">
       </div>
       <div class="mb-3">
-        <label for="endDate" class="form-label">End Date</label>
-        <input type="date" class="form-control" id="endDate" name="endDate" th:value="*{endDate}">
-      </div>
-      <div class="mb-3">
-        <label for="assigneeId" class="form-label">Assignee ID</label>
-        <input type="number" class="form-control" id="assigneeId" name="assigneeId" th:value="*{assigneeId}">
-      </div>
-      <div class="mb-3">
-        <label for="cost" class="form-label">Cost</label>
+        <label for="cost" class="form-label">Estimated Cost</label>
         <input type="number" step="0.01" class="form-control" id="cost" name="cost" th:value="*{cost}">
-      </div>
-      <div class="mb-3">
-        <label for="status" class="form-label">Status</label>
-        <select class="form-select" id="status" name="status" th:value="*{status}">
-          <option value="todo">To Do</option>
-          <option value="in_progress">In Progress</option>
-          <option value="complete">Complete</option>
-        </select>
-      </div>
-      <div class="mb-3">
-        <label for="comment" class="form-label">Comment</label>
-        <textarea class="form-control" id="comment" name="comment" rows="3" th:text="*{comment}"></textarea>
       </div>
       <input type="hidden" th:value="${projectId}" name="projectId">
       <button type="submit" class="btn btn-primary">Create Task</button>
