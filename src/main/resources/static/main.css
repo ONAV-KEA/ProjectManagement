@@ -35,3 +35,28 @@ nav {
 .subtask-table {
     display: none;
 }
+
+.projectInfo {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.pi-item {
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+}
+
+.pi-link {
+    color: #000;
+    text-decoration: none;
+}
+
+.pi-link i {
+    margin-right: 5px;
+}
+
+
+
+

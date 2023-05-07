@@ -92,10 +92,10 @@ public class DBRepository implements IRepository {
                 user.setId(id);
                 return user;
             } else {
-                throw new RuntimeException("Could not validate user");
+                throw new LoginSampleException("Incorrect username or password");
             }
         } catch (SQLException ex) {
-            throw new RuntimeException(ex);
+            throw new LoginSampleException("Incorrect username or password");
         }
     }
 
