@@ -200,7 +200,19 @@ public class DBRepository implements IRepository {
             }
         }
     }
-
+    
+    public void removeTask(int id) {
+        try (Connection connection = DBManager.getConnection()) {
+            String SQL = "DELETE FROM task WHERE id = ?";
+            try (PreparedStatement statement = connection.prepareStatement(SQL)) {
+                statement.setInt(1, id);
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
     public List<Task> getTasksByProjectId(int projectId) {
         Connection con = null;
         try {
