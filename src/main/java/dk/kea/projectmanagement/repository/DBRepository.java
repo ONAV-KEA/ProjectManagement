@@ -370,5 +370,41 @@ public class DBRepository implements IRepository {
             throw new RuntimeException(ex);
         }
     }
+
+    @Override
+    public Void addCommentToTask(int taskId, String comment) {
+        Connection con = null;
+        try {
+            con = DBManager.getConnection();
+            con.setAutoCommit(false);
+            String SQL = "UPDATE task SET comment = ? WHERE id = ?;";
+            PreparedStatement ps = con.prepareStatement(SQL);
+            ps.setString(1, comment);
+            ps.setInt(2, taskId);
+
+            int affectedRows = ps.executeUpdate();
+            if (affectedRows == 0) {
+                throw new RuntimeException("Could not add comment to task");
+            }
+            con.commit();
+        } catch (SQLException e) {
+            if (con != null) {
+                try {
+                    con.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            throw new RuntimeException("Could not create task", e);
+        } finally {
+            try {
+                con.setAutoCommit(true);
+                con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
 }
 
