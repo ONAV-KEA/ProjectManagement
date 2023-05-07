@@ -12,10 +12,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 @org.springframework.stereotype.Controller
 public class Controller {
@@ -166,6 +163,19 @@ public class Controller {
         Task task = repository.createTask(form, projectId);
 
         return "redirect:/project/" + projectId;
+    }
+
+    @PostMapping("/project/{projectId}/addComment")
+    public String addComment(@RequestParam("taskId") int taskId, @RequestParam("comment") String comment, HttpSession session, @PathVariable int projectId) {
+        // Redirects to login site if user is not logged in
+        if (!isLoggedIn(session)){
+            return "redirect:/";
+        }
+        User user = (User) session.getAttribute("user");
+        repository.addCommentToTask(taskId, comment);
+
+        return "redirect:/project/" + projectId;
+
     }
 
     private boolean isLoggedIn(HttpSession session) {

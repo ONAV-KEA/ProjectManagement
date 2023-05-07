@@ -79,6 +79,14 @@
                 <p th:text="'Assignee: ' + ${task.assigneeId}"></p>
                 <h3 th:text="'Comment'"></h3>
                 <p th:text="${task.comment}"></p>
+                <form id="commentForm" th:action="@{'/project/' + ${project.id} + '/addComment'}" method="post">
+                  <input type="hidden" name="taskId" th:value="${task.id}" />
+                  <div class="mb-3">
+                    <label for="comment" class="form-label">Comment:</label>
+                    <textarea class="form-control" id="comment" name="comment" rows="4" placeholder="Enter your comment"></textarea>
+                  </div>
+                  <button type="submit" class="btn btn-primary">Add Comment</button>
+                </form>
                 <!-- Add other task info here -->
               </div>
               <div class="modal-footer">
