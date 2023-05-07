@@ -27,6 +27,15 @@ public class Subtask {
         this.taskId = taskId;
     }
 
+    public Subtask(int id, String title, String description, LocalDate startDate, double cost, int taskId) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.startDate = startDate;
+        this.cost = cost;
+        this.taskId = taskId;
+    }
+
     public int getId() {
         return id;
     }

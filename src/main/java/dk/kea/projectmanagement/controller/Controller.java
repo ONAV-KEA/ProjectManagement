@@ -1,6 +1,7 @@
 package dk.kea.projectmanagement.controller;
 
 import dk.kea.projectmanagement.model.Project;
+import dk.kea.projectmanagement.model.Subtask;
 import dk.kea.projectmanagement.model.Task;
 import dk.kea.projectmanagement.model.User;
 import dk.kea.projectmanagement.repository.DBRepository;
@@ -165,8 +166,8 @@ public class Controller {
         return "redirect:/project/" + projectId;
     }
 
-    @PostMapping("/project/{projectId}/addComment")
-    public String addComment(@RequestParam("taskId") int taskId, @RequestParam("comment") String comment, HttpSession session, @PathVariable int projectId) {
+    @PostMapping("/project/{projectId}/addtaskcomment")
+    public String addCommentToTask(@RequestParam("taskId") int taskId, @RequestParam("comment") String comment, HttpSession session, @PathVariable int projectId) {
         // Redirects to login site if user is not logged in
         if (!isLoggedIn(session)){
             return "redirect:/";
@@ -178,8 +179,46 @@ public class Controller {
 
     }
 
+    @GetMapping("/project/{projectId}/createsubtask/{taskId}")
+    public String createSubtask(@PathVariable int projectId, @PathVariable int taskId, Model model, HttpSession session) {
+        // Redirects to login site if user is not logged in
+        if (!isLoggedIn(session)){
+            return "redirect:/";
+        }
+        model.addAttribute("subtask", new SubtaskFormDTO());
+        model.addAttribute("projectId", projectId);
+        model.addAttribute("taskId", taskId);
+        User user = (User) session.getAttribute("user");
+        return "createsubtask";
+    }
+
+    @PostMapping("/project/{projectId}/createsubtask/{taskId}")
+    public String returnSubtask(@PathVariable int projectId, @PathVariable int taskId, @ModelAttribute SubtaskFormDTO form, HttpSession session) {
+        // Redirects to login site if user is not logged in
+        if (!isLoggedIn(session)){
+            return "redirect:/";
+        }
+        User user = (User) session.getAttribute("user");
+        Subtask subtask = repository.createSubtask(form, taskId);
+
+        return "redirect:/project/" + projectId;
+    }
+
     private boolean isLoggedIn(HttpSession session) {
         return session.getAttribute("user") != null;
+    }
+
+    @PostMapping("/project/{projectId}/addsubtaskcomment")
+    public String addCommentToSubtask(@RequestParam("subtaskId") int subtaskId, @RequestParam("comment") String comment, HttpSession session, @PathVariable int projectId) {
+        // Redirects to login site if user is not logged in
+        if (!isLoggedIn(session)){
+            return "redirect:/";
+        }
+        User user = (User) session.getAttribute("user");
+        repository.addCommentToSubtask(subtaskId, comment);
+
+        return "redirect:/project/" + projectId;
+
     }
 
 }

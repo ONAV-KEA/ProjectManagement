@@ -79,11 +79,11 @@
                 <p th:text="'Assignee: ' + ${task.assigneeId}"></p>
                 <h3 th:text="'Comment'"></h3>
                 <p th:text="${task.comment}"></p>
-                <form id="commentForm" th:action="@{'/project/' + ${project.id} + '/addComment'}" method="post">
+                <form id="taskCommentForm" th:action="@{'/project/' + ${project.id} + '/addtaskcomment'}" method="post">
                   <input type="hidden" name="taskId" th:value="${task.id}" />
                   <div class="mb-3">
-                    <label for="comment" class="form-label">Comment:</label>
-                    <textarea class="form-control" id="comment" name="comment" rows="4" placeholder="Enter your comment"></textarea>
+                    <label for="taskComment" class="form-label">Comment:</label>
+                    <textarea class="form-control" id="taskComment" name="comment" rows="4" placeholder="Enter your comment"></textarea>
                   </div>
                   <button type="submit" class="btn btn-primary">Add Comment</button>
                 </form>
@@ -133,6 +133,14 @@
                         <p th:text="'Assignee: ' + ${subtask.assigneeId}"></p>
                         <h3 th:text="'Comment'"></h3>
                         <p th:text="${subtask.comment}"></p>
+                        <form id="subtaskCommentForm" th:action="@{'/project/' + ${project.id} + '/addsubtaskcomment'}" method="post">
+                          <input type="hidden" name="subtaskId" th:value="${subtask.id}" />
+                          <div class="mb-3">
+                            <label for="subtaskComment" class="form-label">Comment:</label>
+                            <textarea class="form-control" id="subtaskComment" name="comment" rows="4" placeholder="Enter your comment"></textarea>
+                          </div>
+                          <button type="submit" class="btn btn-primary">Add Comment</button>
+                        </form>
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -144,6 +152,10 @@
             </tr>
             </tbody>
           </table>
+          <div>
+            <a class="btn btn-primary" th:href="@{'/project/' + ${project.id} + '/createsubtask/' + ${task.id}}">Create Subtask</a>
+            <input type="hidden" name="taskId" th:value="${task.id}" />
+          </div>
         </div>
       </td>
     </tr>
