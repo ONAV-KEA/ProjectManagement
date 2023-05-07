@@ -443,7 +443,42 @@ public class DBRepository implements IRepository {
                     ex.printStackTrace();
                 }
             }
-            throw new RuntimeException("Could not create task", e);
+            throw new RuntimeException("Could not add comment to subtask", e);
+        } finally {
+            try {
+                con.setAutoCommit(true);
+                con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void addCommentToSubtask(int subtaskId, String comment) {
+        Connection con = null;
+        try {
+            con = DBManager.getConnection();
+            con.setAutoCommit(false);
+            String SQL = "UPDATE subtask SET comment = ? WHERE id = ?;";
+            PreparedStatement ps = con.prepareStatement(SQL);
+            ps.setString(1, comment);
+            ps.setInt(2, subtaskId);
+
+            int affectedRows = ps.executeUpdate();
+            if (affectedRows == 0) {
+                throw new RuntimeException("Could not add comment to subtask");
+            }
+            con.commit();
+        } catch (SQLException e) {
+            if (con != null) {
+                try {
+                    con.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            throw new RuntimeException("Could not add comment to subtask", e);
         } finally {
             try {
                 con.setAutoCommit(true);

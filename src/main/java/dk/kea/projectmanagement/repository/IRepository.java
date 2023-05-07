@@ -24,6 +24,7 @@ public interface IRepository {
     Project getProjectById(int id);
     List<TaskAndSubtaskDTO> getTasksWithSubtasksByProjectId(int id);
     void addCommentToTask(int taskId, String comment);
+    void addCommentToSubtask(int subtaskId, String comment);
 
     Subtask createSubtask(SubtaskFormDTO form, int taskId);
 }
