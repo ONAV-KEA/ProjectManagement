@@ -128,7 +128,7 @@
             <div class="container col-sm-10 col-md-6 p-4">
                 <h3 class="mb-4">Current profiles</h3>
                 <hr>
-                <p>Leaders:</p>
+                <p>Managers:</p>
                 <table class="table-light table">
                     <thead>
                     <tr>
@@ -143,8 +143,98 @@
                         <td th:text="${user.id}"></td>
                         <td th:text="${user.username}"></td>
                         <td th:text="${user.role}"></td>
-                        <td><a th:href="@{'/editUser/' + ${user.id}}" class="btn main-color-bg btn-sm">
-                            Edit</a>
+                        <td>
+                            <!-- Modal starts here -->
+                            <div class="subtask-info">
+                                <button class="btn main-color-bg btn-sm" type="button" data-bs-toggle="modal" th:data-bs-target="'#editUserModal-' + ${user.id}">Edit</button>
+                            </div>
+
+                            <div class="modal fade" th:id="'editUserModal-' + ${user.id}" tabindex="-1"
+                                 aria-labelledby="editUserModalLabel" aria-hidden="true">
+                                <!-- Modal content -->
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="editUserModalLabel"
+                                                th:text="'Editing: ' + ${user.username}"></h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form th:action="@{'/editUser/' + ${user.getId()}}" th:object="${user}" method="post">
+                                                <input type="hidden" th:field="*{id}"/>
+
+                                                <div class="row g-3 align-items-center m-1">
+                                                    <div class="col-md-4">
+                                                        <label for="editUsername" class="col-form-label">Edit username:</label>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <input type="text" th:value="*{username}" id="editUsername" class="form-control">
+                                                    </div>
+                                                </div>
+
+                                                <div class="row g-3 align-items-center m-1">
+                                                    <div class="col-md-4">
+                                                        <label for="editPassword" class="col-form-label">Edit password:</label>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <input type="text" th:value="*{password}" id="editPassword" class="form-control">
+                                                    </div>
+                                                </div>
+
+                                                <div class="row g-3 align-items-center m-1">
+                                                    <div class="col-md-4">
+                                                        <label for="editFirstName" class="col-form-label">Edit first name:</label>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <input type="text" th:value="*{firstName}" id="editFirstName" class="form-control">
+                                                    </div>
+                                                </div>
+
+                                                <div class="row g-3 align-items-center m-1">
+                                                    <div class="col-md-4">
+                                                        <label for="editLastName" class="col-form-label">Edit last name:</label>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <input type="text" th:value="*{lastName}" id="editLastName" class="form-control">
+                                                    </div>
+                                                </div>
+
+                                                <div class="row g-3 align-items-center m-1">
+                                                    <div class="col-md-4">
+                                                        <label for="editBirthday" class="col-form-label">Edit birthday:</label>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <input type="date" th:value="*{birthday}" id="editBirthday" class="form-control">
+                                                    </div>
+                                                </div>
+
+                                                <div class="row g-3 align-items-center m-1">
+                                                    <div class="col-md-4">
+                                                        <label for="editRole" class="col-form-label">Edit role:</label>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <select th:value="*{role}" id="editRole" class="form-select">
+                                                            <option value="project_manager">Project manager</option>
+                                                            <option value="member">Member</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="mt-5">
+                                                    <input type="submit" value="Update user" class="w-100 btn main-color-bg mb-4"/>
+                                                    <input type="reset" value="Reset" class="w-100 btn btn-outline-danger"/>
+                                                </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <a class="btn btn-danger"
+                                               th:href="@{'/admin/' + ${user.id} + '/deleteUser'}">
+                                                Delete User</a>
+                                        </div>
+                                    </div>
+                                </div>
                         </td>
                     </tr>
                     </tbody>

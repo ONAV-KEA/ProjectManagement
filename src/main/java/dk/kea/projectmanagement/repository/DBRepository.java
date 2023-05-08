@@ -745,5 +745,46 @@ public class DBRepository implements IRepository {
         }
     }
 
+    @Override
+    public void editUser(User form, int userId) {
+        Connection con = null;
+        try {
+            con = DBManager.getConnection();
+            con.setAutoCommit(false);
+            String SQL = "UPDATE user SET username = ?, password = ?, first_name = ?, last_name = ?, birthday = ?, role = ? WHERE id = ?;";
+            PreparedStatement ps = con.prepareStatement(SQL);
+            // Use original value if forms is null
+            ps.setString(1, form.getUsername() != null ? form.getUsername() : getUserByID(userId).getUsername());
+            ps.setString(2, form.getPassword() != null ? form.getPassword() : getUserByID(userId).getPassword());
+            ps.setString(3, form.getFirstName() != null ? form.getFirstName() : getUserByID(userId).getFirstName());
+            ps.setString(4, form.getLastName() != null ? form.getLastName() : getUserByID(userId).getLastName());
+            ps.setDate(5, form.getBirthday() != null ? Date.valueOf(form.getBirthday()) : Date.valueOf(getUserByID(userId).getBirthday()));
+            ps.setString(6, form.getRole() != null ? form.getRole() : getUserByID(userId).getRole());
+            ps.setInt(7, userId);
+            int affectedRows = ps.executeUpdate();
+            if (affectedRows == 1) {
+                con.commit();
+            } else {
+                throw new RuntimeException("Could not edit user");
+            }
+        } catch (SQLException e) {
+            if (con != null) {
+                try {
+                    con.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            throw new RuntimeException("Could not edit user", e);
+        } finally {
+            try {
+                con.setAutoCommit(true);
+                con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 }
 
