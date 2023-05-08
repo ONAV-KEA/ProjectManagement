@@ -125,4 +125,16 @@ public Task(int id, String title, String description, LocalDate startDate, Local
     public void setProjectId(int projectId) {
         this.projectId = projectId;
     }
+
+    public double getPercentageCompletion() {
+        if(status.equals("completed")){
+            return 100;
+        } else {
+            return percentageCompletion;
+        }
+    }
+
+    public void setPercentageCompletion(double percentageCompletion) {
+        this.percentageCompletion = percentageCompletion;
+    }
 }

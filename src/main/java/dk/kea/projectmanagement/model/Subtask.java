@@ -105,6 +105,7 @@ public class Subtask {
         };
     }
 
+
     public void setStatus(String status) {
         this.status = status;
     }
@@ -123,5 +124,17 @@ public class Subtask {
 
     public void setTaskId(int taskId) {
         this.taskId = taskId;
+    }
+
+    public double getPercentageCompletion() {
+        if(status.equals("completed")){
+            return 100;
+        } else {
+            return percentageCompletion;
+        }
+    }
+
+    public void setPercentageCompletion(double percentageCompletion) {
+        this.percentageCompletion = percentageCompletion;
     }
 }

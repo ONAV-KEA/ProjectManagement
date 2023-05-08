@@ -162,6 +162,7 @@
                                             th:data-bs-target="'#subtaskModal-' + ${subtask.id}"
                                             th:text="${subtask.title}"></button>
                                     <span class="subtask-status" th:text="${subtask.status}"></span>
+                                    <span th:text="${subtask.percentageCompletion} + '%'"></span>
                                 </div>
                                 <!-- Subtask Modal -->
                                 <div class="modal fade" th:id="'subtaskModal-' + ${subtask.id}" tabindex="-1"
