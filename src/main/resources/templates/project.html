@@ -63,157 +63,188 @@
 
 <div class="container mt-3 p-3 container-fluid">
     <h3 class="text-center">Tasks for <span th:text="${project.name}"></span></h3>
-  <table class="table table-light border border-black">
-    <thead>
-    <tr>
-      <th class="col-4">Task</th>
-      <th class="col-8">Subtasks</th>
-    </tr>
-    </thead>
-    <tbody>
-    <!-- Iterate over the tasks -->
-    <tr th:each="task : ${tasks}" th:data-taskid="${task.id}">
-      <td>
-        <!-- Display the task name and add a button to open a modal with task info -->
-        <div class="task-info">
-          <button class="btn main-color-bg" type="button" data-bs-toggle="modal" th:data-bs-target="'#taskModal-' + ${task.id}" th:text="${task.name}"></button>
-          <span class="task-status" th:text="${task.status}"></span>
-        </div>
+    <table class="table table-light border border-black">
+        <thead>
+        <tr>
+            <th class="col-3">Task</th>
+            <th class="col-2">Status</th>
+            <th class="col-5">Subtasks</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Iterate over the tasks -->
+        <tr th:each="task : ${tasks}" th:data-taskid="${task.id}">
+            <td>
+                <!-- Display the task name and add a button to open a modal with task info -->
+                <div class="task-info">
+                    <button class="btn main-color-bg" type="button" data-bs-toggle="modal"
+                            th:data-bs-target="'#taskModal-' + ${task.id}" th:text="${task.name}"></button>
+                </div>
 
-        <!-- Task Modal -->
-        <div class="modal fade" th:id="'taskModal-' + ${task.id}" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
-          <!-- Modal content -->
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="taskModalLabel" th:text="${task.name} + ' Info'"></h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                <p th:text="${task.description}"></p>
-                <p th:text="'Start Date: ' + ${task.startDate}"></p>
-                <p th:text="'End Date: ' + ${task.endDate}"></p>
-                <div class="status-container">
-                  <p>Status: <span class="task-status" th:text="${task.status}"></span></p>
-                  <form th:action="@{'/project/' + ${project.id} + '/update-task-status/' + ${task.id}}" method="post">
-                    <select class="form-select" id="statusDropdown" th:name="taskStatus" onchange="this.form.submit()">
-                      <option selected disabled hidden>Update task status</option>
-                      <option value="todo" th:text="'To Do'" th:selected="${task.status == 'todo'}"></option>
-                      <option value="in_progress" th:text="'In Progress'" th:selected="${task.status == 'in_progress'}"></option>
-                      <option value="completed" th:text="'Completed'" th:selected="${task.status == 'completed'}"></option>
-                    </select>
-                  </form>
-                </div>
-                <p th:text="'Cost: ' + ${task.cost}"></p>
-                <p th:text="'Assignee: ' + ${task.assigneeId}"></p>
-                <h3 th:text="'Comment'"></h3>
-                <p th:text="${task.comment}"></p>
-                <form id="taskCommentForm" th:action="@{'/project/' + ${project.id} + '/addtaskcomment'}" method="post">
-                  <input type="hidden" name="taskId" th:value="${task.id}" />
-                  <div class="mb-3">
-                    <label for="taskComment" class="form-label">Comment:</label>
-                    <textarea class="form-control" id="taskComment" name="comment" rows="4" placeholder="Enter your comment"></textarea>
-                  </div>
-                  <button type="submit" class="btn btn-primary">Add Comment</button>
-                </form>
-              </div>
-              <div class="modal-footer">
-                <a class="btn btn-danger" th:href="@{'/project/' + ${project.id} + '/delete/task/' + ${task.id}}">Delete Task</a>
-                <a class="btn btn-warning" th:href="@{'/project/' + ${project.id} + '/edittask/' + ${task.id}}">Edit Task</a>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </td>
-      <td>
-        <!-- Add a dropdown button to toggle subtasks -->
-          <button class="btn main-color-bg toggle-subtasks" type="button">
-              <span th:text="${task.subtasks.size()} + ' Subtasks for ' + ${task.name}"></span>
-              <i class="fa fa-arrow-down"></i>
-          </button>
-        <!-- Iterate over the subtasks and add them to the corresponding task -->
-        <div class="subtasks">
-          <table class="table">
-            <thead>
-            <tr>
-              <th scope="col">
-                <h5>Subtasks:</h5>
-              </th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="subtask : ${task.subtasks}">
-              <td>
-                <div class="subtask-info">
-                  <button class="btn btn-link" type="button" data-bs-toggle="modal" th:data-bs-target="'#subtaskModal-' + ${subtask.id}" th:text="${subtask.title}"></button>
-                  <span class="subtask-status" th:text="${subtask.status}"></span>
-                </div>
-                <!-- Subtask Modal -->
-                <div class="modal fade" th:id="'subtaskModal-' + ${subtask.id}" tabindex="-1" aria-labelledby="subtaskModalLabel" aria-hidden="true">
-                  <!-- Modal content -->
-                  <div class="modal-dialog">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h5 class="modal-title" id="subtaskModalLabel" th:text="${subtask.title} + ' Info'"></h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                      </div>
-                      <div class="modal-body">
-                        <p th:text="${subtask.description}"></p>
-                        <p th:text="'Start Date: ' + ${subtask.startDate}"></p>
-                        <p th:text="'End Date: ' + ${subtask.endDate}"></p>
-                        <div class="status-container">
-                          <p th:text="'Status: ' + ${subtask.status}"></p>
-                          <form th:action="@{'/project/' + ${project.id} + '/update-subtask-status/' + ${subtask.id}}" method="post">
-                          <select class="form-select" id="subtaskStatusDropdown" th:name="subtaskStatus" onchange="this.form.submit()">
-                              <option selected disabled hidden>Update task status</option>
-                              <option value="todo" th:text="'To Do'" th:selected="${subtask.status == 'todo'}"></option>
-                              <option value="in_progress" th:text="'In Progress'" th:selected="${subtask.status == 'in_progress'}"></option>
-                              <option value="completed" th:text="'Completed'" th:selected="${subtask.status == 'completed'}"></option>
-                            </select>
-                          </form>
+                <!-- Task Modal -->
+                <div class="modal fade" th:id="'taskModal-' + ${task.id}" tabindex="-1" aria-labelledby="taskModalLabel"
+                     aria-hidden="true">
+                    <!-- Modal content -->
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="taskModalLabel" th:text="${task.name} + ' Info'"></h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p th:text="${task.description}"></p>
+                                <p th:text="'Start Date: ' + ${task.startDate}"></p>
+                                <p th:text="'End Date: ' + ${task.endDate}"></p>
+                                <p th:text="'Status: ' + ${task.status}"></p>
+                                <p th:text="'Cost: ' + ${task.cost}"></p>
+                                <p th:text="'Assignee: ' + ${task.assigneeId}"></p>
+                                <h3 th:text="'Comment'"></h3>
+                                <p th:text="${task.comment}"></p>
+                                <form id="taskCommentForm"
+                                      th:action="@{'/project/' + ${project.id} + '/addtaskcomment'}" method="post">
+                                    <input type="hidden" name="taskId" th:value="${task.id}"/>
+                                    <div class="mb-3">
+                                        <label for="taskComment" class="form-label">Comment:</label>
+                                        <textarea class="form-control" id="taskComment" name="comment" rows="4"
+                                                  placeholder="Enter your comment"></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Add Comment</button>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <a class="btn btn-danger"
+                                   th:href="@{'/project/' + ${project.id} + '/delete/task/' + ${task.id}}">Delete
+                                    Task</a>
+                                <a class="btn btn-warning"
+                                   th:href="@{'/project/' + ${project.id} + '/edittask/' + ${task.id}}">Edit Task</a>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
                         </div>
-                        <p th:text="'Cost: ' + ${subtask.cost}"></p>
-                        <p th:text="'Assignee: ' + ${subtask.assigneeId}"></p>
-                        <h3 th:text="'Comment'"></h3>
-                        <p th:text="${subtask.comment}"></p>
-                        <form id="subtaskCommentForm" th:action="@{'/project/' + ${project.id} + '/addsubtaskcomment'}" method="post">
-                          <input type="hidden" name="subtaskId" th:value="${subtask.id}" />
-                          <div class="mb-3">
-                            <label for="subtaskComment" class="form-label">Comment:</label>
-                            <textarea class="form-control" id="subtaskComment" name="comment" rows="4" placeholder="Enter your comment"></textarea>
-                          </div>
-                          <button type="submit" class="btn btn-primary">Add Comment</button>
-                        </form>
-                      </div>
-                      <div class="modal-footer">
-                        <a class="btn btn-primary" th:href="@{'/project/' + ${project.id} + '/delete/subtask/' + ${subtask.id}}">Delete Subtask</a>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                      </div>
                     </div>
-                  </div>
                 </div>
-              </td>
-            </tr>
-            </tbody>
-          </table>
-          <div>
-            <a class="btn btn-primary" th:href="@{'/project/' + ${project.id} + '/createsubtask/' + ${task.id}}">Create Subtask</a>
-            <input type="hidden" name="taskId" th:value="${task.id}" />
-          </div>
-        </div>
-      </td>
-    </tr>
-    <!-- Add a button to create ask -->
-    <tr>
-      <td colspan="2">
-        <div>
-          <a class="btn btn-primary" th:href="@{'/project/' + ${project.id} + '/createtask'}">Create Task</a>
-        </div>
-      </td>
-    </tr>
-    </tbody>
-  </table>
+            </td>
+            <!-- Update the task status -->
+            <td>
+                <form th:action="@{'/project/' + ${project.id} + '/update-task-status/' + ${task.id}}" method="post">
+                    <label for="statusDropdown"></label>
+                    <select class="form-select " id="statusDropdown" th:name="taskStatus" onchange="this.form.submit()">
+                        <option th:value="tasks.status" th:text="${task.status}"></option>
+                        <option value="todo" th:text="'To Do'" th:selected="${task.status == 'todo'}"></option>
+                        <option value="in_progress" th:text="'In Progress'"
+                                th:selected="${task.status == 'in_progress'}"></option>
+                        <option value="completed" th:text="'Completed'"
+                                th:selected="${task.status == 'completed'}"></option>
+                    </select>
+                </form>
+            </td>
+            <td>
+                <!-- Add a dropdown button to toggle subtasks -->
+                <button class="btn main-color-bg toggle-subtasks" type="button">
+                    <span th:text="${task.subtasks.size()} + ' Subtasks for ' + ${task.name}"></span>
+                    <i class="fa fa-arrow-down"></i>
+                </button>
+                <!-- Iterate over the subtasks and add them to the corresponding task -->
+                <div class="subtasks">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">
+                                <h5>Subtasks:</h5>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="subtask : ${task.subtasks}">
+                            <td>
+                                <div class="subtask-info">
+                                    <button class="btn btn-link" type="button" data-bs-toggle="modal"
+                                            th:data-bs-target="'#subtaskModal-' + ${subtask.id}"
+                                            th:text="${subtask.title}"></button>
+                                    <span class="subtask-status" th:text="${subtask.status}"></span>
+                                </div>
+                                <!-- Subtask Modal -->
+                                <div class="modal fade" th:id="'subtaskModal-' + ${subtask.id}" tabindex="-1"
+                                     aria-labelledby="subtaskModalLabel" aria-hidden="true">
+                                    <!-- Modal content -->
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="subtaskModalLabel"
+                                                    th:text="${subtask.title} + ' Info'"></h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p th:text="${subtask.description}"></p>
+                                                <p th:text="'Start Date: ' + ${subtask.startDate}"></p>
+                                                <p th:text="'End Date: ' + ${subtask.endDate}"></p>
+                                                <div class="status-container">
+                                                    <p th:text="'Status: ' + ${subtask.status}"></p>
+                                                    <form th:action="@{'/project/' + ${project.id} + '/update-subtask-status/' + ${subtask.id}}"
+                                                          method="post">
+                                                        <select class="form-select" id="subtaskStatusDropdown"
+                                                                th:name="subtaskStatus" onchange="this.form.submit()">
+                                                            <option selected disabled hidden>Update task status</option>
+                                                            <option value="todo" th:text="'To Do'"
+                                                                    th:selected="${subtask.status == 'todo'}"></option>
+                                                            <option value="in_progress" th:text="'In Progress'"
+                                                                    th:selected="${subtask.status == 'in_progress'}"></option>
+                                                            <option value="completed" th:text="'Completed'"
+                                                                    th:selected="${subtask.status == 'completed'}"></option>
+                                                        </select>
+                                                    </form>
+                                                </div>
+                                                <p th:text="'Cost: ' + ${subtask.cost}"></p>
+                                                <p th:text="'Assignee: ' + ${subtask.assigneeId}"></p>
+                                                <h3 th:text="'Comment'"></h3>
+                                                <p th:text="${subtask.comment}"></p>
+                                                <form id="subtaskCommentForm"
+                                                      th:action="@{'/project/' + ${project.id} + '/addsubtaskcomment'}"
+                                                      method="post">
+                                                    <input type="hidden" name="subtaskId" th:value="${subtask.id}"/>
+                                                    <div class="mb-3">
+                                                        <label for="subtaskComment" class="form-label">Comment:</label>
+                                                        <textarea class="form-control" id="subtaskComment"
+                                                                  name="comment" rows="4"
+                                                                  placeholder="Enter your comment"></textarea>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-primary">Add Comment</button>
+                                                </form>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <a class="btn btn-primary"
+                                                   th:href="@{'/project/' + ${project.id} + '/delete/subtask/' + ${subtask.id}}">Delete
+                                                    Subtask</a>
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                    Close
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div>
+                        <a class="btn btn-primary"
+                           th:href="@{'/project/' + ${project.id} + '/createsubtask/' + ${task.id}}">Create Subtask</a>
+                        <input type="hidden" name="taskId" th:value="${task.id}"/>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <!-- Add a button to create ask -->
+        <tr>
+            <td colspan="3">
+                <div>
+                    <a class="btn btn-primary" th:href="@{'/project/' + ${project.id} + '/createtask'}">Create Task</a>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 </div>
 
 
