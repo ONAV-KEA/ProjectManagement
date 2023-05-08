@@ -262,6 +262,38 @@ public class DBRepository implements IRepository {
         }
     }
 
+    @Override
+    public void updateTaskStatus(int taskId, String status) {
+        Connection con = null;
+        try {
+            con = DBManager.getConnection();
+            con.setAutoCommit(false);
+            String SQL = "UPDATE task SET status = ? WHERE id = ?";
+            PreparedStatement ps = con.prepareStatement(SQL);
+            ps.setString(1, status);
+            ps.setInt(2, taskId);
+            ps.executeUpdate();
+            con.commit();
+        } catch (SQLException e) {
+            if (con != null) {
+                try {
+                    con.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }finally {
+            if (con != null) {
+                try {
+                    con.setAutoCommit(true);
+                    con.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
     public List<Task> getTasksByProjectId(int projectId) {
         Connection con = null;
         try {

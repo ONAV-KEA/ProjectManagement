@@ -89,7 +89,17 @@
                 <p th:text="${task.description}"></p>
                 <p th:text="'Start Date: ' + ${task.startDate}"></p>
                 <p th:text="'End Date: ' + ${task.endDate}"></p>
-                <p th:text="'Status: ' + ${task.status}"></p>
+                <div class="status-container">
+                  <p>Status: <span class="task-status" th:text="${task.status}"></span></p>
+                  <form th:action="@{'/project/' + ${project.id} + '/update-task-status/' + ${task.id}}" method="post">
+                    <select class="form-select" id="statusDropdown" th:name="taskStatus" onchange="this.form.submit()">
+                      <option selected disabled hidden>Update task status</option>
+                      <option value="todo" th:text="'To Do'" th:selected="${task.status == 'todo'}"></option>
+                      <option value="in_progress" th:text="'In Progress'" th:selected="${task.status == 'in_progress'}"></option>
+                      <option value="completed" th:text="'Completed'" th:selected="${task.status == 'completed'}"></option>
+                    </select>
+                  </form>
+                </div>
                 <p th:text="'Cost: ' + ${task.cost}"></p>
                 <p th:text="'Assignee: ' + ${task.assigneeId}"></p>
                 <h3 th:text="'Comment'"></h3>

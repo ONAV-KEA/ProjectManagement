@@ -30,4 +30,6 @@ public interface IRepository {
     void deleteTask(int taskId);
 
     void deleteSubtask(int taskId);
+
+    void updateTaskStatus(int taskId, String status);
 }
