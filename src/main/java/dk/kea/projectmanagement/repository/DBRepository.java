@@ -200,16 +200,25 @@ public class DBRepository implements IRepository {
             }
         }
     }
-    
+
     public void deleteTask(int id) {
         Connection con = null;
         try {
             con = DBManager.getConnection();
             con.setAutoCommit(false);
-            String SQL = "DELETE FROM task WHERE id = ?";
-            PreparedStatement ps = con.prepareStatement(SQL);
-            ps.setInt(1, id);
-            ps.executeUpdate();
+
+            // Delete associated subtasks first
+            String subtaskSQL = "DELETE FROM subtask WHERE task_id = ?";
+            PreparedStatement subtaskPS = con.prepareStatement(subtaskSQL);
+            subtaskPS.setInt(1, id);
+            subtaskPS.executeUpdate();
+
+            // Delete the main task
+            String taskSQL = "DELETE FROM task WHERE id = ?";
+            PreparedStatement taskPS = con.prepareStatement(taskSQL);
+            taskPS.setInt(1, id);
+            taskPS.executeUpdate();
+
             con.commit();
         } catch (SQLException e) {
             if (con != null) {
@@ -219,7 +228,7 @@ public class DBRepository implements IRepository {
                     ex.printStackTrace();
                 }
             }
-        }finally {
+        } finally {
             if (con != null) {
                 try {
                     con.setAutoCommit(true);
@@ -230,6 +239,7 @@ public class DBRepository implements IRepository {
             }
         }
     }
+
 
     @Override
     public void deleteSubtask(int taskId) {
