@@ -32,10 +32,6 @@ nav {
     margin: 3px;
 }
 
-.subtask-table {
-    display: none;
-}
-
 .projectInfo {
     display: flex;
     justify-content: flex-end;

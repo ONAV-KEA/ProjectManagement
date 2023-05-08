@@ -48,22 +48,23 @@
 
 <div class="projectInfo" id="navbarSupportedContent">
   <ul class="navbar-nav ml-auto d-flex flex-row">
-    <li class="pi-item">
+    <li class="pi-item nav-link">
       <a class="pi-link" href="#"><span>Add Member</span> <i class="fa fa-user-plus"></i></a>
     </li>
-    <li class="pi-item">
+    <li class="pi-item nav-link">
       <a class="pi-link" href="#"><span>Project Settings</span> <i class="fa fa-cogs"></i></a>
     </li>
   </ul>
 </div>
 
-<div class="container mt-5">
-  <h2>Tasks</h2>
-  <table class="table">
+<div class="container mt-3 p-3 container-fluid">
+  <h3 class="text-center">Tasks for <span th:text="${project.name}"></span></h3>
+  <hr>
+  <table class="table table-light border border-black">
     <thead>
     <tr>
-      <th>Task</th>
-      <th>Subtasks</th>
+      <th class="col-4">Task</th>
+      <th class="col-8">Subtasks</th>
     </tr>
     </thead>
     <tbody>
@@ -110,19 +111,13 @@
       </td>
       <td>
         <!-- Add a dropdown button to toggle subtasks -->
-        <button class="btn main-color-bg toggle-subtasks" type="button" th:text="${task.subtasks.size() + ' Subtasks'}">
+        <button class="btn main-color-bg toggle-subtasks" type="button">
+          <span th:text="${task.subtasks.size()} + ' Subtasks for ' + ${task.name}"></span>
           <i class="fa fa-arrow-down"></i>
         </button>
         <!-- Iterate over the subtasks and add them to the corresponding task -->
         <div class="subtasks">
           <table class="table">
-            <thead>
-            <tr>
-              <th scope="col">
-                <h5>Subtasks:</h5>
-              </th>
-            </tr>
-            </thead>
             <tbody>
             <tr th:each="subtask : ${task.subtasks}">
               <td>
