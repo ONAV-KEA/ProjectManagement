@@ -61,13 +61,13 @@
     </ul>
 </div>
 
-<div class="container mt-5">
-  <h2>Tasks</h2>
-  <table class="table">
+<div class="container mt-3 p-3 container-fluid">
+    <h3 class="text-center">Tasks for <span th:text="${project.name}"></span></h3>
+  <table class="table table-light border border-black">
     <thead>
     <tr>
-      <th>Task</th>
-      <th>Subtasks</th>
+      <th class="col-4">Task</th>
+      <th class="col-8">Subtasks</th>
     </tr>
     </thead>
     <tbody>
@@ -127,9 +127,10 @@
       </td>
       <td>
         <!-- Add a dropdown button to toggle subtasks -->
-        <button class="btn main-color-bg toggle-subtasks" type="button" th:text="${task.subtasks.size() + ' Subtasks'}">
-          <i class="fa fa-arrow-down"></i>
-        </button>
+          <button class="btn main-color-bg toggle-subtasks" type="button">
+              <span th:text="${task.subtasks.size()} + ' Subtasks for ' + ${task.name}"></span>
+              <i class="fa fa-arrow-down"></i>
+          </button>
         <!-- Iterate over the subtasks and add them to the corresponding task -->
         <div class="subtasks">
           <table class="table">
