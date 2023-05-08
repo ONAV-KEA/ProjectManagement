@@ -80,6 +80,23 @@ nav {
     margin-right: 5px;
 }
 
+.task-info {
+    display: flex;
+    align-items: center;
+}
+
+.task-status {
+    margin-left: 250px;
+}
+
+.subtask-info {
+    display: flex;
+    align-items: center;
+}
+
+.subtask-status {
+    margin-left: 250px;
+}
 
 
 
