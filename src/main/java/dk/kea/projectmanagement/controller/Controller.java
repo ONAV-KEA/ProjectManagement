@@ -227,25 +227,25 @@ public class Controller {
 
     }
 
-    @GetMapping ("/project/{projectId}/deletetask/{id}")
-    public String deleteTask (@PathVariable("id") int id, @PathVariable("projectId") int projectId, HttpSession session) {
+    @GetMapping("/project/{projectId}/delete/{type}/{id}")
+    public String deleteTaskOrSubtask(
+            @PathVariable("projectId") int projectId,
+            @PathVariable("type") String type,
+            @PathVariable("id") int id,
+            HttpSession session) {
         // Redirects to login site if user is not logged in
-        if (!isLoggedIn(session)){
+        if (!isLoggedIn(session)) {
             return "redirect:/";
         }
-        repository.deleteTask(id);
-        System.out.println("Task deleted " + id);
-        return "redirect:/project/" + projectId;
-    }
 
-    @GetMapping ("/project/{projectId}/deletesubtask/{id}")
-    public String deleteSubtask (@PathVariable("id") int id, @PathVariable("projectId") int projectId, HttpSession session) {
-        // Redirects to login site if user is not logged in
-        if (!isLoggedIn(session)){
-            return "redirect:/";
+        if ("task".equals(type)) {
+            repository.deleteTask(id);
+            System.out.println("Task deleted " + id);
+        } else if ("subtask".equals(type)) {
+            repository.deleteSubtask(id);
+            System.out.println("Subtask deleted " + id);
         }
-        repository.deleteSubtask(id);
-        System.out.println("Subtask deleted " + id);
+
         return "redirect:/project/" + projectId;
     }
 
