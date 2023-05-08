@@ -1,86 +1,97 @@
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Create Task</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <link rel="stylesheet" th:href="@{/main.css}" href="/static/main.css">
-  <link rel="icon" type="image/x-icon" href="../src/main/resources/static/images/favicon.png" th:src="@{images/favicon.png}">
-  <link href='https://fonts.googleapis.com/css?family=IBM Plex Sans Condensed' rel='stylesheet'>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Create Task</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" th:href="@{/main.css}" href="/static/main.css">
+    <link rel="icon" type="image/x-icon" href="../src/main/resources/static/images/favicon.png"
+          th:src="@{images/favicon.png}">
+    <link href='https://fonts.googleapis.com/css?family=IBM Plex Sans Condensed' rel='stylesheet'>
 </head>
 <body>
 <nav class="navbar sticky-lg-top  text-end p-3">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="/dashboard">
-      <img src="../src/main/resources/static/images/projectplanner-logo.png" th:src="@{images/projectplanner-logo.png}" alt="Logo" width="220px" class="d-inline-block align-text-top">
-    </a>
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/dashboard">
+            <img src="../src/main/resources/static/images/projectplanner-logo.png"
+                 th:src="@{images/projectplanner-logo.png}" alt="Logo" width="220px"
+                 class="d-inline-block align-text-top">
+        </a>
 
-    <ul class="nav justify-content-end">
-      <li class="nav-item">
-        <a class="nav-link" href="/dashboard">
-          Home
-          <i class="fa fa-home"></i>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link main-color" href="/projects">Projects
-          <i class="fa fa-folder-open"></i>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link main-color" href="/organisations">Organisations
-          <i class="fa fa-group"></i>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link main-color" href="/profile">Profile
-          <i class="fa fa-user-circle"></i>
-        </a>
-      </li>
-    </ul>
-  </div>
+        <ul class="nav justify-content-end">
+            <li class="nav-item">
+                <a class="nav-link" href="/dashboard">
+                    Home
+                    <i class="fa fa-home"></i>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link main-color" href="/projects">Projects
+                    <i class="fa fa-folder-open"></i>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link main-color" href="/organisations">Organisations
+                    <i class="fa fa-group"></i>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link main-color" href="/profile">Profile
+                    <i class="fa fa-user-circle"></i>
+                </a>
+            </li>
+        </ul>
+    </div>
 </nav>
 
 <div class="container-fluid mt-5 text-center">
-  <div class="container p-3 mt-4">
-    <h3>Create Task</h3>
-  </div>
+    <div class="container p-3 mt-4">
+        <h3>Create Task</h3>
+    </div>
 
-  <div class="container mt-5">
-    <form th:action="@{/project/{projectId}/createtask(projectId=${projectId})}" th:object="${task}" method="post">
-      <div class="mb-3">
-        <label for="title" class="form-label">Title</label>
-        <input type="text" class="form-control" id="title" name="title" th:value="*{title}" required>
-      </div>
-      <div class="mb-3">
-        <label for="description" class="form-label">Description</label>
-        <textarea class="form-control" id="description" name="description" rows="3" th:text="*{description}"></textarea>
-      </div>
-      <div class="mb-3">
-        <label for="startDate" class="form-label">Start Date</label>
-        <input type="date" class="form-control" id="startDate" name="startDate" th:value="*{startDate}">
-      </div>
-      <div class="mb-3">
-        <label for="cost" class="form-label">Estimated Cost</label>
-        <input type="number" step="0.01" class="form-control" id="cost" name="cost" th:value="*{cost}">
-      </div>
-      <input type="hidden" th:value="${projectId}" name="projectId">
-      <button type="submit" class="btn btn-primary">Create Task</button>
-    </form>
-  </div>
+    <div class="container mt-5">
+        <form th:action="@{/project/{projectId}/createtask(projectId=${projectId})}" th:object="${task}" method="post">
+            <div class="mb-3">
+                <label for="title" class="form-label">Title</label>
+                <input type="text" class="form-control" id="title" name="title" th:value="*{title}" required>
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea class="form-control" id="description" name="description" rows="3"
+                          th:text="*{description}"></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="startDate" class="form-label">Start Date</label>
+                <input type="date" class="form-control" id="startDate" name="startDate" th:value="*{startDate}">
+            </div>
+            <div class="mb-3">
+                <label for="cost" class="form-label">Estimated Cost</label>
+                <input type="number" step="0.01" class="form-control" id="cost" name="cost" th:value="*{cost}">
+            </div>
+            <input type="hidden" th:value="${projectId}" name="projectId">
+            <button type="submit" class="btn btn-primary">Create Task</button>
+        </form>
+    </div>
 </div>
 
 <footer>
-  <div class="container-fluid text-center">
-    <p class="mt-5 mb-3 text-body-secondary">&copy; 2023 - KEA</p>
-  </div>
+    <div class="container-fluid text-center">
+        <p class="mt-5 mb-3 text-body-secondary">&copy; 2023 - KEA</p>
+    </div>
 </footer>
 
 <!---- JAVASCRIPT ---->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js" integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.min.js" integrity="sha384-heAjqF+bCxXpCWLa6Zhcp4fu20XoNIA98ecBC1YkdXhszjoejr5y9Q77hIrv8R9i" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+        integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.min.js"
+        integrity="sha384-heAjqF+bCxXpCWLa6Zhcp4fu20XoNIA98ecBC1YkdXhszjoejr5y9Q77hIrv8R9i"
+        crossorigin="anonymous"></script>
 </body>
 </html>
