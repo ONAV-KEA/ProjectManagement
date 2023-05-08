@@ -37,6 +37,9 @@ public Task(int id, String title, String description, LocalDate startDate, Local
         this.status = "todo";
     }
 
+    public Task() {
+    }
+
     public int getId() {
         return id;
     }
@@ -94,7 +97,12 @@ public Task(int id, String title, String description, LocalDate startDate, Local
     }
 
     public String getStatus() {
-        return status;
+        return switch (status) {
+            case "todo" -> "To Do";
+            case "in_progress" -> "In Progress";
+            case "done" -> "Done";
+            default -> "";
+        };
     }
 
     public void setStatus(String status) {

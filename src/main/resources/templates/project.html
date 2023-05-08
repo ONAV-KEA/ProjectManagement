@@ -71,7 +71,11 @@
     <tr th:each="task : ${tasks}" th:data-taskid="${task.id}">
       <td>
         <!-- Display the task name and add a button to open a modal with task info -->
-        <button class="btn main-color-bg" type="button" data-bs-toggle="modal" th:data-bs-target="'#taskModal-' + ${task.id}" th:text="${task.name}"></button>
+        <div class="task-info">
+          <button class="btn main-color-bg" type="button" data-bs-toggle="modal" th:data-bs-target="'#taskModal-' + ${task.id}" th:text="${task.name}"></button>
+          <span class="task-status" th:text="${task.status}"></span>
+        </div>
+
         <!-- Task Modal -->
         <div class="modal fade" th:id="'taskModal-' + ${task.id}" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
           <!-- Modal content -->
@@ -98,7 +102,6 @@
                   </div>
                   <button type="submit" class="btn btn-primary">Add Comment</button>
                 </form>
-                <!-- Add other task info here -->
               </div>
               <div class="modal-footer">
                 <a class="btn btn-primary" th:href="@{'/project/' + ${project.id} + '/deletetask/' + ${task.id}}">Delete Task</a>
@@ -126,7 +129,10 @@
             <tbody>
             <tr th:each="subtask : ${task.subtasks}">
               <td>
-                <button class="btn btn-link" type="button" data-bs-toggle="modal" th:data-bs-target="'#subtaskModal-' + ${subtask.id}" th:text="'- ' + ${subtask.title}"></button>
+                <div class="subtask-info">
+                  <button class="btn btn-link" type="button" data-bs-toggle="modal" th:data-bs-target="'#subtaskModal-' + ${subtask.id}" th:text="${subtask.title}"></button>
+                  <span class="subtask-status" th:text="${task.status}"></span>
+                </div>
                 <!-- Subtask Modal -->
                 <div class="modal fade" th:id="'subtaskModal-' + ${subtask.id}" tabindex="-1" aria-labelledby="subtaskModalLabel" aria-hidden="true">
                   <!-- Modal content -->
