@@ -39,4 +39,7 @@ public interface IRepository {
 
     void updateSubtaskStatus(int taskId, String taskStatus);
 
+    void createUser(User form);
+
+    void editUser(User form, int userId);
 }

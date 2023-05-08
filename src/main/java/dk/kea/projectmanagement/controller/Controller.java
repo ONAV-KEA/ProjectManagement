@@ -111,6 +111,8 @@ public class Controller {
         User user = (User) session.getAttribute("user");
         model.addAttribute("user", user);
         model.addAttribute("users", repository.getAllUsers());
+        model.addAttribute("createUser", new User());
+
 
         //Redirects to dashboard if user is not admin
         if (!user.getRole().equals("admin")){
@@ -118,6 +120,41 @@ public class Controller {
         }
 
         return "admin";
+    }
+
+@PostMapping("/admin")
+public String createUser(@ModelAttribute User form, HttpSession session) {
+        if (!isLoggedIn(session)){
+            return "redirect:/";
+        }
+        User user = (User) session.getAttribute("user");
+        repository.createUser(form);
+
+        return "redirect:/admin";
+    }
+
+
+@PostMapping("/editUser/{id}")
+public String editUser(@PathVariable int id, @ModelAttribute User form, HttpSession session) {
+    if (!isLoggedIn(session)) {
+        return "redirect:/";
+    }
+    User user = (User) session.getAttribute("user");
+    repository.editUser(form, id);
+
+    return "redirect:/admin";
+}
+
+    @GetMapping("/editUser/{id}")
+    public String editUser(@PathVariable int id, Model model, HttpSession session) {
+        if (!isLoggedIn(session)) {
+            return "redirect:/";
+        }
+        User user = (User) session.getAttribute("user");
+        model.addAttribute("user", user);
+        model.addAttribute("editUser", repository.getUserByID(id));
+
+        return "redirect:/admin";
     }
 
     @GetMapping("/projects")
