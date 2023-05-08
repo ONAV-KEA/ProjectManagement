@@ -101,6 +101,7 @@
                 <!-- Add other task info here -->
               </div>
               <div class="modal-footer">
+                <a class="btn btn-primary" th:href="@{'/project/' + ${project.id} + '/deletetask/' + ${task.id}}">Delete Task</a>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
               </div>
             </div>
@@ -154,6 +155,7 @@
                         </form>
                       </div>
                       <div class="modal-footer">
+                        <a class="btn btn-primary" th:href="@{'/project/deletetask/' + ${task.id}}">Delete Task</a>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                       </div>
                     </div>
@@ -170,15 +172,11 @@
         </div>
       </td>
     </tr>
-    <!-- Add a button to create and delete a task -->
+    <!-- Add a button to create ask -->
     <tr>
       <td colspan="2">
         <div>
           <a class="btn btn-primary" th:href="@{'/project/' + ${project.id} + '/createtask'}">Create Task</a>
-          <a action="/tasks/{taskId}" method="post">
-            <input type="hidden" name="_method" value="delete">
-            <button type="submit">Delete Task</button>
-          </a>
         </div>
       </td>
     </tr>

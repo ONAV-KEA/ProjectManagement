@@ -1,13 +1,15 @@
 package dk.kea.projectmanagement.controller;
 
+import dk.kea.projectmanagement.dto.ProjectFormDTO;
+import dk.kea.projectmanagement.dto.SubtaskFormDTO;
+import dk.kea.projectmanagement.dto.TaskFormDTO;
 import dk.kea.projectmanagement.model.Project;
 import dk.kea.projectmanagement.model.Subtask;
 import dk.kea.projectmanagement.model.Task;
 import dk.kea.projectmanagement.model.User;
-import dk.kea.projectmanagement.repository.DBRepository;
 import dk.kea.projectmanagement.repository.IRepository;
 import dk.kea.projectmanagement.utility.LoginSampleException;
-import dto.*;
+import dk.kea.projectmanagement.dto.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Value;
@@ -225,11 +227,15 @@ public class Controller {
 
     }
 
-    @GetMapping ("/deletetask/{id}")
-    public String deletetask (@PathVariable("id") int id) {
+    @GetMapping ("/project/{projectId}/deletetask/{id}")
+    public String deletetask (@PathVariable("id") int id, @PathVariable("projectId") int projectId, HttpSession session) {
+        // Redirects to login site if user is not logged in
+        if (!isLoggedIn(session)){
+            return "redirect:/";
+        }
         repository.removeTask(id);
         System.out.println("Task deleted " + id);
-        return "redirect:/";
+        return "redirect:/project/" + projectId;
     }
 
 }

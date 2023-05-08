@@ -1,4 +1,4 @@
-package dto;
+package dk.kea.projectmanagement.dto;
 
 import dk.kea.projectmanagement.model.Subtask;
 

@@ -5,10 +5,10 @@ import dk.kea.projectmanagement.model.Subtask;
 import dk.kea.projectmanagement.model.Task;
 import dk.kea.projectmanagement.model.User;
 import dk.kea.projectmanagement.utility.LoginSampleException;
-import dto.ProjectFormDTO;
-import dto.SubtaskFormDTO;
-import dto.TaskAndSubtaskDTO;
-import dto.TaskFormDTO;
+import dk.kea.projectmanagement.dto.ProjectFormDTO;
+import dk.kea.projectmanagement.dto.SubtaskFormDTO;
+import dk.kea.projectmanagement.dto.TaskAndSubtaskDTO;
+import dk.kea.projectmanagement.dto.TaskFormDTO;
 
 import java.util.List;
 
