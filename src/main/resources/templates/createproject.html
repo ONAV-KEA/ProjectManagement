@@ -1,24 +1,20 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Create task</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" th:href="@{/main.css}" href="/static/main.css">
-    <link rel="icon" type="image/x-icon" href="../src/main/resources/static/images/favicon.png"
-          th:src="@{images/favicon.png}">
-    <link href='https://fonts.googleapis.com/css?family=IBM Plex Sans Condensed' rel='stylesheet'>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" th:href="@{/main.css}" href="/static/main.css" />
+    <link rel="icon" type="image/x-icon" href="../src/main/resources/static/images/favicon.png" th:src="@{images/favicon.png}" />
+    <link href="https://fonts.googleapis.com/css?family=IBM Plex Sans Condensed" rel="stylesheet" />
 </head>
 <body>
-<nav class="navbar sticky-lg-top  text-end p-3">
+<nav class="navbar sticky-lg-top text-end p-3">
     <div class="container-fluid">
         <a class="navbar-brand" href="/">
-            <img src="../src/main/resources/static/images/projectplanner-logo.png"
-                 th:src="@{images/projectplanner-logo.png}" alt="Logo" width="220px"
-                 class="d-inline-block align-text-top">
+            <img src="../src/main/resources/static/images/projectplanner-logo.png" th:src="@{images/projectplanner-logo.png}" alt="Logo" width="220px" class="d-inline-block align-text-top" />
         </a>
 
         <ul class="nav justify-content-end">
@@ -29,17 +25,20 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link main-color" href="/projects">Projects
+                <a class="nav-link main-color" href="/projects">
+                    Projects
                     <i class="fa fa-folder-open"></i>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link main-color" href="/organisations">Organisations
+                <a class="nav-link main-color" href="/organisations">
+                    Organisations
                     <i class="fa fa-group"></i>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link main-color" href="/profile">Profile
+                <a class="nav-link main-color" href="/profile">
+                    Profile
                     <i class="fa fa-user-circle"></i>
                 </a>
             </li>
@@ -54,20 +53,18 @@
 
     <div class="container-fluid mt-5 text-center">
         <div class="container p-3 mt-4">
-
             <form method="post" th:action="@{/createproject}" th:object="${project}">
                 <div class="row g-3 align-items-center m-3">
                     <div class="col-md-3">
                         <label for="inputName" class="col-form-label">Project Name: </label>
                     </div>
                     <div class="col-md-4">
-                        <input type="text" th:field="*{name}" id="inputName" class="form-control"
-                               aria-labelledby="nameHelpInline">
+                        <input type="text" th:field="*{name}" id="inputName" class="form-control" aria-labelledby="nameHelpInline" />
                     </div>
                     <div class="col-md-3">
-                  <span id="nameHelpInline" class="form-text">
-                    Enter your project name
-                  </span>
+                                <span id="nameHelpInline" class="form-text">
+                                    Enter your project name
+                                </span>
                     </div>
                 </div>
 
@@ -76,13 +73,12 @@
                         <label for="inputDescription" class="col-form-label">Last Name:</label>
                     </div>
                     <div class="col-md-4">
-                        <input type="text" th:field="*{description}" id="inputDescription" class="form-control"
-                               aria-labelledby="descriptionHelpInline">
+                        <input type="text" th:field="*{description}" id="inputDescription" class="form-control" aria-labelledby="descriptionHelpInline" />
                     </div>
                     <div class="col-md-3">
-                  <span id="descriptionHelpInline" class="form-text">
-                    Enter description of your project
-                  </span>
+                                <span id="descriptionHelpInline" class="form-text">
+                                    Enter description of your project
+                                </span>
                     </div>
                 </div>
 
@@ -91,13 +87,12 @@
                         <label for="inputStartDate" class="col-form-label">Start Date:</label>
                     </div>
                     <div class="col-md-4">
-                        <input type="date" th:field="*{startDate}" id="inputStartDate" class="form-control"
-                               aria-labelledby="startDateHelpInline">
+                        <input type="date" th:field="*{startDate}" id="inputStartDate" class="form-control" aria-labelledby="startDateHelpInline" />
                     </div>
                     <div class="col-md-3">
-                  <span id="startDateHelpInline" class="form-text">
-                    Enter start date of your project
-                  </span>
+                                <span id="startDateHelpInline" class="form-text">
+                                    Enter start date of your project
+                                </span>
                     </div>
                 </div>
 
@@ -106,18 +101,17 @@
                         <label for="inputEndDate" class="col-form-label">End Date:</label>
                     </div>
                     <div class="col-md-4">
-                        <input type="date" th:field="*{endDate}" id="inputEndDate" class="form-control"
-                               aria-labelledby="endDateHelpInline">
+                        <input type="date" th:field="*{endDate}" id="inputEndDate" class="form-control" aria-labelledby="endDateHelpInline" />
                     </div>
                     <div class="col-md-3">
-                  <span id="passwordHelpInline" class="form-text">
-                    Enter end date of your project
-                  </span>
+                                <span id="passwordHelpInline" class="form-text">
+                                    Enter end date of your project
+                                </span>
                     </div>
                 </div>
                 <div class="mt-5">
-                    <input type="submit" value="Submit" class="btn btn-outline-success m-2"/>
-                    <input type="reset" value="Reset" class="btn btn-outline-danger m-2"/>
+                    <input type="submit" value="Submit" class="btn btn-outline-success m-2" />
+                    <input type="reset" value="Reset" class="btn btn-outline-danger m-2" />
                 </div>
             </form>
         </div>
@@ -128,3 +122,6 @@
             <p class="mt-5 mb-3 text-body-secondary">&copy; 2023 - KEA</p>
         </div>
     </footer>
+</div>
+</body>
+</html>

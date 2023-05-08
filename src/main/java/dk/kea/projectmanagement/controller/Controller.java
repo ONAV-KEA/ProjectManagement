@@ -79,17 +79,17 @@ public class Controller {
         return "dashboard";
     }
 
-    @GetMapping("/createProject")
+    @GetMapping("/createproject")
     public String project(HttpSession session, Model model) {
         // Redirects to login site if user is not logged in
         if (!isLoggedIn(session)){
             return "redirect:/";
         }
         model.addAttribute("project", new ProjectFormDTO());
-        return "createProject";
+        return "createproject";
     }
 
-    @PostMapping ("/createProject")
+    @PostMapping ("/createproject")
     public String returnProject (@ModelAttribute ProjectFormDTO form, HttpSession session) {
         // Redirects to login site if user is not logged in
         if (!isLoggedIn(session)){
