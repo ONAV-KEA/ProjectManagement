@@ -36,6 +36,9 @@ public class Subtask {
         this.taskId = taskId;
     }
 
+    public Subtask() {
+    }
+
     public int getId() {
         return id;
     }
@@ -93,7 +96,12 @@ public class Subtask {
     }
 
     public String getStatus() {
-        return status;
+        return switch (status) {
+            case "todo" -> "To Do";
+            case "in_progress" -> "In Progress";
+            case "completed" -> "Completed";
+            default -> "";
+        };
     }
 
     public void setStatus(String status) {
