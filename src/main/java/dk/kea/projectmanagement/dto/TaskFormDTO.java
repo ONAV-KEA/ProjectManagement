@@ -1,25 +1,27 @@
-package dto;
+package dk.kea.projectmanagement.dto;
+
+import dk.kea.projectmanagement.model.Task;
 
 import java.time.LocalDate;
 
-public class SubtaskFormDTO {
+public class TaskFormDTO {
     private int id;
     private String title;
     private String description;
     private LocalDate startDate;
     private double cost;
-    private int taskId;
+    private int projectId;
 
-    public SubtaskFormDTO(int id, String title, String description, LocalDate startDate,double cost, int taskId) {
+    public TaskFormDTO(int id, String title, String description, LocalDate startDate,double cost, int projectId) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.startDate = startDate;
         this.cost = cost;
-        this.taskId = taskId;
+        this.projectId = projectId;
     }
 
-    public SubtaskFormDTO() {
+    public TaskFormDTO() {
     }
 
     public int getId() {
@@ -63,11 +65,13 @@ public class SubtaskFormDTO {
         this.cost = cost;
     }
 
-    public int getTaskId() {
-        return taskId;
+
+
+    public int getProjectId() {
+        return projectId;
     }
 
-    public void setTaskId(int taskId) {
-        this.taskId = taskId;
+    public void setProjectId(int projectId) {
+        this.projectId = projectId;
     }
 }

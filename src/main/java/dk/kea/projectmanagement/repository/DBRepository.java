@@ -6,12 +6,12 @@ import dk.kea.projectmanagement.model.Subtask;
 import dk.kea.projectmanagement.model.User;
 import dk.kea.projectmanagement.utility.DBManager;
 import dk.kea.projectmanagement.utility.LoginSampleException;
-import dto.ProjectFormDTO;
-import dto.SubtaskFormDTO;
-import dto.TaskFormDTO;
+import dk.kea.projectmanagement.dto.ProjectFormDTO;
+import dk.kea.projectmanagement.dto.SubtaskFormDTO;
+import dk.kea.projectmanagement.dto.TaskFormDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import dto.TaskAndSubtaskDTO;
+import dk.kea.projectmanagement.dto.TaskAndSubtaskDTO;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
@@ -201,18 +201,67 @@ public class DBRepository implements IRepository {
         }
     }
     
-    public void removeTask(int id) {
-        try (Connection connection = DBManager.getConnection()) {
+    public void deleteTask(int id) {
+        Connection con = null;
+        try {
+            con = DBManager.getConnection();
+            con.setAutoCommit(false);
             String SQL = "DELETE FROM task WHERE id = ?";
-            try (PreparedStatement statement = connection.prepareStatement(SQL)) {
-                statement.setInt(1, id);
-                statement.executeUpdate();
-            }
+            PreparedStatement ps = con.prepareStatement(SQL);
+            ps.setInt(1, id);
+            ps.executeUpdate();
+            con.commit();
         } catch (SQLException e) {
-            e.printStackTrace();
+            if (con != null) {
+                try {
+                    con.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }finally {
+            if (con != null) {
+                try {
+                    con.setAutoCommit(true);
+                    con.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
-    
+
+    @Override
+    public void deleteSubtask(int taskId) {
+        Connection con = null;
+        try {
+            con = DBManager.getConnection();
+            con.setAutoCommit(false);
+            String SQL = "DELETE FROM subtask WHERE id = ?";
+            PreparedStatement ps = con.prepareStatement(SQL);
+            ps.setInt(1, taskId);
+            ps.executeUpdate();
+            con.commit();
+        } catch (SQLException e) {
+            if (con != null) {
+                try {
+                    con.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }finally {
+            if (con != null) {
+                try {
+                    con.setAutoCommit(true);
+                    con.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
     public List<Task> getTasksByProjectId(int projectId) {
         Connection con = null;
         try {
