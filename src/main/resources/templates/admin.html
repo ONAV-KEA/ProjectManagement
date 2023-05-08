@@ -55,10 +55,74 @@
 
     <div class="text-center">
         <div class="row justify-content-center">
+
             <div class="container col-sm-10 col-md-4 p-4 mb-5">
                 <h3>Register a new profile</h3>
                 <p>Create a new member or project-leader and add it to the database.</p>
-                <button class="w-100 btn btn-lg main-color-bg" type="submit">Create a new profile</button>
+                <form method="post" th:action="@{/admin}" th:object="${createUser}">
+                    <div class="row g-3 align-items-center m-1">
+                        <div class="col-md-4">
+                            <label for="inputUsername" class="col-form-label">Username: </label>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" th:field="*{username}" id="inputUsername" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="row g-3 align-items-center m-1">
+                        <div class="col-md-4">
+                            <label for="inputPassword" class="col-form-label">Password:</label>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" th:field="*{password}" id="inputPassword" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="row g-3 align-items-center m-1">
+                        <div class="col-md-4">
+                            <label for="inputFirstName" class="col-form-label">First name:</label>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" th:field="*{firstName}" id="inputFirstName" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="row g-3 align-items-center m-1">
+                        <div class="col-md-4">
+                            <label for="inputLastName" class="col-form-label">Last name:</label>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" th:field="*{lastName}" id="inputLastName" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="row g-3 align-items-center m-1">
+                        <div class="col-md-4">
+                            <label for="inputBirthday" class="col-form-label">Birthday:</label>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="date" th:field="*{birthday}" id="inputBirthday" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="row g-3 align-items-center m-1">
+                        <div class="col-md-4">
+                            <label for="inputRole" class="col-form-label">Role:</label>
+                        </div>
+                        <div class="col-md-8">
+                            <select th:field="*{role}" id="inputRole" class="form-select">
+                                <option value="">Choose role</option>
+                                <option value="member">Member</option>
+                                <option value="project_manager">Project manager</option>
+                                <option value="admin">Admin (only for system-administration)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mt-5">
+                        <input type="submit" value="Create a new profile" class="w-100 btn main-color-bg mb-4"/>
+                        <input type="reset" value="Reset" class="w-100 btn btn-danger"/>
+                    </div>
+                </form>
             </div>
 
             <div class="container col-sm-10 col-md-6 p-4">

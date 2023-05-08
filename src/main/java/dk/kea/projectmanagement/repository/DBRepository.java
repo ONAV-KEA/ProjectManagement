@@ -697,5 +697,53 @@ public class DBRepository implements IRepository {
         }
     }
 
+
+
+    @Override
+    public void createUser(User form) {
+    Connection con = null;
+        try {
+            con = DBManager.getConnection();
+            con.setAutoCommit(false);
+            String SQL = "INSERT INTO user (username, password, first_name, last_name, birthday, role) VALUES (?, ?, ?, ?, ?, ?);";
+            PreparedStatement ps = con.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, form.getUsername());
+            ps.setString(2, form.getPassword());
+            ps.setString(3, form.getFirstName());
+            ps.setString(4, form.getLastName());
+            ps.setDate(5, form.getBirthday() != null ? Date.valueOf(form.getBirthday()) : null);
+            ps.setString(6, form.getRole());
+
+            int affectedRows = ps.executeUpdate();
+            if (affectedRows == 0) {
+                throw new RuntimeException("Could not create user");
+            }
+
+            ResultSet generatedKeys = ps.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                form.setId(generatedKeys.getInt(1));
+            } else {
+                throw new RuntimeException("Could not create user");
+            }
+            con.commit();
+        } catch (SQLException e) {
+            if (con != null) {
+                try {
+                    con.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            throw new RuntimeException("Could not create user", e);
+        } finally {
+            try {
+                con.setAutoCommit(true);
+                con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 }
 
