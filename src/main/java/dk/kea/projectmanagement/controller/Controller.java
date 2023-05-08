@@ -249,6 +249,37 @@ public class Controller {
         return "redirect:/project/" + projectId;
     }
 
+    @GetMapping("/project/{projectId}/edittask/{taskId}")
+    public String editTask(@PathVariable int projectId, @PathVariable int taskId, Model model, HttpSession session) {
+        // Redirects to login site if user is not logged in
+        if (!isLoggedIn(session)) {
+            return "redirect:/";
+        }
+        Task task = repository.getTaskById(taskId, projectId);
+        if (task == null) {
+            return "redirect:/project/" + projectId; // Redirects to project page if task is not found
+        }
+        TaskFormDTO form = new TaskFormDTO(task.getTitle(), task.getDescription(), task.getStartDate(), task.getCost(), task.getEndDate(),task.getAssigneeId(),task.getStatus());
+        model.addAttribute("taskForm", form);
+        model.addAttribute("taskId", taskId);
+        model.addAttribute("projectId", projectId);
+        return "edittask";
+    }
+
+    @PostMapping("/project/{projectId}/edittask/{taskId}")
+    public String updateTask(@PathVariable int projectId, @PathVariable int taskId, @ModelAttribute TaskFormDTO form, HttpSession session) {
+        // Redirects to login site if user is not logged in
+        if (!isLoggedIn(session)) {
+            return "redirect:/";
+        }
+        boolean isEdited = repository.editTask(form, taskId, projectId);
+        if (!isEdited) {
+            // Handle error if task is not updated, e.g., show an error message or redirect to an error page
+        }
+        return "redirect:/project/" + projectId;
+    }
+
+
     @PostMapping("/project/{projectId}/update-task-status/{taskId}")
     public String updateTaskStatus(@PathVariable int projectId, @PathVariable int taskId, HttpSession session, @RequestParam("taskStatus") String taskStatus) {
         // Redirects to login site if user is not logged in
