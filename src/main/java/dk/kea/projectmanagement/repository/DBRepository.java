@@ -201,18 +201,67 @@ public class DBRepository implements IRepository {
         }
     }
     
-    public void removeTask(int id) {
-        try (Connection connection = DBManager.getConnection()) {
+    public void deleteTask(int id) {
+        Connection con = null;
+        try {
+            con = DBManager.getConnection();
+            con.setAutoCommit(false);
             String SQL = "DELETE FROM task WHERE id = ?";
-            try (PreparedStatement statement = connection.prepareStatement(SQL)) {
-                statement.setInt(1, id);
-                statement.executeUpdate();
-            }
+            PreparedStatement ps = con.prepareStatement(SQL);
+            ps.setInt(1, id);
+            ps.executeUpdate();
+            con.commit();
         } catch (SQLException e) {
-            e.printStackTrace();
+            if (con != null) {
+                try {
+                    con.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }finally {
+            if (con != null) {
+                try {
+                    con.setAutoCommit(true);
+                    con.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
-    
+
+    @Override
+    public void deleteSubtask(int taskId) {
+        Connection con = null;
+        try {
+            con = DBManager.getConnection();
+            con.setAutoCommit(false);
+            String SQL = "DELETE FROM subtask WHERE id = ?";
+            PreparedStatement ps = con.prepareStatement(SQL);
+            ps.setInt(1, taskId);
+            ps.executeUpdate();
+            con.commit();
+        } catch (SQLException e) {
+            if (con != null) {
+                try {
+                    con.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }finally {
+            if (con != null) {
+                try {
+                    con.setAutoCommit(true);
+                    con.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
     public List<Task> getTasksByProjectId(int projectId) {
         Connection con = null;
         try {

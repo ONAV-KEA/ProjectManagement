@@ -27,5 +27,7 @@ public interface IRepository {
     void addCommentToSubtask(int subtaskId, String comment);
 
     Subtask createSubtask(SubtaskFormDTO form, int taskId);
-    void removeTask(int id);
+    void deleteTask(int taskId);
+
+    void deleteSubtask(int taskId);
 }
