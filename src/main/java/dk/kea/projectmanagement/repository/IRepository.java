@@ -32,4 +32,7 @@ public interface IRepository {
     void deleteSubtask(int taskId);
 
     void updateTaskStatus(int taskId, String status);
+
+    void updateSubtaskStatus(int taskId, String taskStatus);
+
 }

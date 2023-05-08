@@ -259,4 +259,19 @@ public class Controller {
         return "redirect:/project/" + projectId;
     }
 
+    @PostMapping("/project/{projectId}/update-subtask-status/{subtaskId}")
+    public String updateSubtaskStatus(@PathVariable int projectId, @PathVariable int subtaskId, HttpSession session, @RequestParam("subtaskStatus") String subtaskStatus) {
+        // Redirects to login site if user is not logged in
+        if (!isLoggedIn(session)){
+            return "redirect:/";
+        }
+
+        System.out.println("Subtask status: " + subtaskStatus);
+        repository.updateSubtaskStatus(subtaskId, subtaskStatus);
+
+        User user = (User) session.getAttribute("user");
+        return "redirect:/project/" + projectId;
+    }
+
+
 }

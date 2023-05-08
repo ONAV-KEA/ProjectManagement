@@ -141,7 +141,7 @@
               <td>
                 <div class="subtask-info">
                   <button class="btn btn-link" type="button" data-bs-toggle="modal" th:data-bs-target="'#subtaskModal-' + ${subtask.id}" th:text="${subtask.title}"></button>
-                  <span class="subtask-status" th:text="${task.status}"></span>
+                  <span class="subtask-status" th:text="${subtask.status}"></span>
                 </div>
                 <!-- Subtask Modal -->
                 <div class="modal fade" th:id="'subtaskModal-' + ${subtask.id}" tabindex="-1" aria-labelledby="subtaskModalLabel" aria-hidden="true">
@@ -156,7 +156,17 @@
                         <p th:text="${subtask.description}"></p>
                         <p th:text="'Start Date: ' + ${subtask.startDate}"></p>
                         <p th:text="'End Date: ' + ${subtask.endDate}"></p>
-                        <p th:text="'Status: ' + ${subtask.status}"></p>
+                        <div class="status-container">
+                          <p th:text="'Status: ' + ${subtask.status}"></p>
+                          <form th:action="@{'/project/' + ${project.id} + '/update-subtask-status/' + ${subtask.id}}" method="post">
+                          <select class="form-select" id="subtaskStatusDropdown" th:name="subtaskStatus" onchange="this.form.submit()">
+                              <option selected disabled hidden>Update task status</option>
+                              <option value="todo" th:text="'To Do'" th:selected="${subtask.status == 'todo'}"></option>
+                              <option value="in_progress" th:text="'In Progress'" th:selected="${subtask.status == 'in_progress'}"></option>
+                              <option value="completed" th:text="'Completed'" th:selected="${subtask.status == 'completed'}"></option>
+                            </select>
+                          </form>
+                        </div>
                         <p th:text="'Cost: ' + ${subtask.cost}"></p>
                         <p th:text="'Assignee: ' + ${subtask.assigneeId}"></p>
                         <h3 th:text="'Comment'"></h3>

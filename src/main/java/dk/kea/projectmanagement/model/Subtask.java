@@ -99,7 +99,7 @@ public class Subtask {
         return switch (status) {
             case "todo" -> "To Do";
             case "in_progress" -> "In Progress";
-            case "done" -> "Done";
+            case "completed" -> "Completed";
             default -> "";
         };
     }

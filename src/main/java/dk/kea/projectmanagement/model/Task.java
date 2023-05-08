@@ -100,7 +100,7 @@ public Task(int id, String title, String description, LocalDate startDate, Local
         return switch (status) {
             case "todo" -> "To Do";
             case "in_progress" -> "In Progress";
-            case "done" -> "Done";
+            case "completed" -> "Completed";
             default -> "";
         };
     }
