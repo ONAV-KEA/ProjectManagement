@@ -373,6 +373,7 @@ public class DBRepository implements IRepository {
         return null;
     }
 
+
     public Task createTask(TaskFormDTO form, int projectId) {
         Connection con = null;
         try {
@@ -418,6 +419,7 @@ public class DBRepository implements IRepository {
             }
         }
     }
+
     @Override
     public Subtask createSubtask(SubtaskFormDTO form, int taskId) {
         Connection con = null;
@@ -613,5 +615,87 @@ public class DBRepository implements IRepository {
             }
         }
     }
+
+    @Override
+    public Task getTaskById(int taskId, int projectId) {
+        Connection con = null;
+        Task task = null;
+        try {
+            con = DBManager.getConnection();
+            String SQL = "SELECT * FROM task WHERE id = ? AND project_id = ?;";
+            PreparedStatement ps = con.prepareStatement(SQL);
+            ps.setInt(1, taskId);
+            ps.setInt(2, projectId);
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                String title = rs.getString("title");
+                String description = rs.getString("description");
+                LocalDate startDate = rs.getDate("start_date").toLocalDate();
+                double cost = rs.getDouble("cost");
+                task = new Task(taskId, title, description, startDate, cost, projectId);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Could not get task", e);
+        } finally {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return task;
+}
+
+
+    public boolean editTask(TaskFormDTO form, int taskId, int projectId) {
+        Connection con = null;
+        try {
+            con = DBManager.getConnection();
+            con.setAutoCommit(false);
+            String SQL = "UPDATE task SET title = ?, description = ?, start_date = ?, cost = ?, end_date = ?, assignee_id = ?, status = ? WHERE id = ? AND project_id = ?;";
+            PreparedStatement ps = con.prepareStatement(SQL);
+            ps.setString(1, form.getTitle());
+            ps.setString(2, form.getDescription());
+            ps.setDate(3, form.getStartDate() != null ? Date.valueOf(form.getStartDate()) : null);
+            ps.setDouble(4, form.getCost());
+            ps.setDate(5, form.getEndDate() != null ? Date.valueOf(form.getEndDate()) : null);
+            if (form.getAssigneeId() != -1) {
+                ps.setInt(6, form.getAssigneeId());
+            } else {
+                ps.setNull(6, Types.INTEGER);
+            }
+            ps.setString(7, form.getStatus());
+            ps.setInt(8, taskId);
+            ps.setInt(9, projectId);
+
+            int affectedRows = ps.executeUpdate();
+            if (affectedRows == 1) {
+                con.commit();
+                return true;
+            } else {
+                throw new RuntimeException("Could not edit task");
+            }
+        } catch (SQLException e) {
+            if (con != null) {
+                try {
+                    con.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            throw new RuntimeException("Could not edit task", e);
+        } finally {
+            try {
+                con.setAutoCommit(true);
+                con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 }
 
