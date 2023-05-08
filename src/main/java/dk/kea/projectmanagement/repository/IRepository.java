@@ -30,4 +30,8 @@ public interface IRepository {
     void deleteTask(int taskId);
 
     void deleteSubtask(int taskId);
+
+    Task getTaskById(int taskId, int projectId);
+
+    boolean editTask(TaskFormDTO form, int taskId, int projectId);
 }
