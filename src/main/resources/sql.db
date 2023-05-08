@@ -27,11 +27,11 @@ CREATE TABLE `task` (
   `description` TEXT,
   `start_date` DATE,
   `end_date` DATE,
-  `assignee_id` INT UNSIGNED,
   `cost` DECIMAL,
   `status` ENUM('todo', 'in_progress', 'completed') NOT NULL,
   `comment` TEXT,
   `project_id` INT UNSIGNED
+  `percentage_completion` DECIMAL(5, 2) CHECK (percentage_completion >= 0 AND percentage_completion <= 100)
 );
 
 CREATE TABLE `subtask` (
@@ -45,6 +45,7 @@ CREATE TABLE `subtask` (
   `status` ENUM('todo', 'in_progress', 'completed') NOT NULL,
   `comment` TEXT,
   `task_id` INT UNSIGNED
+  `percentage_completion` DECIMAL(5, 2) CHECK (percentage_completion >= 0 AND percentage_completion <= 100)
 );
 
 CREATE TABLE `organization` (
@@ -70,6 +71,16 @@ CREATE TABLE `gantt_chart` (
   `subtask_id` INT UNSIGNED
 );
 
+CREATE TABLE `task_assignee` (
+  `task_id` INT UNSIGNED,
+  `user_id` INT UNSIGNED
+);
+
+CREATE TABLE `subtask_assignee` (
+  `subtask_id` INT UNSIGNED,
+  `user_id` INT UNSIGNED
+);
+
 CREATE INDEX `project_user_project_id_idx` ON `project_user` (`project_id`);
 CREATE INDEX `project_user_user_id_idx` ON `project_user` (`user_id`);
 
@@ -87,3 +98,9 @@ CREATE INDEX `project_organization_organization_id_idx` ON `project_organization
 
 CREATE INDEX `gantt_chart_task_id_idx` ON `gantt_chart` (`task_id`);
 CREATE INDEX `gantt_chart_subtask_id_idx` ON `gantt_chart` (`subtask_id`);
+
+CREATE INDEX `task_assignee_task_id_idx` ON `task_assignee` (`task_id`);
+CREATE INDEX `task_assignee_user_id_idx` ON `task_assignee` (`user_id`);
+
+CREATE INDEX `subtask_assignee_subtask_id_idx` ON `subtask_assignee` (`subtask_id`);
+CREATE INDEX `subtask_assignee_user_id_idx` ON `subtask_assignee` (`user_id`);
