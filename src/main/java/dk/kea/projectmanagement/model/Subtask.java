@@ -13,6 +13,7 @@ public class Subtask {
     private String status;
     private String comment;
     private int taskId;
+    private double percentageCompletion;
 
     public Subtask(int id, String title, String description, LocalDate startDate, LocalDate endDate, int assigneeId, double cost, String status, String comment, int taskId) {
         this.id = id;

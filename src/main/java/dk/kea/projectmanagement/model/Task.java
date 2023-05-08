@@ -13,6 +13,7 @@ public class Task {
     private String status;
     private String comment;
     private int projectId;
+    private double percentageCompletion;
 
 public Task(int id, String title, String description, LocalDate startDate, LocalDate endDate, int assigneeId, double cost, String status, String comment, int projectId) {
         this.id = id;
