@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" th:href="@{/main.css}" href="/static/main.css">
     <link rel="icon" type="image/x-icon" href="../src/main/resources/static/images/favicon.png"
-          th:src="@{images/favicon.png}">
+          th:src="@{/images/favicon.png}">
     <link href='https://fonts.googleapis.com/css?family=IBM Plex Sans Condensed' rel='stylesheet'>
 </head>
 <body>
@@ -17,7 +17,7 @@
     <div class="container-fluid">
         <a class="navbar-brand" href="/dashboard">
             <img src="../src/main/resources/static/images/projectplanner-logo.png"
-                 th:src="@{images/projectplanner-logo.png}" alt="Logo" width="220px"
+                 th:src="@{/images/projectplanner-logo.png}" alt="Logo" width="220px"
                  class="d-inline-block align-text-top">
         </a>
 
@@ -49,27 +49,25 @@
 
 <div class="container-fluid mt-5 text-center">
     <div class="container p-3 mt-4">
-        <h3>Create Task</h3>
-    </div>
-
-    <div class="container mt-5">
+        <h3>Create a new task for <span th:text="${project.name}"></span></h3>
+        <hr>
         <form th:action="@{/project/{projectId}/createtask(projectId=${projectId})}" th:object="${task}" method="post">
             <div class="mb-3">
                 <label for="title" class="form-label">Title</label>
-                <input type="text" class="form-control" id="title" name="title" th:value="*{title}" required>
+                <input type="text" class="form-control" id="title" name="title" th:value="*{title}" placeholder="Add title here" required>
             </div>
             <div class="mb-3">
                 <label for="description" class="form-label">Description</label>
                 <textarea class="form-control" id="description" name="description" rows="3"
-                          th:text="*{description}"></textarea>
+                          th:text="*{description}" placeholder="Add description here"></textarea>
             </div>
             <div class="mb-3">
                 <label for="startDate" class="form-label">Start Date</label>
                 <input type="date" class="form-control" id="startDate" name="startDate" th:value="*{startDate}">
             </div>
             <div class="mb-3">
-                <label for="cost" class="form-label">Estimated Cost</label>
-                <input type="number" step="0.01" class="form-control" id="cost" name="cost" th:value="*{cost}">
+                <label for="cost" class="form-label">Estimated Cost ($)</label>
+                <input type="number" step="0.01" class="form-control" id="cost" name="cost" th:value="*{cost}" placeholder="Add estimated cost here in $">
             </div>
             <input type="hidden" th:value="${projectId}" name="projectId">
             <button type="submit" class="btn btn-primary">Create Task</button>

@@ -156,6 +156,7 @@ public class Controller {
         model.addAttribute("task", new TaskFormDTO());
         model.addAttribute("projectId", projectId);
         User user = (User) session.getAttribute("user");
+        model.addAttribute("project", repository.getProjectById(user.getId()));
         return "createtask";
     }
 
