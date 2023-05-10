@@ -389,20 +389,21 @@ public class DBRepository implements IRepository {
         try {
             con = DBManager.getConnection();
             con.setAutoCommit(false);
-            String SQL = "INSERT INTO task (title, description, start_date, cost, project_id) VALUES (?, ?, ?, ?, ?);";
+            String SQL = "INSERT INTO task (title, description, start_date, end_date, cost, project_id) VALUES (?, ?, ?, ?, ?,?);";
             PreparedStatement ps = con.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, form.getTitle());
             ps.setString(2, form.getDescription());
             ps.setDate(3, form.getStartDate() != null ? Date.valueOf(form.getStartDate()) : null);
-            ps.setDouble(4, form.getCost());
-            ps.setInt(5, projectId);
+            ps.setDate(4, form.getEndDate() != null ? Date.valueOf(form.getEndDate()) : null);
+            ps.setDouble(5, form.getCost());
+            ps.setInt(6, projectId);
 
             int affectedRows = ps.executeUpdate();
             if (affectedRows == 1) {
                 ResultSet rs = ps.getGeneratedKeys();
                 if (rs.next()) {
                     int id = rs.getInt(1);
-                    Task task = new Task(id, form.getTitle(), form.getDescription(), form.getStartDate(), form.getCost(), projectId);
+                    Task task = new Task(id, form.getTitle(), form.getDescription(), form.getStartDate(), form.getEndDate(), form.getCost(), projectId);
                     con.commit();
                     return task;
                 } else {
@@ -642,8 +643,9 @@ public class DBRepository implements IRepository {
                 String title = rs.getString("title");
                 String description = rs.getString("description");
                 LocalDate startDate = rs.getDate("start_date").toLocalDate();
+                LocalDate endDate = rs.getDate("end_date").toLocalDate();
                 double cost = rs.getDouble("cost");
-                task = new Task(taskId, title, description, startDate, cost, projectId);
+                task = new Task(taskId, title, description, startDate, endDate, cost, projectId);
             }
         } catch (SQLException e) {
             throw new RuntimeException("Could not get task", e);
