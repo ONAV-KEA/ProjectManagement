@@ -53,7 +53,7 @@
 
     <div class="container-fluid mt-5 text-center">
         <div class="container p-3 mt-4">
-            <form method="post" th:action="@{/createproject}" th:object="${project}">
+            <form method="post" th:action="@{/createproject}" th:object="${project}" onsubmit="return validateForm()">
                 <div class="row g-3 align-items-center m-3">
                     <div class="col-md-3">
                         <label for="inputName" class="col-form-label">Project Name: </label>
@@ -62,15 +62,15 @@
                         <input type="text" th:field="*{name}" id="inputName" class="form-control" aria-labelledby="nameHelpInline" />
                     </div>
                     <div class="col-md-3">
-                                <span id="nameHelpInline" class="form-text">
-                                    Enter your project name
-                                </span>
+                        <span id="nameHelpInline" class="form-text">
+                            Enter your project name
+                        </span>
                     </div>
                 </div>
 
                 <div class="row g-3 align-items-center m-3">
                     <div class="col-md-3">
-                        <label for="inputDescription" class="col-form-label">Last Name:</label>
+                        <label for="inputDescription" class="col-form-label">Description:</label>
                     </div>
                     <div class="col-md-4">
                         <input type="text" th:field="*{description}" id="inputDescription" class="form-control" aria-labelledby="descriptionHelpInline" />
@@ -122,6 +122,29 @@
             <p class="mt-5 mb-3 text-body-secondary">&copy; 2023 - KEA</p>
         </div>
     </footer>
+
+    <!---- JAVASCRIPT ---->
+    <script>
+        function validateForm() {
+            var projectName = document.getElementById("inputName").value; // Getting name from input field
+            var startDate = document.getElementById("inputStartDate").value; // Getting start date from input field
+            var endDate = document.getElementById("inputEndDate").value; // Getting end date from input field
+
+            // Checking that the name of the project is not empty
+            if (projectName === "") {
+                alert("Name Required");
+                return false; // Prevent form submission
+            }
+
+            // Checking that the start date is not a newer date than the end date
+            if (startDate > endDate) {
+                alert("Start date cannot be newer than end date");
+                return false; // Prevent form submission
+            }
+
+            return true; // Allow form submission
+        }
+    </script>
 </div>
 </body>
 </html>
