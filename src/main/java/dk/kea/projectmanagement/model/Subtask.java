@@ -36,6 +36,7 @@ public class Subtask {
         this.endDate = endDate;
         this.cost = cost;
         this.taskId = taskId;
+        this.status = "todo";
     }
 
     public Subtask() {
@@ -98,12 +99,7 @@ public class Subtask {
     }
 
     public String getStatus() {
-        return switch (status) {
-            case "todo" -> "To Do";
-            case "in_progress" -> "In Progress";
-            case "completed" -> "Completed";
-            default -> "";
-        };
+        return status;
     }
 
 

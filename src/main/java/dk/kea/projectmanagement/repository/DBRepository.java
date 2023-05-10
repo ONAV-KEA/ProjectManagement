@@ -6,9 +6,6 @@ import dk.kea.projectmanagement.model.Subtask;
 import dk.kea.projectmanagement.model.User;
 import dk.kea.projectmanagement.repository.utility.DBManager;
 import dk.kea.projectmanagement.utility.LoginSampleException;
-import dk.kea.projectmanagement.dto.ProjectFormDTO;
-import dk.kea.projectmanagement.dto.SubtaskFormDTO;
-import dk.kea.projectmanagement.dto.TaskFormDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import dk.kea.projectmanagement.dto.TaskAndSubtaskDTO;
@@ -145,7 +142,7 @@ public class DBRepository implements IRepository {
         return null;
     }
 
-    public Project createProject(ProjectFormDTO form, User user) {
+    public Project createProject(Project form, User user) {
         Connection con = null;
         try {
             con = DBManager.getConnection();
@@ -384,7 +381,7 @@ public class DBRepository implements IRepository {
     }
 
 
-    public Task createTask(TaskFormDTO form, int projectId) {
+    public Task createTask(Task form, int projectId) {
         Connection con = null;
         try {
             con = DBManager.getConnection();
@@ -432,7 +429,7 @@ public class DBRepository implements IRepository {
     }
 
     @Override
-    public Subtask createSubtask(SubtaskFormDTO form, int taskId) {
+    public Subtask createSubtask(Subtask form, int taskId) {
         Connection con = null;
         try {
             con = DBManager.getConnection();
@@ -663,7 +660,7 @@ public class DBRepository implements IRepository {
 }
 
 
-    public boolean editTask(TaskFormDTO form, int taskId, int projectId) {
+    public boolean editTask(Task form, int taskId, int projectId) {
         Connection con = null;
         try {
             con = DBManager.getConnection();
