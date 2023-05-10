@@ -39,7 +39,7 @@ public class DBRepository implements IRepository {
                 String password = rs.getString("password");
                 String firstName = rs.getString("first_name");
                 String lastName = rs.getString("last_name");
-                LocalDate birthday = rs.getDate("birthday").toLocalDate();
+                LocalDate birthday = rs.getDate("birthday") == null ? null : rs.getDate("birthday").toLocalDate();
                 String role = rs.getString("role");
                 User user = new User(username, password, firstName, lastName, birthday, role);
                 user.setId(id);
@@ -63,7 +63,7 @@ public class DBRepository implements IRepository {
                 String password = rs.getString("password");
                 String firstName = rs.getString("first_name");
                 String lastName = rs.getString("last_name");
-                LocalDate birthday = rs.getDate("birthday").toLocalDate();
+                LocalDate birthday = rs.getDate("birthday") == null ? null : rs.getDate("birthday").toLocalDate();
                 String role = rs.getString("role");
                 return new User(username, password, firstName, lastName, birthday, role);
             } else {
@@ -86,7 +86,7 @@ public class DBRepository implements IRepository {
                 int id = rs.getInt("id");
                 String firstName = rs.getString("first_name");
                 String lastName = rs.getString("last_name");
-                LocalDate birthday = rs.getDate("birthday").toLocalDate();
+                LocalDate birthday = rs.getDate("birthday") == null ? null : rs.getDate("birthday").toLocalDate();
                 String role = rs.getString("role");
                 User user = new User(username, password, firstName, lastName, birthday, role);
                 user.setId(id);
