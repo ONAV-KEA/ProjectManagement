@@ -66,9 +66,9 @@
     <table class="table table-light border border-black">
         <thead>
         <tr>
-            <th class="col-3">Task</th>
+            <th class="col-4">Task</th>
             <th class="col-2">Status</th>
-            <th class="col-5">Subtasks</th>
+            <th class="col-6">Subtasks</th>
         </tr>
         </thead>
         <tbody>
@@ -96,7 +96,7 @@
                                 <p th:text="${task.description}"></p>
                                 <p th:text="'Start Date: ' + ${task.startDate}"></p>
                                 <p th:text="'End Date: ' + ${task.endDate}"></p>
-                                <p th:text="'Status: ' + ${task.status}"></p>
+                                <p th:text="'Status: ' + ${task.status}" class="status"></p>
                                 <p th:text="'Cost: ' + ${task.cost}"></p>
                                 <p th:text="'Assignee: ' + ${task.assigneeId}"></p>
                                 <h3 th:text="'Comment'"></h3>
@@ -127,7 +127,6 @@
             <!-- Update the task status -->
             <td>
                 <form th:action="@{'/project/' + ${project.id} + '/update-task-status/' + ${task.id}}" method="post">
-                    <label for="statusDropdown"></label>
                     <select class="form-select " id="statusDropdown" th:name="taskStatus" onchange="this.form.submit()">
                         <option th:value="tasks.status" th:text="${task.status}"></option>
                         <option value="todo" th:text="'To Do'" th:selected="${task.status == 'todo'}"></option>
@@ -149,9 +148,8 @@
                     <table class="table">
                         <thead>
                         <tr>
-                            <th scope="col">
-                                <h5>Subtasks:</h5>
-                            </th>
+                            <th class="col-8"></th>
+                            <th class="col-4"></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -161,8 +159,6 @@
                                     <button class="btn btn-link" type="button" data-bs-toggle="modal"
                                             th:data-bs-target="'#subtaskModal-' + ${subtask.id}"
                                             th:text="${subtask.title}"></button>
-                                    <span class="subtask-status" th:text="${subtask.status}"></span>
-                                    <span th:text="${subtask.percentageCompletion} + '%'"></span>
                                 </div>
                                 <!-- Subtask Modal -->
                                 <div class="modal fade" th:id="'subtaskModal-' + ${subtask.id}" tabindex="-1"
@@ -181,7 +177,7 @@
                                                 <p th:text="'Start Date: ' + ${subtask.startDate}"></p>
                                                 <p th:text="'End Date: ' + ${subtask.endDate}"></p>
                                                 <div class="status-container">
-                                                    <p th:text="'Status: ' + ${subtask.status}"></p>
+                                                    <p th:text="'Status: ' + ${subtask.status}" class="status"></p>
                                                     <form th:action="@{'/project/' + ${project.id} + '/update-subtask-status/' + ${subtask.id}}"
                                                           method="post">
                                                         <select class="form-select" id="subtaskStatusDropdown"
@@ -223,6 +219,12 @@
                                             </div>
                                         </div>
                                     </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="subtask-info">
+                                    <span class="status subtask-status" th:text="${subtask.status}"></span>
+                                    <span th:text="${subtask.percentageCompletion} + '%'"></span>
                                 </div>
                             </td>
                         </tr>
@@ -285,6 +287,30 @@
             $(this).find('i').toggleClass('fa-arrow-down fa-arrow-up');
         });
     });
+</script>
+
+<script>
+    var statusElements = document.getElementsByClassName('status');
+
+    // Mapping object to transform status values
+    var statusMapping = {
+        'todo': 'To Do',
+        'in_progress': 'In Progress',
+        'completed': 'Completed'
+    };
+
+    // Loop through all elements with the 'status' class
+    for (var i = 0; i < statusElements.length; i++) {
+        var element = statusElements[i];
+        var originalStatus = element.textContent.trim();
+
+        // Check if the original status value exists in the mapping object
+        if (originalStatus in statusMapping) {
+            // Use the transformed status value from the mapping object
+            var transformedStatus = statusMapping[originalStatus];
+            element.innerText = transformedStatus;
+        }
+    }
 </script>
 
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>

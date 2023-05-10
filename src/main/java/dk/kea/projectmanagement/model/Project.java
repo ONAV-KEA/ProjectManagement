@@ -17,6 +17,9 @@ public class Project {
         this.endDate = endDate;
     }
 
+    public Project() {
+    }
+
     public int getId() {
         return id;
     }

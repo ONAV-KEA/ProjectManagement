@@ -1,20 +1,13 @@
 package dk.kea.projectmanagement.controller;
 
-import dk.kea.projectmanagement.dto.ProjectFormDTO;
-import dk.kea.projectmanagement.dto.SubtaskFormDTO;
-import dk.kea.projectmanagement.dto.TaskAndSubtaskDTO;
-import dk.kea.projectmanagement.dto.TaskFormDTO;
 import dk.kea.projectmanagement.model.Project;
 import dk.kea.projectmanagement.model.Subtask;
 import dk.kea.projectmanagement.model.Task;
 import dk.kea.projectmanagement.model.User;
-import dk.kea.projectmanagement.repository.IRepository;
 import dk.kea.projectmanagement.service.DBService;
 import dk.kea.projectmanagement.utility.LoginSampleException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -94,7 +87,7 @@ public class Controller {
     }
 
     @PostMapping ("/createproject")
-    public String returnProject (@ModelAttribute ProjectFormDTO form, HttpSession session) {
+    public String returnProject (@ModelAttribute Project form, HttpSession session) {
         // Redirects to login site if user is not logged in
         if (!isLoggedIn(session)){
             return "redirect:/";
@@ -200,7 +193,7 @@ public String editUser(@PathVariable int id, @ModelAttribute User form, HttpSess
         if (!isLoggedIn(session)){
             return "redirect:/";
         }
-        model.addAttribute("task", new TaskFormDTO());
+        model.addAttribute("task", new Task());
         model.addAttribute("projectId", projectId);
         User user = (User) session.getAttribute("user");
         model.addAttribute("project", service.getProjectById(user.getId()));
@@ -208,7 +201,7 @@ public String editUser(@PathVariable int id, @ModelAttribute User form, HttpSess
     }
 
     @PostMapping("/project/{projectId}/createtask")
-    public String returnTask(@PathVariable int projectId, @ModelAttribute TaskFormDTO form, HttpSession session) {
+    public String returnTask(@PathVariable int projectId, @ModelAttribute Task form, HttpSession session) {
         // Redirects to login site if user is not logged in
         if (!isLoggedIn(session)){
             return "redirect:/";
@@ -238,7 +231,7 @@ public String editUser(@PathVariable int id, @ModelAttribute User form, HttpSess
         if (!isLoggedIn(session)){
             return "redirect:/";
         }
-        model.addAttribute("subtask", new SubtaskFormDTO());
+        model.addAttribute("subtask", new Subtask());
         model.addAttribute("projectId", projectId);
         model.addAttribute("taskId", taskId);
         User user = (User) session.getAttribute("user");
@@ -246,7 +239,7 @@ public String editUser(@PathVariable int id, @ModelAttribute User form, HttpSess
     }
 
     @PostMapping("/project/{projectId}/createsubtask/{taskId}")
-    public String returnSubtask(@PathVariable int projectId, @PathVariable int taskId, @ModelAttribute SubtaskFormDTO form, HttpSession session) {
+    public String returnSubtask(@PathVariable int projectId, @PathVariable int taskId, @ModelAttribute Subtask form, HttpSession session) {
         // Redirects to login site if user is not logged in
         if (!isLoggedIn(session)){
             return "redirect:/";
@@ -306,7 +299,7 @@ public String editUser(@PathVariable int id, @ModelAttribute User form, HttpSess
         if (task == null) {
             return "redirect:/project/" + projectId; // Redirects to project page if task is not found
         }
-        TaskFormDTO form = new TaskFormDTO(task.getTitle(), task.getDescription(), task.getStartDate(), task.getCost(), task.getEndDate(),task.getAssigneeId(),task.getStatus());
+        Task form = new Task(task.getTitle(), task.getDescription(), task.getStartDate(), task.getEndDate(), task.getCost(),task.getStatus());
         model.addAttribute("taskForm", form);
         model.addAttribute("taskId", taskId);
         model.addAttribute("projectId", projectId);
@@ -314,7 +307,7 @@ public String editUser(@PathVariable int id, @ModelAttribute User form, HttpSess
     }
 
     @PostMapping("/project/{projectId}/edittask/{taskId}")
-    public String updateTask(@PathVariable int projectId, @PathVariable int taskId, @ModelAttribute TaskFormDTO form, HttpSession session) {
+    public String updateTask(@PathVariable int projectId, @PathVariable int taskId, @ModelAttribute Task form, HttpSession session) {
         // Redirects to login site if user is not logged in
         if (!isLoggedIn(session)) {
             return "redirect:/";
