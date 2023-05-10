@@ -643,8 +643,8 @@ public class DBRepository implements IRepository {
             if (rs.next()) {
                 String title = rs.getString("title");
                 String description = rs.getString("description");
-                LocalDate startDate = rs.getDate("start_date").toLocalDate();
-                LocalDate endDate = rs.getDate("end_date").toLocalDate();
+                LocalDate startDate = rs.getDate("start_date") == null ? null : rs.getDate("start_date").toLocalDate();
+                LocalDate endDate = rs.getDate("end_date") == null ? null : rs.getDate("end_date").toLocalDate();
                 double cost = rs.getDouble("cost");
                 task = new Task(taskId, title, description, startDate, endDate, cost, projectId);
             }
@@ -668,21 +668,16 @@ public class DBRepository implements IRepository {
         try {
             con = DBManager.getConnection();
             con.setAutoCommit(false);
-            String SQL = "UPDATE task SET title = ?, description = ?, start_date = ?, cost = ?, end_date = ?, assignee_id = ?, status = ? WHERE id = ? AND project_id = ?;";
+            String SQL = "UPDATE task SET title = ?, description = ?, start_date = ?, cost = ?, end_date = ?, status = ? WHERE id = ? AND project_id = ?;";
             PreparedStatement ps = con.prepareStatement(SQL);
             ps.setString(1, form.getTitle());
             ps.setString(2, form.getDescription());
             ps.setDate(3, form.getStartDate() != null ? Date.valueOf(form.getStartDate()) : null);
             ps.setDouble(4, form.getCost());
             ps.setDate(5, form.getEndDate() != null ? Date.valueOf(form.getEndDate()) : null);
-            if (form.getAssigneeId() != -1) {
-                ps.setInt(6, form.getAssigneeId());
-            } else {
-                ps.setNull(6, Types.INTEGER);
-            }
-            ps.setString(7, form.getStatus());
-            ps.setInt(8, taskId);
-            ps.setInt(9, projectId);
+            ps.setString(6, form.getStatus());
+            ps.setInt(7, taskId);
+            ps.setInt(8, projectId);
 
             int affectedRows = ps.executeUpdate();
             if (affectedRows == 1) {
