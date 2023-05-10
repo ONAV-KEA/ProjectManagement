@@ -28,11 +28,12 @@ public Task(int id, String title, String description, LocalDate startDate, Local
         this.projectId = projectId;
     }
 
-    public Task(int id, String title, String description, LocalDate startDate, double cost, int projectId) {
+    public Task(int id, String title, String description, LocalDate startDate, LocalDate endDate, double cost, int projectId) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.startDate = startDate;
+        this.endDate = endDate;
         this.cost = cost;
         this.projectId = projectId;
         this.status = "todo";
