@@ -188,7 +188,8 @@ public String editUser(@PathVariable int id, @ModelAttribute User form, HttpSess
         model.addAttribute("task", new Task());
         model.addAttribute("projectId", projectId);
         User user = (User) session.getAttribute("user");
-        model.addAttribute("project", service.getProjectById(user.getId()));
+        Project project = service.getProjectById(projectId);
+        model.addAttribute("project", project);
         return "createtask";
     }
 
