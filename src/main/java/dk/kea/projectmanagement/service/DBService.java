@@ -1,9 +1,6 @@
 package dk.kea.projectmanagement.service;
 
-import dk.kea.projectmanagement.dto.ProjectFormDTO;
-import dk.kea.projectmanagement.dto.SubtaskFormDTO;
 import dk.kea.projectmanagement.dto.TaskAndSubtaskDTO;
-import dk.kea.projectmanagement.dto.TaskFormDTO;
 import dk.kea.projectmanagement.model.Project;
 import dk.kea.projectmanagement.model.Subtask;
 import dk.kea.projectmanagement.model.Task;
@@ -41,7 +38,7 @@ public class DBService {
         return repository.getProjectByUserId(id);
     }
 
-    public Project createProject(ProjectFormDTO form, User user){
+    public Project createProject(Project form, User user){
         return repository.createProject(form, user);
     }
 
@@ -65,11 +62,11 @@ public class DBService {
         return repository.getTasksByProjectId(projectId);
     }
 
-    public Task createTask(TaskFormDTO form, int projectId){
+    public Task createTask(Task form, int projectId){
         return repository.createTask(form, projectId);
     }
 
-    public Subtask createSubtask(SubtaskFormDTO form, int taskId){
+    public Subtask createSubtask(Subtask form, int taskId){
         return repository.createSubtask(form, taskId);
     }
 
@@ -93,7 +90,7 @@ public class DBService {
         return repository.getTaskById(taskId, projectId);
     }
 
-    public boolean editTask(TaskFormDTO form, int taskId, int projectId){
+    public boolean editTask(Task form, int taskId, int projectId){
         return repository.editTask(form, taskId, projectId);
     }
 
