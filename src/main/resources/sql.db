@@ -29,7 +29,6 @@ CREATE TABLE `task` (
   `end_date` DATE,
   `cost` DECIMAL,
   `status` ENUM('todo', 'in_progress', 'completed') NOT NULL,
-  `comment` TEXT,
   `project_id` INT UNSIGNED
   `percentage_completion` DECIMAL(5, 2) CHECK (percentage_completion >= 0 AND percentage_completion <= 100)
 );
@@ -43,7 +42,6 @@ CREATE TABLE `subtask` (
   `assignee_id` INT UNSIGNED,
   `cost` DECIMAL,
   `status` ENUM('todo', 'in_progress', 'completed') NOT NULL,
-  `comment` TEXT,
   `task_id` INT UNSIGNED
   `percentage_completion` DECIMAL(5, 2) CHECK (percentage_completion >= 0 AND percentage_completion <= 100)
 );
@@ -81,6 +79,13 @@ CREATE TABLE `subtask_assignee` (
   `user_id` INT UNSIGNED
 );
 
+CREATE TABLE comments (
+  id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+  comment TEXT,
+  task_id INT,
+  subtask_id INT
+);
+
 CREATE INDEX `project_user_project_id_idx` ON `project_user` (`project_id`);
 CREATE INDEX `project_user_user_id_idx` ON `project_user` (`user_id`);
 
@@ -104,3 +109,6 @@ CREATE INDEX `task_assignee_user_id_idx` ON `task_assignee` (`user_id`);
 
 CREATE INDEX `subtask_assignee_subtask_id_idx` ON `subtask_assignee` (`subtask_id`);
 CREATE INDEX `subtask_assignee_user_id_idx` ON `subtask_assignee` (`user_id`);
+
+CREATE INDEX idx_task_id ON comments (task_id);
+CREATE INDEX idx_subtask_id ON comments (subtask_id);
