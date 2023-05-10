@@ -7,14 +7,16 @@ public class SubtaskFormDTO {
     private String title;
     private String description;
     private LocalDate startDate;
+    private LocalDate endDate;
     private double cost;
     private int taskId;
 
-    public SubtaskFormDTO(int id, String title, String description, LocalDate startDate,double cost, int taskId) {
+    public SubtaskFormDTO(int id, String title, String description, LocalDate startDate, LocalDate endDate, double cost, int taskId) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.startDate = startDate;
+        this.endDate = endDate;
         this.cost = cost;
         this.taskId = taskId;
     }
@@ -69,5 +71,13 @@ public class SubtaskFormDTO {
 
     public void setTaskId(int taskId) {
         this.taskId = taskId;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
     }
 }

@@ -100,5 +100,10 @@ nav {
     margin-right: 10px;
 }
 
+ .error-message {
+     color: red;
+     font-size: 12px;
+ }
+
 
 
