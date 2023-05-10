@@ -100,7 +100,9 @@
                                 <p th:text="'Cost: ' + ${task.cost}"></p>
                                 <p th:text="'Assignee: ' + ${task.assigneeId}"></p>
                                 <h3 th:text="'Comment'"></h3>
-                                <p th:text="${task.comment}"></p>
+                                <div th:each = "comment : ${task.comments}">
+                                    <p th:text="${comment}"></p>
+                                </div>
                                 <form id="taskCommentForm"
                                       th:action="@{'/project/' + ${project.id} + '/addtaskcomment'}" method="post">
                                     <input type="hidden" name="taskId" th:value="${task.id}"/>
@@ -195,7 +197,9 @@
                                                 <p th:text="'Cost: ' + ${subtask.cost}"></p>
                                                 <p th:text="'Assignee: ' + ${subtask.assigneeId}"></p>
                                                 <h3 th:text="'Comment'"></h3>
-                                                <p th:text="${subtask.comment}"></p>
+                                                <div th:each="comment : ${subtask.comments}">
+                                                    <p th:text = "${comment}"></p>
+                                                </div>
                                                 <form id="subtaskCommentForm"
                                                       th:action="@{'/project/' + ${project.id} + '/addsubtaskcomment'}"
                                                       method="post">

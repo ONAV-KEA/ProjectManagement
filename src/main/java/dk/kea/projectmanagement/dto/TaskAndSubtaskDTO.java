@@ -14,11 +14,11 @@ public class TaskAndSubtaskDTO {
     private int assigneeId;
     private double cost;
     private String status;
-    private String comment;
+    private List<String> comments;
     private int projectId;
     private List<Subtask> subtasks;
 
-    public TaskAndSubtaskDTO(int id, String name, String description, LocalDate startDate, LocalDate endDate, int assigneeId, double cost, String status, String comment, int projectId, List<Subtask> subtasks) {
+    public TaskAndSubtaskDTO(int id, String name, String description, LocalDate startDate, LocalDate endDate, int assigneeId, double cost, String status, List<String> comments, int projectId, List<Subtask> subtasks) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -27,7 +27,7 @@ public class TaskAndSubtaskDTO {
         this.assigneeId = assigneeId;
         this.cost = cost;
         this.status = status;
-        this.comment = comment;
+        this.comments = comments;
         this.projectId = projectId;
         this.subtasks = subtasks;
     }
@@ -112,12 +112,12 @@ public class TaskAndSubtaskDTO {
         this.status = status;
     }
 
-    public String getComment() {
-        return comment;
+    public List<String> getComments() {
+        return comments;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setComments(List<String> comments) {
+        this.comments = comments;
     }
 
     public int getProjectId() {

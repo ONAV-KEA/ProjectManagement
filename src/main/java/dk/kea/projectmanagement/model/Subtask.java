@@ -1,6 +1,7 @@
 package dk.kea.projectmanagement.model;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class Subtask {
     private int id;
@@ -11,11 +12,11 @@ public class Subtask {
     private int assigneeId;
     private double cost;
     private String status;
-    private String comment;
+    private List<String> comments;
     private int taskId;
     private double percentageCompletion;
 
-    public Subtask(int id, String title, String description, LocalDate startDate, LocalDate endDate, int assigneeId, double cost, String status, String comment, int taskId) {
+    public Subtask(int id, String title, String description, LocalDate startDate, LocalDate endDate, int assigneeId, double cost, String status, List<String> comments, int taskId) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -24,7 +25,7 @@ public class Subtask {
         this.assigneeId = assigneeId;
         this.cost = cost;
         this.status = status;
-        this.comment = comment;
+        this.comments = comments;
         this.taskId = taskId;
     }
 
@@ -107,13 +108,7 @@ public class Subtask {
         this.status = status;
     }
 
-    public String getComment() {
-        return comment;
-    }
 
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
 
     public int getTaskId() {
         return taskId;
@@ -133,5 +128,13 @@ public class Subtask {
 
     public void setPercentageCompletion(double percentageCompletion) {
         this.percentageCompletion = percentageCompletion;
+    }
+
+    public List<String> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<String> comments) {
+        this.comments = comments;
     }
 }
