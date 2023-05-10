@@ -72,7 +72,7 @@
                     <tbody>
                     <tr th:each="project : ${projects}">
                         <td>
-                            <a th:href="@{/project/{projectId}(projectId=${project.id})}" th:text="${project.name}"></a>
+                            <a th:href="@{/project/{projectId}(projectId=${project.id})}" th:text="${project.name}" class="btn main-color-bg btn-sm"></a>
                         </td>
                         <td th:text="${project.name}"></td>
                         <td th:text="${project.description}"></td>
