@@ -8,6 +8,7 @@ import dk.kea.projectmanagement.model.Subtask;
 import dk.kea.projectmanagement.model.Task;
 import dk.kea.projectmanagement.model.User;
 import dk.kea.projectmanagement.repository.IRepository;
+import dk.kea.projectmanagement.service.DBService;
 import dk.kea.projectmanagement.utility.LoginSampleException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -22,10 +23,10 @@ import org.springframework.web.bind.annotation.*;
 
 @org.springframework.stereotype.Controller
 public class Controller {
-    IRepository repository;
+    private DBService service;
 
-    public Controller(ApplicationContext context, @Value("${repository.impl}") String impl){
-        repository = (IRepository) context.getBean(impl);
+    public Controller(DBService service){
+        this.service = service;
     }
 
     @GetMapping({"/",""})
@@ -39,7 +40,7 @@ public class Controller {
     @PostMapping({"/",""})
     public String indexPost(HttpSession session, @ModelAttribute User form, Model model) {
         try {
-            User user = repository.login(form.getUsername(), form.getPassword());
+            User user = service.login(form.getUsername(), form.getPassword());
 
             session.setAttribute("user", user);
             if (user.getRole().equals("admin")){
@@ -62,7 +63,7 @@ public class Controller {
 
     @GetMapping("/template")
     public String template(Model model){
-        model.addAttribute("users", repository.getAllUsers());
+        model.addAttribute("users", service.getAllUsers());
         return "template";
     }
 
@@ -74,7 +75,7 @@ public class Controller {
         }
         User user = (User) session.getAttribute("user");
         model.addAttribute("user", user);
-        model.addAttribute("projects", repository.getProjectByUserId(user.getId()));
+        model.addAttribute("projects", service.getProjectByUserId(user.getId()));
 
         return "dashboard";
     }
@@ -96,7 +97,7 @@ public class Controller {
             return "redirect:/";
         }
         User user = (User) session.getAttribute("user");
-        Project project = repository.createProject(form, user);
+        Project project = service.createProject(form, user);
 
         return "redirect:/dashboard";
     }
@@ -110,7 +111,7 @@ public class Controller {
         }
         User user = (User) session.getAttribute("user");
         model.addAttribute("user", user);
-        model.addAttribute("users", repository.getAllUsers());
+        model.addAttribute("users", service.getAllUsers());
         model.addAttribute("createUser", new User());
 
 
@@ -128,7 +129,7 @@ public String createUser(@ModelAttribute User form, HttpSession session) {
             return "redirect:/";
         }
         User user = (User) session.getAttribute("user");
-        repository.createUser(form);
+        service.createUser(form);
 
         return "redirect:/admin";
     }
@@ -140,7 +141,7 @@ public String editUser(@PathVariable int id, @ModelAttribute User form, HttpSess
         return "redirect:/";
     }
     User user = (User) session.getAttribute("user");
-    repository.editUser(form, id);
+    service.editUser(form, id);
 
     return "redirect:/admin";
 }
@@ -152,7 +153,7 @@ public String editUser(@PathVariable int id, @ModelAttribute User form, HttpSess
         }
         User user = (User) session.getAttribute("user");
         model.addAttribute("user", user);
-        model.addAttribute("editUser", repository.getUserByID(id));
+        model.addAttribute("editUser", service.getUserByID(id));
 
         return "redirect:/admin";
     }
@@ -165,7 +166,7 @@ public String editUser(@PathVariable int id, @ModelAttribute User form, HttpSess
         }
         User user = (User) session.getAttribute("user");
         model.addAttribute("user", user);
-        model.addAttribute("projects", repository.getProjectByUserId(user.getId()));
+        model.addAttribute("projects", service.getProjectByUserId(user.getId()));
 
         return "projects";
     }
@@ -178,8 +179,8 @@ public String editUser(@PathVariable int id, @ModelAttribute User form, HttpSess
         }
         User user = (User) session.getAttribute("user");
         model.addAttribute("user", user);
-        model.addAttribute("project", repository.getProjectById(id));
-        model.addAttribute("tasks", repository.getTasksWithSubtasksByProjectId(id));
+        model.addAttribute("project", service.getProjectById(id));
+        model.addAttribute("tasks", service.getTasksWithSubtasksByProjectId(id));
 
         return "project";
     }
@@ -193,7 +194,7 @@ public String editUser(@PathVariable int id, @ModelAttribute User form, HttpSess
         model.addAttribute("task", new TaskFormDTO());
         model.addAttribute("projectId", projectId);
         User user = (User) session.getAttribute("user");
-        model.addAttribute("project", repository.getProjectById(user.getId()));
+        model.addAttribute("project", service.getProjectById(user.getId()));
         return "createtask";
     }
 
@@ -204,7 +205,7 @@ public String editUser(@PathVariable int id, @ModelAttribute User form, HttpSess
             return "redirect:/";
         }
         User user = (User) session.getAttribute("user");
-        Task task = repository.createTask(form, projectId);
+        Task task = service.createTask(form, projectId);
 
         return "redirect:/project/" + projectId;
     }
@@ -216,7 +217,7 @@ public String editUser(@PathVariable int id, @ModelAttribute User form, HttpSess
             return "redirect:/";
         }
         User user = (User) session.getAttribute("user");
-        repository.addCommentToTask(taskId, comment);
+        service.addCommentToTask(taskId, comment);
 
         return "redirect:/project/" + projectId;
 
@@ -242,7 +243,7 @@ public String editUser(@PathVariable int id, @ModelAttribute User form, HttpSess
             return "redirect:/";
         }
         User user = (User) session.getAttribute("user");
-        Subtask subtask = repository.createSubtask(form, taskId);
+        Subtask subtask = service.createSubtask(form, taskId);
 
         return "redirect:/project/" + projectId;
     }
@@ -258,7 +259,7 @@ public String editUser(@PathVariable int id, @ModelAttribute User form, HttpSess
             return "redirect:/";
         }
         User user = (User) session.getAttribute("user");
-        repository.addCommentToSubtask(subtaskId, comment);
+        service.addCommentToSubtask(subtaskId, comment);
 
         return "redirect:/project/" + projectId;
 
@@ -276,10 +277,10 @@ public String editUser(@PathVariable int id, @ModelAttribute User form, HttpSess
         }
 
         if ("task".equals(type)) {
-            repository.deleteTask(id);
+            service.deleteTask(id);
             System.out.println("Task deleted " + id);
         } else if ("subtask".equals(type)) {
-            repository.deleteSubtask(id);
+            service.deleteSubtask(id);
             System.out.println("Subtask deleted " + id);
         }
 
@@ -292,7 +293,7 @@ public String editUser(@PathVariable int id, @ModelAttribute User form, HttpSess
         if (!isLoggedIn(session)) {
             return "redirect:/";
         }
-        Task task = repository.getTaskById(taskId, projectId);
+        Task task = service.getTaskById(taskId, projectId);
         if (task == null) {
             return "redirect:/project/" + projectId; // Redirects to project page if task is not found
         }
@@ -309,7 +310,7 @@ public String editUser(@PathVariable int id, @ModelAttribute User form, HttpSess
         if (!isLoggedIn(session)) {
             return "redirect:/";
         }
-        boolean isEdited = repository.editTask(form, taskId, projectId);
+        boolean isEdited = service.editTask(form, taskId, projectId);
         if (!isEdited) {
             // Handle error if task is not updated, e.g., show an error message or redirect to an error page
         }
@@ -323,7 +324,7 @@ public String editUser(@PathVariable int id, @ModelAttribute User form, HttpSess
         if (!isLoggedIn(session)){
             return "redirect:/";
         }
-        repository.updateTaskStatus(taskId, taskStatus);
+        service.updateTaskStatus(taskId, taskStatus);
         User user = (User) session.getAttribute("user");
         return "redirect:/project/" + projectId;
     }
@@ -336,7 +337,7 @@ public String editUser(@PathVariable int id, @ModelAttribute User form, HttpSess
         }
 
         System.out.println("Subtask status: " + subtaskStatus);
-        repository.updateSubtaskStatus(subtaskId, subtaskStatus);
+        service.updateSubtaskStatus(subtaskId, subtaskStatus);
 
         User user = (User) session.getAttribute("user");
         return "redirect:/project/" + projectId;

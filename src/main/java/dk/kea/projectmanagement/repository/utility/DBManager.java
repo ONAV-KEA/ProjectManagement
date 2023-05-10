@@ -1,4 +1,4 @@
-package dk.kea.projectmanagement.utility;
+package dk.kea.projectmanagement.repository.utility;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

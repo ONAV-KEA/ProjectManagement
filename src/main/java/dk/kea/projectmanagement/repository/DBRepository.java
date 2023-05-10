@@ -4,7 +4,7 @@ import dk.kea.projectmanagement.model.Project;
 import dk.kea.projectmanagement.model.Task;
 import dk.kea.projectmanagement.model.Subtask;
 import dk.kea.projectmanagement.model.User;
-import dk.kea.projectmanagement.utility.DBManager;
+import dk.kea.projectmanagement.repository.utility.DBManager;
 import dk.kea.projectmanagement.utility.LoginSampleException;
 import dk.kea.projectmanagement.dto.ProjectFormDTO;
 import dk.kea.projectmanagement.dto.SubtaskFormDTO;
