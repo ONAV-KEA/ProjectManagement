@@ -39,4 +39,8 @@ public interface IRepository {
     void createUser(User form);
 
     void editUser(User form, int userId);
+
+    List<String> getCommentsForTask(int taskId);
+
+    List<String> getCommentsForSubtask(int subtaskId);
 }
