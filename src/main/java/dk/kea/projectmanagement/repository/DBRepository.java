@@ -14,12 +14,15 @@ import org.slf4j.LoggerFactory;
 import dk.kea.projectmanagement.dto.TaskAndSubtaskDTO;
 import org.springframework.stereotype.Repository;
 
+
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
 
 
 @Repository("db_repo")
@@ -793,6 +796,57 @@ public class DBRepository implements IRepository {
             }
         }
     }
+
+
+    @Override
+    public List<List<Object>> createGanttData(List<TaskAndSubtaskDTO> tasks) {
+        List<List<Object>> ganttData = new ArrayList<>();
+
+        for (TaskAndSubtaskDTO task : tasks) {
+            List<Object> taskData = new ArrayList<>();
+            taskData.add(task.getName());
+
+            LocalDate localStartDate = task.getStartDate();
+            if (localStartDate != null) {
+                java.util.Date utilStartDate = Date.from(localStartDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+                java.sql.Date startDate = new java.sql.Date(utilStartDate.getTime());
+                taskData.add(startDate);
+            }
+
+            LocalDate localEndDate = task.getEndDate();
+            if (localEndDate != null) {
+                java.util.Date utilEndDate = Date.from(localEndDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+                java.sql.Date endDate = new java.sql.Date(utilEndDate.getTime());
+                taskData.add(endDate);
+            }
+
+            ganttData.add(taskData);
+
+            for (Subtask subtask : task.getSubtasks()) {
+                List<Object> subtaskData = new ArrayList<>();
+                subtaskData.add(subtask.getTitle());
+
+                LocalDate localSubtaskStartDate = subtask.getStartDate();
+                if (localSubtaskStartDate != null) {
+                    java.util.Date utilSubtaskStartDate = Date.from(localSubtaskStartDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+                    java.sql.Date subtaskStartDate = new java.sql.Date(utilSubtaskStartDate.getTime());
+                    subtaskData.add(subtaskStartDate);
+                }
+
+                LocalDate localSubtaskEndDate = subtask.getEndDate();
+                if (localSubtaskEndDate != null) {
+                    java.util.Date utilSubtaskEndDate = Date.from(localSubtaskEndDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+                    java.sql.Date subtaskEndDate = new java.sql.Date(utilSubtaskEndDate.getTime());
+                    subtaskData.add(subtaskEndDate);
+                }
+
+                ganttData.add(subtaskData);
+            }
+        }
+
+        return ganttData;
+    }
+
 
 }
 

@@ -248,6 +248,11 @@
     </table>
 </div>
 
+<div class="container mt-3 p-3 container-fluid">
+    <h3 class="text-center">Gantt Chart for <span th:text="${project.name}"></span></h3>
+    <div id="chart_div"></div>
+</div>
+
 
 <footer>
     <div class="container-fluid text-center">
@@ -281,6 +286,49 @@
         });
     });
 </script>
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script th:inline="javascript">
+    google.charts.load('current', {'packages':['gantt']});
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Task ID');
+        data.addColumn('string', 'Task Name');
+        data.addColumn('date', 'Start Date');
+        data.addColumn('date', 'End Date');
+        data.addColumn('number', 'Duration');
+        data.addColumn('number', 'Percent Complete');
+        data.addColumn('string', 'Dependencies');
+
+        /*[# th:each="task : ${ganttData}"]*/
+        data.addRows([
+            [
+                /*[[${task[0]}]]*/, // Task ID
+                /*[[${task[0]}]]*/, // Task Name
+                new Date(/*[[${task[1]}]]*/), // Start Date
+                new Date(/*[[${task[2]}]]*/), // End Date
+                null, // Duration
+                0, // Percent Complete
+                null // Dependencies
+            ],
+        ]);
+        /*[/]*/
+
+        var options = {
+            height: 400,
+            gantt: {
+                trackHeight: 30
+            }
+        };
+
+        var chart = new google.visualization.Gantt(document.getElementById('chart_div'));
+        chart.draw(data, options);
+    }
+</script>
+
+
 
 
 </body>

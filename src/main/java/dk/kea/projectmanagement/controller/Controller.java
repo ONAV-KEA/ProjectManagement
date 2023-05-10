@@ -2,6 +2,7 @@ package dk.kea.projectmanagement.controller;
 
 import dk.kea.projectmanagement.dto.ProjectFormDTO;
 import dk.kea.projectmanagement.dto.SubtaskFormDTO;
+import dk.kea.projectmanagement.dto.TaskAndSubtaskDTO;
 import dk.kea.projectmanagement.dto.TaskFormDTO;
 import dk.kea.projectmanagement.model.Project;
 import dk.kea.projectmanagement.model.Subtask;
@@ -20,6 +21,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @org.springframework.stereotype.Controller
 public class Controller {
@@ -179,11 +182,17 @@ public String editUser(@PathVariable int id, @ModelAttribute User form, HttpSess
         }
         User user = (User) session.getAttribute("user");
         model.addAttribute("user", user);
-        model.addAttribute("project", service.getProjectById(id));
-        model.addAttribute("tasks", service.getTasksWithSubtasksByProjectId(id));
+        Project project = service.getProjectById(id);
+        model.addAttribute("project", project);
+        List<TaskAndSubtaskDTO> tasks = service.getTasksWithSubtasksByProjectId(id);
+        model.addAttribute("tasks", tasks);
+        List<List<Object>> ganttData = service.createGanttData(tasks);
+        model.addAttribute("ganttData", ganttData);
 
         return "project";
     }
+
+
 
     @GetMapping("/project/{projectId}/createtask")
     public String createTask(@PathVariable int projectId, Model model, HttpSession session) {

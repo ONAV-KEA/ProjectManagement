@@ -105,4 +105,7 @@ public class DBService {
         repository.editUser(form, userId);
     }
 
+    public List<List<Object>> createGanttData(List<TaskAndSubtaskDTO> tasks) {
+        return repository.createGanttData(tasks);
+    }
 }

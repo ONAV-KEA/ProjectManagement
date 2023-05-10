@@ -42,4 +42,6 @@ public interface IRepository {
     void createUser(User form);
 
     void editUser(User form, int userId);
+
+    List<List<Object>> createGanttData(List<TaskAndSubtaskDTO> tasks);
 }
