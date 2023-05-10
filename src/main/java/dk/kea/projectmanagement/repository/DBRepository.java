@@ -352,9 +352,9 @@ public class DBRepository implements IRepository {
                 int assigneeId = rs.getInt("assignee_id");
                 double cost = rs.getDouble("cost");
                 String status = rs.getString("status");
-                String comment = rs.getString("comment");
+                List<String> comments = getCommentsForTask(id);
                 int project_Id = rs.getInt("project_id");
-                Task task = new Task(id, title, description, startDate, endDate, assigneeId, cost, status, comment, project_Id);
+                Task task = new Task(id, title, description, startDate, endDate, assigneeId, cost, status, comments, project_Id);
                 tasks.add(task);
             }
             con.commit();
@@ -502,9 +502,9 @@ public class DBRepository implements IRepository {
             Connection con = DBManager.getConnection();
             String SQL = "SELECT " + "t.id AS task_id," + " t.title AS task_title, " + "t.description AS task_description, " + "t.start_date AS task_start_date, " +
                     "t.end_date AS task_end_date, " + "t.assignee_id AS task_assignee_id, " + "t.cost AS task_cost, " + "t.status AS task_status, " +
-                    "t.comment AS task_comment, " + "st.id AS subtask_id, " + "st.title AS subtask_title, " + "st.description AS subtask_description, " +
+                    "st.id AS subtask_id, " + "st.title AS subtask_title, " + "st.description AS subtask_description, " +
                     "st.start_date AS subtask_start_date, " + "st.end_date AS subtask_end_date, " + "st.assignee_id AS subtask_assignee_id, " +
-                    "st.cost AS subtask_cost, " + "st.status AS subtask_status, " + "st.comment AS subtask_comment " +
+                    "st.cost AS subtask_cost, " + "st.status AS subtask_status " +
                     "FROM task t " +
                     "LEFT JOIN subtask st ON t.id = st.task_id " +
                     "WHERE t.project_id = ? " +
@@ -525,8 +525,8 @@ public class DBRepository implements IRepository {
                     int assigneeId = rs.getInt("task_assignee_id");
                     double cost = rs.getDouble("task_cost");
                     String status = rs.getString("task_status");
-                    String comment = rs.getString("task_comment");
-                    task = new TaskAndSubtaskDTO(taskId, title, description, startDate, endDate, assigneeId, cost, status, comment, id, new ArrayList<>());
+                    List<String> comments = getCommentsForTask(taskId);
+                    task = new TaskAndSubtaskDTO(taskId, title, description, startDate, endDate, assigneeId, cost, status, comments, id, new ArrayList<>());
                     taskMap.put(taskId, task);
                 } else {
                     task = taskMap.get(taskId);
@@ -541,9 +541,9 @@ public class DBRepository implements IRepository {
                     int subtaskAssigneeId = rs.getInt("subtask_assignee_id");
                     double subtaskCost = rs.getDouble("subtask_cost");
                     String subtaskStatus = rs.getString("subtask_status");
-                    String subtaskComment = rs.getString("subtask_comment");
+                    List<String> subtaskComments = getCommentsForSubtask(subtaskId);
                     Subtask subtask = new Subtask(subtaskId, subtaskTitle, subtaskDescription, subtaskStartDate, subtaskEndDate,
-                            subtaskAssigneeId, subtaskCost, subtaskStatus, subtaskComment, taskId);
+                            subtaskAssigneeId, subtaskCost, subtaskStatus, subtaskComments, taskId);
                     task.getSubtasks().add(subtask);
                 }
             }
@@ -561,7 +561,7 @@ public class DBRepository implements IRepository {
         try {
             con = DBManager.getConnection();
             con.setAutoCommit(false);
-            String SQL = "UPDATE task SET comment = ? WHERE id = ?;";
+            String SQL = "INSERT INTO comments (comment, task_id) VALUES (?, ?);";
             PreparedStatement ps = con.prepareStatement(SQL);
             ps.setString(1, comment);
             ps.setInt(2, taskId);
@@ -579,7 +579,7 @@ public class DBRepository implements IRepository {
                     ex.printStackTrace();
                 }
             }
-            throw new RuntimeException("Could not add comment to subtask", e);
+            throw new RuntimeException("Could not add comment to task", e);
         } finally {
             try {
                 con.setAutoCommit(true);
@@ -596,7 +596,7 @@ public class DBRepository implements IRepository {
         try {
             con = DBManager.getConnection();
             con.setAutoCommit(false);
-            String SQL = "UPDATE subtask SET comment = ? WHERE id = ?;";
+            String SQL = "INSERT INTO comments (comment, subtask_id) VALUES (?, ?);";
             PreparedStatement ps = con.prepareStatement(SQL);
             ps.setString(1, comment);
             ps.setInt(2, subtaskId);
@@ -789,6 +789,62 @@ public class DBRepository implements IRepository {
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public List<String> getCommentsForTask(int taskId) {
+        List<String> comments = new ArrayList<>();
+        Connection con = null;
+        try {
+            con = DBManager.getConnection();
+            String SQL = "SELECT comment FROM comments WHERE task_id = ?;";
+            PreparedStatement ps = con.prepareStatement(SQL);
+            ps.setInt(1, taskId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                String comment = rs.getString("comment");
+                comments.add(comment);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Could not get comments for task", e);
+        } finally {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return comments;
+    }
+
+    @Override
+    public List<String> getCommentsForSubtask(int subtaskId) {
+        List<String> comments = new ArrayList<>();
+        Connection con = null;
+        try {
+            con = DBManager.getConnection();
+            String SQL = "SELECT comment FROM comments WHERE subtask_id = ?;";
+            PreparedStatement ps = con.prepareStatement(SQL);
+            ps.setInt(1, subtaskId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                String comment = rs.getString("comment");
+                comments.add(comment);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Could not get comments for subtask", e);
+        } finally {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return comments;
     }
 
 }
