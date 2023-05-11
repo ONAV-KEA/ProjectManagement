@@ -1,5 +1,6 @@
 package dk.kea.projectmanagement.controller;
 
+import dk.kea.projectmanagement.dto.TaskAndSubtaskDTO;
 import dk.kea.projectmanagement.model.Project;
 import dk.kea.projectmanagement.model.Subtask;
 import dk.kea.projectmanagement.model.Task;
@@ -82,7 +83,7 @@ public class Controller {
         if (!isLoggedIn(session)){
             return "redirect:/";
         }
-        model.addAttribute("project", new ProjectFormDTO());
+        model.addAttribute("project", new Project());
         return "createproject";
     }
 
