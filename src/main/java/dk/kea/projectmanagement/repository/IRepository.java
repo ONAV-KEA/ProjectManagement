@@ -43,4 +43,6 @@ public interface IRepository {
     List<String> getCommentsForTask(int taskId);
 
     List<String> getCommentsForSubtask(int subtaskId);
+
+    void completeTask(int taskId, int subtaskId);
 }
