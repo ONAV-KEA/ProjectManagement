@@ -320,6 +320,9 @@ public String editUser(@PathVariable int id, @ModelAttribute User form, HttpSess
             return "redirect:/";
         }
         service.updateTaskStatus(taskId, taskStatus);
+        if (taskStatus.equals("completed")) {
+            service.completeTask(taskId, 0);
+        }
         User user = (User) session.getAttribute("user");
         return "redirect:/project/" + projectId;
     }
@@ -333,6 +336,9 @@ public String editUser(@PathVariable int id, @ModelAttribute User form, HttpSess
 
         System.out.println("Subtask status: " + subtaskStatus);
         service.updateSubtaskStatus(subtaskId, subtaskStatus);
+        if (subtaskStatus.equals("completed")) {
+            service.completeTask(0, subtaskId);
+        }
 
         User user = (User) session.getAttribute("user");
         return "redirect:/project/" + projectId;
