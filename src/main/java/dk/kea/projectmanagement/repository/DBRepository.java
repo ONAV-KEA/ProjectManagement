@@ -847,5 +847,47 @@ public class DBRepository implements IRepository {
         return comments;
     }
 
+    @Override
+    public void completeTask(int taskId, int subtaskId) {
+        Connection con = null;
+        try{
+            con = DBManager.getConnection();
+            con.setAutoCommit(false);
+
+            if (subtaskId == 0) {
+                // Complete the main task
+                String SQL = "UPDATE task SET completion_percentage = 100, end_date = ? WHERE id = ?;";
+                PreparedStatement ps = con.prepareStatement(SQL);
+                ps.setDate(1, Date.valueOf(LocalDate.now()));
+                ps.setInt(2, taskId);
+                ps.executeUpdate();
+            } else {
+                // Complete the subtask
+                String SQL = "UPDATE subtask SET completion_percentage = 100, end_date = ? WHERE id = ?;";
+                PreparedStatement ps = con.prepareStatement(SQL);
+                ps.setDate(1, Date.valueOf(LocalDate.now()));
+                ps.setInt(2, subtaskId);
+                ps.executeUpdate();
+            }
+            con.commit();
+        } catch(SQLException e){
+            if(con != null) {
+                try {
+                    con.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            throw new RuntimeException("Could not complete task", e);
+        } finally {
+            try {
+                con.setAutoCommit(true);
+                con.close();
+            } catch(SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 }
 

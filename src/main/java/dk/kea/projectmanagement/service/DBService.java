@@ -102,4 +102,8 @@ public class DBService {
         repository.editUser(form, userId);
     }
 
+    public void completeTask(int taskId, int subtaskId){
+        repository.completeTask(taskId, subtaskId);
+    }
+
 }
