@@ -217,6 +217,8 @@
                                                 <a class="btn btn-primary"
                                                    th:href="@{'/project/' + ${project.id} + '/delete/subtask/' + ${subtask.id}}">Delete
                                                     Subtask</a>
+                                                <a class="btn btn-warning"
+                                                   th:href="@{'/project/' + ${project.id} + '/editsubtask/' + ${task.id} + '/' + ${subtask.id}}">Edit Subtask</a>
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                                                     Close
                                                 </button>

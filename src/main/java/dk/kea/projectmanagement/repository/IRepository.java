@@ -30,7 +30,11 @@ public interface IRepository {
 
     Task getTaskById(int taskId, int projectId);
 
+    Subtask getSubtaskById(int subtaskId, int taskId);
+
     boolean editTask(Task form, int taskId, int projectId);
+
+    boolean editSubtask(Task form, int subtaskId, int taskId);
 
     void updateTaskStatus(int taskId, String status);
 
