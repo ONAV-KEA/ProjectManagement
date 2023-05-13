@@ -90,8 +90,16 @@ public class DBService {
         return repository.getTaskById(taskId, projectId);
     }
 
+    public Subtask getSubtaskById(int subtaskId, int taskId){
+        return repository.getSubtaskById(subtaskId, taskId);
+    }
+
     public boolean editTask(Task form, int taskId, int projectId){
         return repository.editTask(form, taskId, projectId);
+    }
+
+    public boolean editSubtask(Task form, int subtaskId, int taskId){
+        return repository.editSubtask(form, subtaskId, taskId);
     }
 
     public void createUser(User form){

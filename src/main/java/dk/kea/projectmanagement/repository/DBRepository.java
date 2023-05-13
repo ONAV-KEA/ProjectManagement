@@ -659,6 +659,40 @@ public class DBRepository implements IRepository {
         return task;
 }
 
+    @Override
+    public Subtask getSubtaskById(int subtaskId, int taskId) {
+        Connection con = null;
+        Subtask subtask = null;
+        try {
+            con = DBManager.getConnection();
+            String SQL = "SELECT * FROM subtask WHERE id = ? AND task_id = ?;";
+            PreparedStatement ps = con.prepareStatement(SQL);
+            ps.setInt(1, subtaskId);
+            ps.setInt(2, taskId);
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                String title = rs.getString("title");
+                String description = rs.getString("description");
+                LocalDate startDate = rs.getDate("start_date") == null ? null : rs.getDate("start_date").toLocalDate();
+                LocalDate endDate = rs.getDate("end_date") == null ? null : rs.getDate("end_date").toLocalDate();
+                double cost = rs.getDouble("cost");
+                subtask = new Subtask(subtaskId, title, description, startDate, endDate, cost, taskId);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Could not get subtask", e);
+        } finally {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return subtask;
+    }
+
 
     public boolean editTask(Task form, int taskId, int projectId) {
         Connection con = null;
@@ -702,6 +736,48 @@ public class DBRepository implements IRepository {
         }
     }
 
+    @Override
+    public boolean editSubtask(Task form, int subtaskId, int taskId) {
+        Connection con = null;
+        try {
+            con = DBManager.getConnection();
+            con.setAutoCommit(false);
+            String SQL = "UPDATE subtask SET title = ?, description = ?, start_date = ?, cost = ?, end_date = ?, status = ? WHERE id = ? AND `task_id` = ?;";
+            PreparedStatement ps = con.prepareStatement(SQL);
+            ps.setString(1, form.getTitle());
+            ps.setString(2, form.getDescription());
+            ps.setDate(3, form.getStartDate() != null ? Date.valueOf(form.getStartDate()) : null);
+            ps.setDouble(4, form.getCost());
+            ps.setDate(5, form.getEndDate() != null ? Date.valueOf(form.getEndDate()) : null);
+            ps.setString(6, form.getStatus());
+            ps.setInt(7, subtaskId);
+            ps.setInt(8, taskId);
+
+            int affectedRows = ps.executeUpdate();
+            if (affectedRows == 1) {
+                con.commit();
+                return true;
+            } else {
+                throw new RuntimeException("Could not edit subtask");
+            }
+        } catch (SQLException e) {
+            if (con != null) {
+                try {
+                    con.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            throw new RuntimeException("Could not edit subtask", e);
+        } finally {
+            try {
+                con.setAutoCommit(true);
+                con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
 
     @Override

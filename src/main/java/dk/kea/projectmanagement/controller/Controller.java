@@ -312,6 +312,41 @@ public String editUser(@PathVariable int id, @ModelAttribute User form, HttpSess
         return "redirect:/project/" + projectId;
     }
 
+    @GetMapping("/project/{projectId}/editsubtask/{taskId}/{subtaskId}")
+    public String editSubtask(@PathVariable int projectId, @PathVariable int subtaskId, @PathVariable int taskId, Model model, HttpSession session) {
+        // Redirects to login site if user is not logged in
+        if (!isLoggedIn(session)) {
+            return "redirect:/";
+        }
+
+        System.out.println("Subtask id: " + subtaskId
+        + "\nTask id: " + taskId
+                + "\nProject id: " + projectId);
+        Subtask task = service.getSubtaskById(subtaskId, taskId);
+        if (task == null) {
+            return "redirect:/project/" + projectId; // Redirects to project page if task is not found
+        }
+        Subtask form = new Subtask(task.getTitle(), task.getDescription(), task.getStartDate(), task.getEndDate(), task.getCost(),task.getStatus());
+        model.addAttribute("taskForm", form);
+        model.addAttribute("taskId", taskId);
+        model.addAttribute("subtaskId", subtaskId);
+        model.addAttribute("projectId", projectId);
+        return "editsubtask";
+    }
+
+    @PostMapping("/project/{projectId}/editsubtask/{taskId}/{subtaskId}")
+    public String updateSubtask(@PathVariable int projectId, @PathVariable int subtaskId, @PathVariable int taskId, @ModelAttribute Task form, HttpSession session) {
+        // Redirects to login site if user is not logged in
+        if (!isLoggedIn(session)) {
+            return "redirect:/";
+        }
+        boolean isEdited = service.editSubtask(form, subtaskId, taskId);
+        if (!isEdited) {
+            // Handle error if task is not updated, e.g., show an error message or redirect to an error page
+        }
+        return "redirect:/project/" + projectId;
+    }
+
 
     @PostMapping("/project/{projectId}/update-task-status/{taskId}")
     public String updateTaskStatus(@PathVariable int projectId, @PathVariable int taskId, HttpSession session, @RequestParam("taskStatus") String taskStatus) {
