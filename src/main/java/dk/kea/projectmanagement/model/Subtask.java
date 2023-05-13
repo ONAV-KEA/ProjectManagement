@@ -40,6 +40,15 @@ public class Subtask {
         this.status = "todo";
     }
 
+    public Subtask(String title, String description, LocalDate startDate, LocalDate endDate, double cost, String status) {
+        this.title = title;
+        this.description = description;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.cost = cost;
+        this.status = status;
+    }
+
     public Subtask() {
     }
 
