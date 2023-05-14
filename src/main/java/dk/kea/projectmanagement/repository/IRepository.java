@@ -10,10 +10,6 @@ import dk.kea.projectmanagement.dto.TaskAndSubtaskDTO;
 import java.util.List;
 
 public interface IRepository {
-
-    List<User> getAllUsers();
-    User getUserByID(int id);
-    User login(String username, String password) throws LoginSampleException;
     List<Project> getProjectByUserId(int id);
     Project createProject(Project form, User user);
     List<Task> getTasksByProjectId(int projectId);
@@ -41,10 +37,6 @@ public interface IRepository {
     void updateTaskStatus(int taskId, String status);
 
     void updateSubtaskStatus(int taskId, String taskStatus);
-
-    void createUser(User form);
-
-    void editUser(User form, int userId);
 
     List<String> getCommentsForTask(int taskId);
 

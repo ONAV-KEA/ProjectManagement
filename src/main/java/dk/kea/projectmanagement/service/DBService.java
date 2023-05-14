@@ -22,18 +22,6 @@ public class DBService {
         repository = (IRepository) context.getBean(impl);
     }
 
-    public List<User> getAllUsers(){
-        return repository.getAllUsers();
-    }
-
-    public User getUserByID(int id){
-        return repository.getUserByID(id);
-    }
-
-    public User login(String username, String password) throws LoginSampleException {
-        return repository.login(username, password);
-    }
-
     public List<Project> getProjectByUserId(int id){
         return repository.getProjectByUserId(id);
     }
@@ -104,14 +92,6 @@ public class DBService {
 
     public boolean editSubtask(Task form, int subtaskId, int taskId){
         return repository.editSubtask(form, subtaskId, taskId);
-    }
-
-    public void createUser(User form){
-        repository.createUser(form);
-    }
-
-    public void editUser(User form, int userId){
-        repository.editUser(form, userId);
     }
 
     public void completeTask(int taskId, int subtaskId){

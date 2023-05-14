@@ -5,6 +5,7 @@ import dk.kea.projectmanagement.model.Subtask;
 import dk.kea.projectmanagement.model.Task;
 import dk.kea.projectmanagement.model.User;
 import dk.kea.projectmanagement.service.DBService;
+import dk.kea.projectmanagement.service.UserService;
 import dk.kea.projectmanagement.utility.LoginSampleException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -20,9 +21,11 @@ import java.util.List;
 @org.springframework.stereotype.Controller
 public class Controller {
     private DBService service;
+    private UserService userService;
 
-    public Controller(DBService service){
+    public Controller(DBService service, UserService userService){
         this.service = service;
+        this.userService = userService;
     }
 
     @GetMapping({"/",""})
@@ -36,7 +39,7 @@ public class Controller {
     @PostMapping({"/",""})
     public String indexPost(HttpSession session, @ModelAttribute User form, Model model) {
         try {
-            User user = service.login(form.getUsername(), form.getPassword());
+            User user = userService.login(form.getUsername(), form.getPassword());
 
             session.setAttribute("user", user);
             if (user.getRole().equals("admin")){
@@ -59,7 +62,7 @@ public class Controller {
 
     @GetMapping("/template")
     public String template(Model model){
-        model.addAttribute("users", service.getAllUsers());
+        model.addAttribute("users", userService.getAllUsers());
         return "template";
     }
 
@@ -107,7 +110,7 @@ public class Controller {
         }
         User user = (User) session.getAttribute("user");
         model.addAttribute("user", user);
-        model.addAttribute("users", service.getAllUsers());
+        model.addAttribute("users", userService.getAllUsers());
         model.addAttribute("createUser", new User());
 
 
@@ -125,7 +128,7 @@ public String createUser(@ModelAttribute User form, HttpSession session) {
             return "redirect:/";
         }
         User user = (User) session.getAttribute("user");
-        service.createUser(form);
+        userService.createUser(form);
 
         return "redirect:/admin";
     }
@@ -137,7 +140,7 @@ public String editUser(@PathVariable int id, @ModelAttribute User form, HttpSess
         return "redirect:/";
     }
     User user = (User) session.getAttribute("user");
-    service.editUser(form, id);
+    userService.editUser(form, id);
 
     return "redirect:/admin";
 }
@@ -149,7 +152,7 @@ public String editUser(@PathVariable int id, @ModelAttribute User form, HttpSess
         }
         User user = (User) session.getAttribute("user");
         model.addAttribute("user", user);
-        model.addAttribute("editUser", service.getUserByID(id));
+        model.addAttribute("editUser", userService.getUserByID(id));
 
         return "redirect:/admin";
     }
