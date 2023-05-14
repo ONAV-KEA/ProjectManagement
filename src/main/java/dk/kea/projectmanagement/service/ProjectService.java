@@ -33,4 +33,8 @@ public class ProjectService {
     public void deleteProject(int projectId, int userId){
         repository.deleteProject(projectId, userId);
     }
+
+    public void editProject(Project form, int projectId){
+        repository.editProject(form, projectId);
+    }
 }

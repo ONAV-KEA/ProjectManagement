@@ -411,6 +411,17 @@ public String editUser(@PathVariable int id, @ModelAttribute User form, HttpSess
         return "projectsettings";
     }
 
+    @PostMapping("/project/{projectId}/projectsettings")
+    public String updateProject(@PathVariable int projectId, @ModelAttribute Project form, HttpSession session) {
+        // Redirects to login site if user is not logged in
+        if (!isLoggedIn(session)) {
+            return "redirect:/";
+        }
+        projectService.editProject(form, projectId);
+
+        return "redirect:/project/" + projectId;
+    }
+
     @GetMapping("/project/{projectId}/deleteproject")
     public String deleteProject(@PathVariable int projectId, HttpSession session) {
         // Redirects to login site if user is not logged in
