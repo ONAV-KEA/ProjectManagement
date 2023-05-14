@@ -379,5 +379,21 @@ public String editUser(@PathVariable int id, @ModelAttribute User form, HttpSess
         return "redirect:/project/" + projectId;
     }
 
+    @GetMapping("/project/{projectId}/projectsettings")
+    public String projectSettings(@PathVariable int projectId, Model model, HttpSession session) {
+        // Redirects to login site if user is not logged in
+        if (!isLoggedIn(session)) {
+            return "redirect:/";
+        }
+        Project project = service.getProjectById(projectId);
+        if (project == null) {
+            return "redirect:/"; // Redirects to project page if task is not found
+        }
+        Project form = new Project(project.getId(),project.getName(), project.getDescription(), project.getStartDate(), project.getEndDate());
+        model.addAttribute("projectForm", form);
+        model.addAttribute("projectId", projectId);
+        return "projectsettings";
+    }
+
 
 }
