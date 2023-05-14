@@ -90,8 +90,12 @@ public class DBService {
         return repository.getTaskById(taskId, projectId);
     }
 
-    public Subtask getSubtaskById(int subtaskId, int taskId){
-        return repository.getSubtaskById(subtaskId, taskId);
+    public Subtask getSubtaskByTaskIdAndSubtaskId(int subtaskId, int taskId){
+        return repository.getSubtaskByTaskIdAndSubtaskId(subtaskId, taskId);
+    }
+
+    public List<Subtask> getSubtasksByTaskId(int taskId){
+        return repository.getSubtasksByTaskId(taskId);
     }
 
     public boolean editTask(Task form, int taskId, int projectId){
@@ -112,6 +116,18 @@ public class DBService {
 
     public void completeTask(int taskId, int subtaskId){
         repository.completeTask(taskId, subtaskId);
+    }
+
+    public void deleteProject(int projectId, int userId){
+        repository.deleteProject(projectId, userId);
+    }
+
+    public void deleteCommentsForTask(int taskId){
+        repository.deleteCommentsForTask(taskId);
+    }
+
+    public void deleteCommentsForSubtask(int subtaskId){
+        repository.deleteCommentsForSubtask(subtaskId);
     }
 
 }
