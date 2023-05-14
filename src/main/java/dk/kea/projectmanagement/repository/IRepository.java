@@ -10,11 +10,8 @@ import dk.kea.projectmanagement.dto.TaskAndSubtaskDTO;
 import java.util.List;
 
 public interface IRepository {
-    List<Project> getProjectByUserId(int id);
-    Project createProject(Project form, User user);
     List<Task> getTasksByProjectId(int projectId);
     Task createTask(Task form, int projectId);
-    Project getProjectById(int id);
     List<TaskAndSubtaskDTO> getTasksWithSubtasksByProjectId(int id);
     void addCommentToTask(int taskId, String comment);
     void addCommentToSubtask(int subtaskId, String comment);
@@ -46,6 +43,4 @@ public interface IRepository {
 
     void deleteCommentsForTask(int taskId);
     void deleteCommentsForSubtask(int subtaskId);
-
-    void deleteProject(int projectId, int userId);
 }

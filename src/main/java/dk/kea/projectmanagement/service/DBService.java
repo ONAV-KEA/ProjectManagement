@@ -22,14 +22,6 @@ public class DBService {
         repository = (IRepository) context.getBean(impl);
     }
 
-    public List<Project> getProjectByUserId(int id){
-        return repository.getProjectByUserId(id);
-    }
-
-    public Project createProject(Project form, User user){
-        return repository.createProject(form, user);
-    }
-
     public void deleteTask(int taskId){
         repository.deleteTask(taskId);
     }
@@ -58,9 +50,6 @@ public class DBService {
         return repository.createSubtask(form, taskId);
     }
 
-    public Project getProjectById(int id){
-        return repository.getProjectById(id);
-    }
 
     public List<TaskAndSubtaskDTO> getTasksWithSubtasksByProjectId(int id){
         return repository.getTasksWithSubtasksByProjectId(id);
@@ -96,10 +85,6 @@ public class DBService {
 
     public void completeTask(int taskId, int subtaskId){
         repository.completeTask(taskId, subtaskId);
-    }
-
-    public void deleteProject(int projectId, int userId){
-        repository.deleteProject(projectId, userId);
     }
 
     public void deleteCommentsForTask(int taskId){
