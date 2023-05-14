@@ -22,28 +22,12 @@ public class DBService {
         repository = (IRepository) context.getBean(impl);
     }
 
-    public void deleteTask(int taskId){
-        repository.deleteTask(taskId);
-    }
-
     public void deleteSubtask(int subtaskId){
         repository.deleteSubtask(subtaskId);
     }
 
-    public void updateTaskStatus(int taskId, String status){
-        repository.updateTaskStatus(taskId, status);
-    }
-
     public void updateSubtaskStatus(int subtaskId, String status){
         repository.updateSubtaskStatus(subtaskId, status);
-    }
-
-    public List<Task> getTasksByProjectId(int projectId){
-        return repository.getTasksByProjectId(projectId);
-    }
-
-    public Task createTask(Task form, int projectId){
-        return repository.createTask(form, projectId);
     }
 
     public Subtask createSubtask(Subtask form, int taskId){
@@ -55,16 +39,8 @@ public class DBService {
         return repository.getTasksWithSubtasksByProjectId(id);
     }
 
-    public void addCommentToTask(int taskId, String comment){
-        repository.addCommentToTask(taskId, comment);
-    }
-
     public void addCommentToSubtask(int subtaskId, String comment){
         repository.addCommentToSubtask(subtaskId, comment);
-    }
-
-    public Task getTaskById(int taskId, int projectId){
-        return repository.getTaskById(taskId, projectId);
     }
 
     public Subtask getSubtaskByTaskIdAndSubtaskId(int subtaskId, int taskId){
@@ -75,20 +51,8 @@ public class DBService {
         return repository.getSubtasksByTaskId(taskId);
     }
 
-    public boolean editTask(Task form, int taskId, int projectId){
-        return repository.editTask(form, taskId, projectId);
-    }
-
     public boolean editSubtask(Task form, int subtaskId, int taskId){
         return repository.editSubtask(form, subtaskId, taskId);
-    }
-
-    public void completeTask(int taskId, int subtaskId){
-        repository.completeTask(taskId, subtaskId);
-    }
-
-    public void deleteCommentsForTask(int taskId){
-        repository.deleteCommentsForTask(taskId);
     }
 
     public void deleteCommentsForSubtask(int subtaskId){

@@ -6,6 +6,7 @@ import dk.kea.projectmanagement.model.Task;
 import dk.kea.projectmanagement.model.User;
 import dk.kea.projectmanagement.service.DBService;
 import dk.kea.projectmanagement.service.ProjectService;
+import dk.kea.projectmanagement.service.TaskService;
 import dk.kea.projectmanagement.service.UserService;
 import dk.kea.projectmanagement.utility.LoginSampleException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,11 +25,13 @@ public class Controller {
     private DBService service;
     private UserService userService;
     private ProjectService projectService;
+    private TaskService taskService;
 
-    public Controller(DBService service, UserService userService, ProjectService projectService){
+    public Controller(DBService service, UserService userService, ProjectService projectService, TaskService taskService){
         this.service = service;
         this.userService = userService;
         this.projectService = projectService;
+        this.taskService = taskService;
     }
 
     @GetMapping({"/",""})
@@ -184,7 +187,7 @@ public String editUser(@PathVariable int id, @ModelAttribute User form, HttpSess
         model.addAttribute("project", projectService.getProjectById(id));
         model.addAttribute("tasks", service.getTasksWithSubtasksByProjectId(id));
         session.setAttribute("projectId", id);
-        session.setAttribute("tasks", service.getTasksByProjectId(id));
+        session.setAttribute("tasks", taskService.getTasksByProjectId(id));
         List<Task> tasks = (List<Task>) session.getAttribute("tasks");
         List<Subtask> subtasks = null;
         for (Task task : tasks) {
@@ -216,7 +219,7 @@ public String editUser(@PathVariable int id, @ModelAttribute User form, HttpSess
             return "redirect:/";
         }
         User user = (User) session.getAttribute("user");
-        Task task = service.createTask(form, projectId);
+        Task task = taskService.createTask(form, projectId);
 
         return "redirect:/project/" + projectId;
     }
@@ -228,7 +231,7 @@ public String editUser(@PathVariable int id, @ModelAttribute User form, HttpSess
             return "redirect:/";
         }
         User user = (User) session.getAttribute("user");
-        service.addCommentToTask(taskId, comment);
+        taskService.addCommentToTask(taskId, comment);
 
         return "redirect:/project/" + projectId;
 
@@ -288,7 +291,7 @@ public String editUser(@PathVariable int id, @ModelAttribute User form, HttpSess
         }
 
         if ("task".equals(type)) {
-            service.deleteTask(id);
+            taskService.deleteTask(id);
             System.out.println("Task deleted " + id);
         } else if ("subtask".equals(type)) {
             service.deleteSubtask(id);
@@ -304,7 +307,7 @@ public String editUser(@PathVariable int id, @ModelAttribute User form, HttpSess
         if (!isLoggedIn(session)) {
             return "redirect:/";
         }
-        Task task = service.getTaskById(taskId, projectId);
+        Task task = taskService.getTaskById(taskId, projectId);
         if (task == null) {
             return "redirect:/project/" + projectId; // Redirects to project page if task is not found
         }
@@ -321,9 +324,9 @@ public String editUser(@PathVariable int id, @ModelAttribute User form, HttpSess
         if (!isLoggedIn(session)) {
             return "redirect:/";
         }
-        boolean isEdited = service.editTask(form, taskId, projectId);
+        boolean isEdited = taskService.editTask(form, taskId, projectId);
         if (!isEdited) {
-            // Handle error if task is not updated, e.g., show an error message or redirect to an error page
+            // TODO: Handle error if task is not updated, e.g., show an error message or redirect to an error page
         }
         return "redirect:/project/" + projectId;
     }
@@ -370,9 +373,9 @@ public String editUser(@PathVariable int id, @ModelAttribute User form, HttpSess
         if (!isLoggedIn(session)){
             return "redirect:/";
         }
-        service.updateTaskStatus(taskId, taskStatus);
+        taskService.updateTaskStatus(taskId, taskStatus);
         if (taskStatus.equals("completed")) {
-            service.completeTask(taskId, 0);
+            taskService.completeTask(taskId);
         }
         User user = (User) session.getAttribute("user");
         return "redirect:/project/" + projectId;
@@ -388,7 +391,7 @@ public String editUser(@PathVariable int id, @ModelAttribute User form, HttpSess
         System.out.println("Subtask status: " + subtaskStatus);
         service.updateSubtaskStatus(subtaskId, subtaskStatus);
         if (subtaskStatus.equals("completed")) {
-            service.completeTask(0, subtaskId);
+            // taskService.completeTask(0, subtaskId);
         }
 
         User user = (User) session.getAttribute("user");
@@ -423,8 +426,8 @@ public String editUser(@PathVariable int id, @ModelAttribute User form, HttpSess
         //Retrieve all tasks from session
         List<Task> tasks = (List<Task>) session.getAttribute("tasks");
         for (Task task : tasks) {
-            service.deleteTask(task.getId());
-            service.deleteCommentsForTask(task.getId());
+            taskService.deleteTask(task.getId());
+            taskService.deleteCommentsForTask(task.getId());
         }
         //Retrieve all subtasks from session
         List<Subtask> subtasks = (List<Subtask>) session.getAttribute("subtasks");
