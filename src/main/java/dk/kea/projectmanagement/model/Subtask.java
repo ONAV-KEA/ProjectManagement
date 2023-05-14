@@ -14,9 +14,10 @@ public class Subtask {
     private String status;
     private List<String> comments;
     private int taskId;
+    private int projectId;
     private double percentageCompletion;
 
-    public Subtask(int id, String title, String description, LocalDate startDate, LocalDate endDate, int assigneeId, double cost, String status, List<String> comments, int taskId) {
+    public Subtask(int id, String title, String description, LocalDate startDate, LocalDate endDate, int assigneeId, double cost, String status, List<String> comments, int taskId, int projectId) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -27,9 +28,10 @@ public class Subtask {
         this.status = status;
         this.comments = comments;
         this.taskId = taskId;
+        this.projectId = projectId;
     }
 
-    public Subtask(int id, String title, String description, LocalDate startDate, LocalDate endDate, double cost, int taskId) {
+    public Subtask(int id, String title, String description, LocalDate startDate, LocalDate endDate, double cost, int taskId, int projectId) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -38,6 +40,16 @@ public class Subtask {
         this.cost = cost;
         this.taskId = taskId;
         this.status = "todo";
+        this.projectId = projectId;
+    }
+
+    public Subtask(String title, String description, LocalDate startDate, LocalDate endDate, double cost, String status) {
+        this.title = title;
+        this.description = description;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.cost = cost;
+        this.status = status;
     }
 
     public Subtask() {
