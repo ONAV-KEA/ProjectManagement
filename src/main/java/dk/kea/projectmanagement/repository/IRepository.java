@@ -30,7 +30,9 @@ public interface IRepository {
 
     Task getTaskById(int taskId, int projectId);
 
-    Subtask getSubtaskById(int subtaskId, int taskId);
+    Subtask getSubtaskByTaskIdAndSubtaskId(int subtaskId, int taskId);
+
+    List<Subtask> getSubtasksByTaskId(int taskId);
 
     boolean editTask(Task form, int taskId, int projectId);
 
@@ -49,4 +51,6 @@ public interface IRepository {
     List<String> getCommentsForSubtask(int subtaskId);
 
     void completeTask(int taskId, int subtaskId);
+
+    void deleteProject(int projectId);
 }

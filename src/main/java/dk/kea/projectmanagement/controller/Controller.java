@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @org.springframework.stereotype.Controller
 public class Controller {
     private DBService service;
@@ -175,6 +177,14 @@ public String editUser(@PathVariable int id, @ModelAttribute User form, HttpSess
         model.addAttribute("user", user);
         model.addAttribute("project", service.getProjectById(id));
         model.addAttribute("tasks", service.getTasksWithSubtasksByProjectId(id));
+        session.setAttribute("projectId", id);
+        session.setAttribute("tasks", service.getTasksByProjectId(id));
+        List<Task> tasks = (List<Task>) session.getAttribute("tasks");
+        List<Subtask> subtasks = null;
+        for (Task task : tasks) {
+            subtasks = service.getSubtasksByTaskId(task.getId());
+        }
+        session.setAttribute("subtasks", subtasks);
 
         return "project";
     }
@@ -322,7 +332,7 @@ public String editUser(@PathVariable int id, @ModelAttribute User form, HttpSess
         System.out.println("Subtask id: " + subtaskId
         + "\nTask id: " + taskId
                 + "\nProject id: " + projectId);
-        Subtask task = service.getSubtaskById(subtaskId, taskId);
+        Subtask task = service.getSubtaskByTaskIdAndSubtaskId(subtaskId, taskId);
         if (task == null) {
             return "redirect:/project/" + projectId; // Redirects to project page if task is not found
         }
@@ -391,8 +401,29 @@ public String editUser(@PathVariable int id, @ModelAttribute User form, HttpSess
         }
         Project form = new Project(project.getId(),project.getName(), project.getDescription(), project.getStartDate(), project.getEndDate());
         model.addAttribute("projectForm", form);
+        model.addAttribute("project", project);
         model.addAttribute("projectId", projectId);
         return "projectsettings";
+    }
+
+    @GetMapping("/project/{projectId}/deleteproject")
+    public String deleteProject(@PathVariable int projectId, HttpSession session) {
+        // Redirects to login site if user is not logged in
+        if (!isLoggedIn(session)) {
+            return "redirect:/";
+        }
+        //Retrieve all tasks from session
+        List<Task> tasks = (List<Task>) session.getAttribute("tasks");
+        for (Task task : tasks) {
+            service.deleteTask(task.getId());
+        }
+        //Retrieve all subtasks from session
+        List<Subtask> subtasks = (List<Subtask>) session.getAttribute("subtasks");
+        for (Subtask subtask : subtasks) {
+            service.deleteSubtask(subtask.getId());
+        }
+        service.deleteProject(projectId);
+        return "redirect:/dashboard";
     }
 
 
