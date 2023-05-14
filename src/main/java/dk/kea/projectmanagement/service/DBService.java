@@ -122,4 +122,8 @@ public class DBService {
         repository.deleteProject(projectId);
     }
 
+    public void deleteComments(int taskId, int subtaskId){
+        repository.deleteComments(taskId, subtaskId);
+    }
+
 }

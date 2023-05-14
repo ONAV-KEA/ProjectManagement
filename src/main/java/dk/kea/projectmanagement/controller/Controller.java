@@ -416,11 +416,13 @@ public String editUser(@PathVariable int id, @ModelAttribute User form, HttpSess
         List<Task> tasks = (List<Task>) session.getAttribute("tasks");
         for (Task task : tasks) {
             service.deleteTask(task.getId());
+            service.deleteComments(task.getId(),0);
         }
         //Retrieve all subtasks from session
         List<Subtask> subtasks = (List<Subtask>) session.getAttribute("subtasks");
         for (Subtask subtask : subtasks) {
             service.deleteSubtask(subtask.getId());
+            service.deleteComments(0,subtask.getId());
         }
         service.deleteProject(projectId);
         return "redirect:/dashboard";

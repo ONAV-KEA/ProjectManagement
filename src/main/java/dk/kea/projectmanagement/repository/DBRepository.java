@@ -1002,6 +1002,46 @@ public class DBRepository implements IRepository {
     }
 
     @Override
+    public void deleteComments(int taskId, int subtaskId) {
+        Connection con = null;
+        try{
+            con = DBManager.getConnection();
+            con.setAutoCommit(false);
+
+            if (subtaskId == 0) {
+                // Delete the comments for the main task
+                String SQL = "DELETE FROM comments WHERE task_id = ?;";
+                PreparedStatement ps = con.prepareStatement(SQL);
+                ps.setInt(1, taskId);
+                ps.executeUpdate();
+            } else {
+                // Delete the comments for the subtask
+                String SQL = "DELETE FROM comments WHERE subtask_id = ?;";
+                PreparedStatement ps = con.prepareStatement(SQL);
+                ps.setInt(1, subtaskId);
+                ps.executeUpdate();
+            }
+            con.commit();
+        } catch(SQLException e){
+            if(con != null) {
+                try {
+                    con.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            throw new RuntimeException("Could not delete comments", e);
+        } finally {
+            try {
+                con.setAutoCommit(true);
+                con.close();
+            } catch(SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
     public void deleteProject(int projectId) {
         Connection con = null;
         try{
