@@ -55,5 +55,5 @@ public interface IRepository {
     void deleteCommentsForTask(int taskId);
     void deleteCommentsForSubtask(int subtaskId);
 
-    void deleteProject(int projectId);
+    void deleteProject(int projectId, int userId);
 }

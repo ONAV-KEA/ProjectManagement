@@ -1069,7 +1069,7 @@ public class DBRepository implements IRepository {
     }
 
     @Override
-    public void deleteProject(int projectId) {
+    public void deleteProject(int projectId, int userId) {
         Connection con = null;
         try{
             con = DBManager.getConnection();
@@ -1079,6 +1079,13 @@ public class DBRepository implements IRepository {
             PreparedStatement ps = con.prepareStatement(SQL);
             ps.setInt(1, projectId);
             ps.executeUpdate();
+
+            // Delete the project from the user's projects
+            String SQL2 = "DELETE FROM project_user WHERE user_id = ? AND project_id = ?;";
+            PreparedStatement ps2 = con.prepareStatement(SQL2);
+            ps2.setInt(1, userId);
+            ps2.setInt(2, projectId);
+            ps2.executeUpdate();
             con.commit();
         } catch(SQLException e){
             if(con != null) {

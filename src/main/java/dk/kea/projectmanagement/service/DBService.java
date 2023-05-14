@@ -118,8 +118,8 @@ public class DBService {
         repository.completeTask(taskId, subtaskId);
     }
 
-    public void deleteProject(int projectId){
-        repository.deleteProject(projectId);
+    public void deleteProject(int projectId, int userId){
+        repository.deleteProject(projectId, userId);
     }
 
     public void deleteCommentsForTask(int taskId){

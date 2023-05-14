@@ -412,6 +412,8 @@ public String editUser(@PathVariable int id, @ModelAttribute User form, HttpSess
         if (!isLoggedIn(session)) {
             return "redirect:/";
         }
+        User user = (User) session.getAttribute("user");
+
         //Retrieve all tasks from session
         List<Task> tasks = (List<Task>) session.getAttribute("tasks");
         for (Task task : tasks) {
@@ -424,7 +426,7 @@ public String editUser(@PathVariable int id, @ModelAttribute User form, HttpSess
             service.deleteSubtask(subtask.getId());
             service.deleteCommentsForSubtask(subtask.getId());
         }
-        service.deleteProject(projectId);
+        service.deleteProject(projectId, user.getId());
         return "redirect:/dashboard";
     }
 
