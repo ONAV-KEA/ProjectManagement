@@ -73,7 +73,7 @@
         </thead>
         <tbody>
         <!-- Iterate over the tasks -->
-        <tr th:each="task : ${tasks}" th:data-taskid="${task.id}">
+        <tr th:each="task : ${tasksAndSubtasks}" th:data-taskid="${task.id}">
             <td>
                 <!-- Display the task name and add a button to open a modal with task info -->
                 <div class="task-info">
