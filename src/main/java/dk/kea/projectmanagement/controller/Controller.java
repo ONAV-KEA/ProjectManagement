@@ -136,19 +136,7 @@ public String createUser(@ModelAttribute User form, HttpSession session) {
         return "redirect:/admin";
     }
 
-
-@PostMapping("/editUser/{id}")
-public String editUser(@PathVariable int id, @ModelAttribute User form, HttpSession session) {
-    if (!isLoggedIn(session)) {
-        return "redirect:/";
-    }
-    User user = (User) session.getAttribute("user");
-    userService.editUser(form, id);
-
-    return "redirect:/admin";
-}
-
-    @GetMapping("/editUser/{id}")
+    @GetMapping("/edituser/{id}")
     public String editUser(@PathVariable int id, Model model, HttpSession session) {
         if (!isLoggedIn(session)) {
             return "redirect:/";
@@ -166,7 +154,7 @@ public String editUser(@PathVariable int id, @ModelAttribute User form, HttpSess
             return "redirect:/";
         }
         User user = (User) session.getAttribute("user");
-        service.editUser(form, id);
+        userService.editUser(form, id);
 
         return "redirect:/admin";
     }
