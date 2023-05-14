@@ -1,7 +1,6 @@
 package dk.kea.projectmanagement.service;
 
 import dk.kea.projectmanagement.model.User;
-import dk.kea.projectmanagement.repository.IRepository;
 import dk.kea.projectmanagement.repository.IUserRepository;
 import dk.kea.projectmanagement.utility.LoginSampleException;
 import org.springframework.beans.factory.annotation.Value;

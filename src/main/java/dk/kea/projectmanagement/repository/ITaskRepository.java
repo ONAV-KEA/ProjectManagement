@@ -1,5 +1,6 @@
 package dk.kea.projectmanagement.repository;
 
+import dk.kea.projectmanagement.dto.TaskAndSubtaskDTO;
 import dk.kea.projectmanagement.model.Task;
 
 import java.util.List;
@@ -23,4 +24,6 @@ public interface ITaskRepository {
     void deleteCommentsForTask(int taskId);
 
     void addCommentToTask(int taskId, String comment);
+
+    List<TaskAndSubtaskDTO> getTasksWithSubtasksByProjectId(int id);
 }

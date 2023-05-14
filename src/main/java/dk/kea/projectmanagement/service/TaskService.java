@@ -1,5 +1,6 @@
 package dk.kea.projectmanagement.service;
 
+import dk.kea.projectmanagement.dto.TaskAndSubtaskDTO;
 import dk.kea.projectmanagement.model.Task;
 import dk.kea.projectmanagement.repository.ITaskRepository;
 import dk.kea.projectmanagement.repository.TaskRepository;
@@ -54,6 +55,10 @@ public class TaskService {
 
     public void addCommentToTask(int taskId, String comment){
         repository.addCommentToTask(taskId, comment);
+    }
+
+    public List<TaskAndSubtaskDTO> getTasksWithSubtasksByProjectId(int id){
+        return repository.getTasksWithSubtasksByProjectId(id);
     }
 
 }

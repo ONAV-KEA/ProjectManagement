@@ -1,5 +1,7 @@
 package dk.kea.projectmanagement.repository;
 
+import dk.kea.projectmanagement.dto.TaskAndSubtaskDTO;
+import dk.kea.projectmanagement.model.Subtask;
 import dk.kea.projectmanagement.model.Task;
 import dk.kea.projectmanagement.repository.utility.DBManager;
 import org.springframework.stereotype.Repository;
@@ -7,10 +9,14 @@ import org.springframework.stereotype.Repository;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository("task_repo")
 public class TaskRepository implements ITaskRepository{
+
+    private SubtaskRepository subtaskRepository = new SubtaskRepository();
 
     @Override
     public List<Task> getTasksByProjectId(int projectId) {
@@ -385,6 +391,65 @@ public class TaskRepository implements ITaskRepository{
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    @Override
+    public List<TaskAndSubtaskDTO> getTasksWithSubtasksByProjectId(int id) {
+        try{
+            Connection con = DBManager.getConnection();
+            String SQL = "SELECT " + "t.id AS task_id," + " t.title AS task_title, " + "t.description AS task_description, " + "t.start_date AS task_start_date, " +
+                    "t.end_date AS task_end_date, " + "t.assignee_id AS task_assignee_id, " + "t.cost AS task_cost, " + "t.status AS task_status, " +
+                    "st.id AS subtask_id, " + "st.title AS subtask_title, " + "st.description AS subtask_description, " +
+                    "st.start_date AS subtask_start_date, " + "st.end_date AS subtask_end_date, " + "st.assignee_id AS subtask_assignee_id, " +
+                    "st.cost AS subtask_cost, " + "st.status AS subtask_status " +
+                    "FROM task t " +
+                    "LEFT JOIN subtask st ON t.id = st.task_id " +
+                    "WHERE t.project_id = ? " +
+                    "ORDER BY t.id, st.id;";
+            PreparedStatement ps = con.prepareStatement(SQL);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+
+            Map<Integer, TaskAndSubtaskDTO> taskMap = new LinkedHashMap<>();
+            while (rs.next()) {
+                int taskId = rs.getInt("task_id");
+                TaskAndSubtaskDTO task;
+                if (!taskMap.containsKey(taskId)) {
+                    String title = rs.getString("task_title");
+                    String description = rs.getString("task_description");
+                    LocalDate startDate = rs.getDate("task_start_date") == null ? null : rs.getDate("task_start_date").toLocalDate();
+                    LocalDate endDate = rs.getDate("task_end_date") == null ? null : rs.getDate("task_end_date").toLocalDate();
+                    int assigneeId = rs.getInt("task_assignee_id");
+                    double cost = rs.getDouble("task_cost");
+                    String status = rs.getString("task_status");
+                    List<String> comments = getCommentsForTask(taskId);
+                    task = new TaskAndSubtaskDTO(taskId, title, description, startDate, endDate, assigneeId, cost, status, comments, id, new ArrayList<>());
+                    taskMap.put(taskId, task);
+                } else {
+                    task = taskMap.get(taskId);
+                }
+
+                int subtaskId = rs.getInt("subtask_id");
+                if (subtaskId > 0) {
+                    String subtaskTitle = rs.getString("subtask_title");
+                    String subtaskDescription = rs.getString("subtask_description");
+                    LocalDate subtaskStartDate = rs.getDate("subtask_start_date") == null ? null : rs.getDate("subtask_start_date").toLocalDate();
+                    LocalDate subtaskEndDate = rs.getDate("subtask_end_date") == null ? null : rs.getDate("subtask_end_date").toLocalDate();
+                    int subtaskAssigneeId = rs.getInt("subtask_assignee_id");
+                    double subtaskCost = rs.getDouble("subtask_cost");
+                    String subtaskStatus = rs.getString("subtask_status");
+                    List<String> subtaskComments = subtaskRepository.getCommentsForSubtask(subtaskId);
+                    Subtask subtask = new Subtask(subtaskId, subtaskTitle, subtaskDescription, subtaskStartDate, subtaskEndDate,
+                            subtaskAssigneeId, subtaskCost, subtaskStatus, subtaskComments, taskId, id);
+                    task.getSubtasks().add(subtask);
+                }
+            }
+
+            return new ArrayList<>(taskMap.values());
+
+        }catch(SQLException ex){
+            throw new RuntimeException(ex);
         }
     }
 }
