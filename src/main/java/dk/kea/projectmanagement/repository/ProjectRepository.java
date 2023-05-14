@@ -175,4 +175,38 @@ public class ProjectRepository implements IProjectRepository{
             }
         }
     }
+
+    @Override
+    public void editProject(Project form, int projectId) {
+        Connection con = null;
+        try {
+            con = DBManager.getConnection();
+            con.setAutoCommit(false);
+            String SQL = "UPDATE project SET name = ?, description = ?, start_date = ?, end_date = ? WHERE id = ?;";
+            PreparedStatement ps = con.prepareStatement(SQL);
+            ps.setString(1, form.getName());
+            ps.setString(2, form.getDescription());
+            ps.setDate(3, form.getStartDate() != null ? Date.valueOf(form.getStartDate()) : null);
+            ps.setDate(4, form.getEndDate() != null ? Date.valueOf(form.getEndDate()) : null);
+            ps.setInt(5, projectId);
+            ps.executeUpdate();
+            con.commit();
+        } catch (SQLException e) {
+            if (con != null) {
+                try {
+                    con.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            throw new RuntimeException("Could not edit project", e);
+        } finally {
+            try {
+                con.setAutoCommit(true);
+                con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

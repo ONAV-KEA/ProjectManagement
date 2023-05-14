@@ -13,4 +13,6 @@ public interface IProjectRepository {
     Project getProjectById(int id);
 
     void deleteProject(int projectId, int userId);
+
+    void editProject(Project form, int projectId);
 }
