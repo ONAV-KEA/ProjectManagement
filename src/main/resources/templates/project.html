@@ -56,7 +56,7 @@
             <a class="pi-link" href="#"><span>Add Member</span> <i class="fa fa-user-plus"></i></a>
         </li>
         <li class="pi-item nav-link">
-            <a class="pi-link" href="#"><span>Project Settings</span> <i class="fa fa-cogs"></i></a>
+            <a class="pi-link" th:href="'/project/' + ${project.id} + '/projectsettings'"><span>Project Settings</span> <i class="fa fa-cogs"></i></a>
         </li>
     </ul>
 </div>

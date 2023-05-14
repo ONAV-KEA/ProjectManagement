@@ -660,7 +660,7 @@ public class DBRepository implements IRepository {
 }
 
     @Override
-    public Subtask getSubtaskById(int subtaskId, int taskId) {
+    public Subtask getSubtaskByTaskIdAndSubtaskId(int subtaskId, int taskId) {
         Connection con = null;
         Subtask subtask = null;
         try {
@@ -691,6 +691,42 @@ public class DBRepository implements IRepository {
             }
         }
         return subtask;
+    }
+
+    @Override
+    public List<Subtask> getSubtasksByTaskId(int taskId) {
+        Connection con = null;
+        List<Subtask> subtasks = new ArrayList<>();
+        try {
+            con = DBManager.getConnection();
+            String SQL = "SELECT * FROM subtask WHERE task_id = ?;";
+            PreparedStatement ps = con.prepareStatement(SQL);
+            ps.setInt(1, taskId);
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int subtaskId = rs.getInt("id");
+                String title = rs.getString("title");
+                String description = rs.getString("description");
+                LocalDate startDate = rs.getDate("start_date") == null ? null : rs.getDate("start_date").toLocalDate();
+                LocalDate endDate = rs.getDate("end_date") == null ? null : rs.getDate("end_date").toLocalDate();
+                double cost = rs.getDouble("cost");
+                int task_id = rs.getInt("task_id");
+                Subtask subtask = new Subtask(subtaskId, title, description, startDate, endDate, cost, task_id);
+                subtasks.add(subtask);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Could not get subtasks by task id", e);
+        } finally {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return subtasks;
     }
 
 
@@ -955,6 +991,111 @@ public class DBRepository implements IRepository {
                 }
             }
             throw new RuntimeException("Could not complete task", e);
+        } finally {
+            try {
+                con.setAutoCommit(true);
+                con.close();
+            } catch(SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void deleteCommentsForTask(int taskId) {
+        Connection con = null;
+        try{
+            con = DBManager.getConnection();
+            con.setAutoCommit(false);
+
+
+            // Delete the comments for the main task
+            String SQL = "DELETE FROM comments WHERE task_id = ?;";
+            PreparedStatement ps = con.prepareStatement(SQL);
+            ps.setInt(1, taskId);
+            ps.executeUpdate();
+
+            con.commit();
+        } catch(SQLException e){
+            if(con != null) {
+                try {
+                    con.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            throw new RuntimeException("Could not delete comments", e);
+        } finally {
+            try {
+                con.setAutoCommit(true);
+                con.close();
+            } catch(SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void deleteCommentsForSubtask(int subtaskId) {
+        Connection con = null;
+        try{
+            con = DBManager.getConnection();
+            con.setAutoCommit(false);
+
+            // Delete the comments for the subtask
+            String SQL = "DELETE FROM comments WHERE subtask_id = ?;";
+            PreparedStatement ps = con.prepareStatement(SQL);
+            ps.setInt(1, subtaskId);
+            ps.executeUpdate();
+
+            con.commit();
+        } catch(SQLException e){
+            if(con != null) {
+                try {
+                    con.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            throw new RuntimeException("Could not delete comments", e);
+        } finally {
+            try {
+                con.setAutoCommit(true);
+                con.close();
+            } catch(SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void deleteProject(int projectId, int userId) {
+        Connection con = null;
+        try{
+            con = DBManager.getConnection();
+            con.setAutoCommit(false);
+
+            String SQL = "DELETE FROM project WHERE id = ?;";
+            PreparedStatement ps = con.prepareStatement(SQL);
+            ps.setInt(1, projectId);
+            ps.executeUpdate();
+
+            // Delete the project from the user's projects
+            String SQL2 = "DELETE FROM project_user WHERE user_id = ? AND project_id = ?;";
+            PreparedStatement ps2 = con.prepareStatement(SQL2);
+            ps2.setInt(1, userId);
+            ps2.setInt(2, projectId);
+            ps2.executeUpdate();
+            con.commit();
+        } catch(SQLException e){
+            if(con != null) {
+                try {
+                    con.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            throw new RuntimeException("Could not delete project", e);
         } finally {
             try {
                 con.setAutoCommit(true);
