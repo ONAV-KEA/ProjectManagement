@@ -129,18 +129,7 @@ public String createUser(@ModelAttribute User form, HttpSession session) {
     }
 
 
-@PostMapping("/editUser/{id}")
-public String editUser(@PathVariable int id, @ModelAttribute User form, HttpSession session) {
-    if (!isLoggedIn(session)) {
-        return "redirect:/";
-    }
-    User user = (User) session.getAttribute("user");
-    service.editUser(form, id);
-
-    return "redirect:/admin";
-}
-
-    @GetMapping("/editUser/{id}")
+    @GetMapping("/edituser/{id}")
     public String editUser(@PathVariable int id, Model model, HttpSession session) {
         if (!isLoggedIn(session)) {
             return "redirect:/";
@@ -150,6 +139,29 @@ public String editUser(@PathVariable int id, @ModelAttribute User form, HttpSess
         model.addAttribute("editUser", service.getUserByID(id));
 
         return "redirect:/admin";
+    }
+
+    @PostMapping("/edituser/{id}")
+    public String editUser(@PathVariable int id, @ModelAttribute User form, HttpSession session) {
+        if (!isLoggedIn(session)) {
+            return "redirect:/";
+        }
+        User user = (User) session.getAttribute("user");
+        service.editUser(form, id);
+
+        return "redirect:/admin";
+    }
+
+    @GetMapping("/profile")
+    public String profile(Model model, HttpSession session){
+        // Redirects to login site if user is not logged in
+        if (!isLoggedIn(session)){
+            return "redirect:/";
+        }
+        User user = (User) session.getAttribute("user");
+        model.addAttribute("user", user);
+
+        return "profile";
     }
 
     @GetMapping("/projects")
