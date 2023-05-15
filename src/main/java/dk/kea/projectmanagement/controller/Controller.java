@@ -171,6 +171,18 @@ public String createUser(@ModelAttribute User form, HttpSession session) {
         return "profile";
     }
 
+    @GetMapping("/organisations")
+    public String organisations(Model model, HttpSession session){
+        // Redirects to login site if user is not logged in
+        if (!isLoggedIn(session)){
+            return "redirect:/";
+        }
+        User user = (User) session.getAttribute("user");
+        model.addAttribute("user", user);
+
+        return "organisations";
+    }
+
     @GetMapping("/projects")
     public String projects(Model model, HttpSession session){
         // Redirects to login site if user is not logged in
