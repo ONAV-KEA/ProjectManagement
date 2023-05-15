@@ -4,6 +4,7 @@ import dk.kea.projectmanagement.model.Project;
 import dk.kea.projectmanagement.model.User;
 import dk.kea.projectmanagement.repository.IProjectRepository;
 import dk.kea.projectmanagement.repository.IUserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
@@ -12,10 +13,11 @@ import java.util.List;
 
 @Service
 public class ProjectService {
-    private IProjectRepository repository;
 
-    public ProjectService(ApplicationContext context, @Value("${projectrepository.impl}") String impl){
-        repository = (IProjectRepository) context.getBean(impl);
+    private final IProjectRepository repository;
+
+    public ProjectService(@Autowired IProjectRepository repository){
+        this.repository = repository;
     }
 
     public List<Project> getProjectByUserId(int id){

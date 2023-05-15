@@ -3,6 +3,7 @@ package dk.kea.projectmanagement.service;
 import dk.kea.projectmanagement.model.User;
 import dk.kea.projectmanagement.repository.IUserRepository;
 import dk.kea.projectmanagement.utility.LoginSampleException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
@@ -12,10 +13,10 @@ import java.util.List;
 @Service
 public class UserService {
 
-    private IUserRepository repository;
+    private final IUserRepository repository;
 
-    public UserService(ApplicationContext context, @Value("${userrepository.impl}") String impl){
-        repository = (IUserRepository) context.getBean(impl);
+    public UserService(@Autowired IUserRepository repository){
+        this.repository = repository;
     }
 
     public List<User> getAllUsers(){

@@ -4,6 +4,7 @@ import dk.kea.projectmanagement.dto.TaskAndSubtaskDTO;
 import dk.kea.projectmanagement.model.Task;
 import dk.kea.projectmanagement.repository.ITaskRepository;
 import dk.kea.projectmanagement.repository.TaskRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
@@ -12,9 +13,11 @@ import java.util.List;
 
 @Service
 public class TaskService {
-    private ITaskRepository repository;
-    public TaskService(ApplicationContext context, @Value("${taskrepository.impl}") String impl){
-        repository = (ITaskRepository) context.getBean(impl);
+
+    private final ITaskRepository repository;
+
+    public TaskService(@Autowired ITaskRepository repository){
+        this.repository = repository;
     }
 
     public List<Task> getTasksByProjectId(int projectId){

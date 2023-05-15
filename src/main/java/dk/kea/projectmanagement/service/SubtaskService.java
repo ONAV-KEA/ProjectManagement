@@ -2,6 +2,7 @@ package dk.kea.projectmanagement.service;
 
 import dk.kea.projectmanagement.model.Subtask;
 import dk.kea.projectmanagement.repository.ISubtaskRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
@@ -10,10 +11,11 @@ import java.util.List;
 
 @Service
 public class SubtaskService {
+
     private ISubtaskRepository repository;
 
-    public SubtaskService(ApplicationContext context, @Value("${subtaskrepository.impl}") String impl){
-        repository = (ISubtaskRepository) context.getBean(impl);
+    public SubtaskService(@Autowired ISubtaskRepository repository){
+        this.repository = repository;
     }
 
     public void addCommentToSubtask(int subtaskId, String comment){
