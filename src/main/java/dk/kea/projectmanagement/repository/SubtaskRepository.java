@@ -11,11 +11,18 @@ import java.util.List;
 
 @Repository("subtask_repo")
 public class SubtaskRepository implements ISubtaskRepository{
+
+    private final DBManager dbManager;
+
+    public SubtaskRepository(DBManager dbManager) {
+        this.dbManager = dbManager;
+    }
+
     @Override
     public void addCommentToSubtask(int subtaskId, String comment) {
         Connection con = null;
         try {
-            con = DBManager.getConnection();
+            con = dbManager.getConnection();
             con.setAutoCommit(false);
             String SQL = "INSERT INTO comments (comment, subtask_id) VALUES (?, ?);";
             PreparedStatement ps = con.prepareStatement(SQL);
@@ -50,7 +57,7 @@ public class SubtaskRepository implements ISubtaskRepository{
     public Subtask createSubtask(Subtask form, int taskId, int projectId) {
         Connection con = null;
         try {
-            con = DBManager.getConnection();
+            con = dbManager.getConnection();
             con.setAutoCommit(false);
             String SQL = "INSERT INTO subtask (title, description, start_date, end_date, cost, task_id, project_id) VALUES (?, ?, ?, ?, ?, ?, ?);";
             PreparedStatement ps = con.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
@@ -99,7 +106,7 @@ public class SubtaskRepository implements ISubtaskRepository{
     public void deleteSubtask(int taskId) {
         Connection con = null;
         try {
-            con = DBManager.getConnection();
+            con = dbManager.getConnection();
             con.setAutoCommit(false);
             String SQL = "DELETE FROM subtask WHERE id = ?";
             PreparedStatement ps = con.prepareStatement(SQL);
@@ -131,7 +138,7 @@ public class SubtaskRepository implements ISubtaskRepository{
         Connection con = null;
         Subtask subtask = null;
         try {
-            con = DBManager.getConnection();
+            con = dbManager.getConnection();
             String SQL = "SELECT * FROM subtask WHERE id = ? AND task_id = ?;";
             PreparedStatement ps = con.prepareStatement(SQL);
             ps.setInt(1, subtaskId);
@@ -166,7 +173,7 @@ public class SubtaskRepository implements ISubtaskRepository{
         Connection con = null;
         List<Subtask> subtasks = new ArrayList<>();
         try {
-            con = DBManager.getConnection();
+            con = dbManager.getConnection();
             String SQL = "SELECT * FROM subtask WHERE task_id = ?;";
             PreparedStatement ps = con.prepareStatement(SQL);
             ps.setInt(1, taskId);
@@ -202,7 +209,7 @@ public class SubtaskRepository implements ISubtaskRepository{
     public boolean editSubtask(Subtask form, int subtaskId, int taskId) {
         Connection con = null;
         try {
-            con = DBManager.getConnection();
+            con = dbManager.getConnection();
             con.setAutoCommit(false);
             String SQL = "UPDATE subtask SET title = ?, description = ?, start_date = ?, cost = ?, end_date = ?, status = ? WHERE id = ? AND `task_id` = ?;";
             PreparedStatement ps = con.prepareStatement(SQL);
@@ -245,7 +252,7 @@ public class SubtaskRepository implements ISubtaskRepository{
     public void updateSubtaskStatus(int taskId, String subtaskStatus) {
         Connection con = null;
         try {
-            con = DBManager.getConnection();
+            con = dbManager.getConnection();
             con.setAutoCommit(false);
             String SQL = "UPDATE subtask SET status = ? WHERE id = ?";
             PreparedStatement ps = con.prepareStatement(SQL);
@@ -278,7 +285,7 @@ public class SubtaskRepository implements ISubtaskRepository{
         List<String> comments = new ArrayList<>();
         Connection con = null;
         try {
-            con = DBManager.getConnection();
+            con = dbManager.getConnection();
             String SQL = "SELECT comment FROM comments WHERE subtask_id = ?;";
             PreparedStatement ps = con.prepareStatement(SQL);
             ps.setInt(1, subtaskId);
@@ -305,7 +312,7 @@ public class SubtaskRepository implements ISubtaskRepository{
     public void deleteCommentsForSubtask(int subtaskId) {
         Connection con = null;
         try{
-            con = DBManager.getConnection();
+            con = dbManager.getConnection();
             con.setAutoCommit(false);
 
             // Delete the comments for the subtask
@@ -339,7 +346,7 @@ public class SubtaskRepository implements ISubtaskRepository{
         Connection con = null;
         List<Subtask> subtasks = new ArrayList<>();
         try {
-            con = DBManager.getConnection();
+            con = dbManager.getConnection();
             String SQL = "SELECT * FROM subtask WHERE project_id = ?;";
             PreparedStatement ps = con.prepareStatement(SQL);
             ps.setInt(1, projectId);
@@ -375,7 +382,7 @@ public class SubtaskRepository implements ISubtaskRepository{
     public void completeSubtask(int subtaskId) {
         Connection con = null;
         try{
-            con = DBManager.getConnection();
+            con = dbManager.getConnection();
             con.setAutoCommit(false);
 
 
