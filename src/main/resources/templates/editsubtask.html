@@ -86,58 +86,12 @@
 </footer>
 
 <!---- JAVASCRIPT ---->
-<script>
-  function validateForm() {
-    var taskName = document.getElementById("inputName").value; // Getting name from input field
-    var startDate = document.getElementById("inputStartDate").value; // Getting start date from input field
-    var endDate = document.getElementById("inputEndDate").value; // Getting end date from input field
-
-    // Checking that the name of the project is not empty
-    if (taskName.trim() === "") {
-      displayError("inputName", "Name is required");
-      return false; // Prevent form submission
-    } else {
-      clearError("inputName");
-    }
-
-    // Checking that the start date is not a newer date than the end date
-    if (startDate > endDate) {
-      displayError("inputStartDate", "Start date cannot be newer than end date");
-      return false; // Prevent form submission
-    } else {
-      clearError("inputStartDate");
-    }
-
-    return true; // Allow form submission
-  }
-
-  // Function to display error message for a specific field
-  function displayError(fieldId, errorMessage) {
-    var field = document.getElementById(fieldId); // Getting the id base on what field is being checked
-    var errorSpanId = fieldId + "-error"; // Creating a unique id for the error message
-    var errorSpan = document.getElementById(errorSpanId); // Getting the error message span
-
-    // Create and display the error message
-    if (!errorSpan) { // If the error message span does not exist, create it
-      errorSpan = document.createElement("span");
-      errorSpan.id = errorSpanId;
-      errorSpan.classList.add("error-message");
-      field.parentNode.appendChild(errorSpan);
-    }
-    errorSpan.innerText = errorMessage;
-  }
-
-  // Function to clear error message for a specific field
-  function clearError(fieldId) {
-    var errorSpanId = fieldId + "-error"; // Creating a unique id for the error message
-    var errorSpan = document.getElementById(errorSpanId); // Getting the error message span
-    if (errorSpan) {
-      errorSpan.parentNode.removeChild(errorSpan); // Remove the error message span
-    }
-  }
-</script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js" integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.min.js" integrity="sha384-heAjqF+bCxXpCWLa6Zhcp4fu20XoNIA98ecBC1YkdXhszjoejr5y9Q77hIrv8R9i" crossorigin="anonymous"></script>
 </body>
+
+<script src="/validationerror.js"></script>
+<script src="/subtaskvalidation.js"></script>
+
 </html>
