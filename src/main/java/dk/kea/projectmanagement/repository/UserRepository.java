@@ -12,10 +12,17 @@ import java.util.List;
 
 @Repository("user_repo")
 public class UserRepository implements IUserRepository {
+
+    private final DBManager dbManager;
+
+    public UserRepository(DBManager dbManager) {
+        this.dbManager = dbManager;
+    }
+
     @Override
     public List<User> getAllUsers() {
         try {
-            Connection con = DBManager.getConnection();
+            Connection con = dbManager.getConnection();
             String SQL = "SELECT * FROM user;";
             PreparedStatement ps = con.prepareStatement(SQL);
             ResultSet rs = ps.executeQuery();
@@ -41,7 +48,7 @@ public class UserRepository implements IUserRepository {
     @Override
     public User getUserByID(int id) {
         try {
-            Connection con = DBManager.getConnection();
+            Connection con = dbManager.getConnection();
             String SQL = "SELECT * FROM user WHERE id = ?;";
             PreparedStatement ps = con.prepareStatement(SQL);
             ps.setInt(1, id);
@@ -65,7 +72,7 @@ public class UserRepository implements IUserRepository {
     @Override
     public User login(String username, String password) throws LoginSampleException {
         try {
-            Connection con = DBManager.getConnection();
+            Connection con = dbManager.getConnection();
             String SQL = "SELECT * FROM user WHERE username = ? AND password = ?;";
             PreparedStatement ps = con.prepareStatement(SQL);
             ps.setString(1, username);
@@ -92,7 +99,7 @@ public class UserRepository implements IUserRepository {
     public void createUser(User form) {
         Connection con = null;
         try {
-            con = DBManager.getConnection();
+            con = dbManager.getConnection();
             con.setAutoCommit(false);
             String SQL = "INSERT INTO user (username, password, first_name, last_name, birthday, role) VALUES (?, ?, ?, ?, ?, ?);";
             PreparedStatement ps = con.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
@@ -138,7 +145,7 @@ public class UserRepository implements IUserRepository {
     public void editUser(User form, int userId) {
         Connection con = null;
         try {
-            con = DBManager.getConnection();
+            con = dbManager.getConnection();
             con.setAutoCommit(false);
             String SQL = "UPDATE user SET username = ?, password = ?, first_name = ?, last_name = ?, birthday = ?, role = ? WHERE id = ?;";
             PreparedStatement ps = con.prepareStatement(SQL);

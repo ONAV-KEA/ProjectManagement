@@ -16,13 +16,20 @@ import java.util.Map;
 @Repository("task_repo")
 public class TaskRepository implements ITaskRepository{
 
-    private SubtaskRepository subtaskRepository = new SubtaskRepository();
+    private final DBManager dbManager;
+    private final SubtaskRepository subtaskRepository;
+
+    public TaskRepository(DBManager dbManager, SubtaskRepository subtaskRepository) {
+        this.dbManager = dbManager;
+        this.subtaskRepository = subtaskRepository;
+    }
+
 
     @Override
     public List<Task> getTasksByProjectId(int projectId) {
         Connection con = null;
         try {
-            con = DBManager.getConnection();
+            con = dbManager.getConnection();
             con.setAutoCommit(false);
             String SQL = "SELECT * FROM task WHERE project_id = ?;";
             PreparedStatement ps = con.prepareStatement(SQL);
@@ -70,7 +77,7 @@ public class TaskRepository implements ITaskRepository{
     public Task createTask(Task form, int projectId) {
         Connection con = null;
         try {
-            con = DBManager.getConnection();
+            con = dbManager.getConnection();
             con.setAutoCommit(false);
             String SQL = "INSERT INTO task (title, description, start_date, end_date, cost, project_id) VALUES (?, ?, ?, ?, ?,?);";
             PreparedStatement ps = con.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
@@ -118,7 +125,7 @@ public class TaskRepository implements ITaskRepository{
     public void deleteTask(int taskId) {
         Connection con = null;
         try {
-            con = DBManager.getConnection();
+            con = dbManager.getConnection();
             con.setAutoCommit(false);
 
             // Delete associated subtasks first
@@ -159,7 +166,7 @@ public class TaskRepository implements ITaskRepository{
         Connection con = null;
         Task task = null;
         try {
-            con = DBManager.getConnection();
+            con = dbManager.getConnection();
             String SQL = "SELECT * FROM task WHERE id = ? AND project_id = ?;";
             PreparedStatement ps = con.prepareStatement(SQL);
             ps.setInt(1, taskId);
@@ -192,7 +199,7 @@ public class TaskRepository implements ITaskRepository{
     public boolean editTask(Task form, int taskId, int projectId) {
         Connection con = null;
         try {
-            con = DBManager.getConnection();
+            con = dbManager.getConnection();
             con.setAutoCommit(false);
             String SQL = "UPDATE task SET title = ?, description = ?, start_date = ?, cost = ?, end_date = ?, status = ? WHERE id = ? AND project_id = ?;";
             PreparedStatement ps = con.prepareStatement(SQL);
@@ -235,7 +242,7 @@ public class TaskRepository implements ITaskRepository{
     public void updateTaskStatus(int taskId, String status) {
         Connection con = null;
         try {
-            con = DBManager.getConnection();
+            con = dbManager.getConnection();
             con.setAutoCommit(false);
             String SQL = "UPDATE task SET status = ? WHERE id = ?";
             PreparedStatement ps = con.prepareStatement(SQL);
@@ -267,7 +274,7 @@ public class TaskRepository implements ITaskRepository{
     public void completeTask(int taskId) {
         Connection con = null;
         try{
-            con = DBManager.getConnection();
+            con = dbManager.getConnection();
             con.setAutoCommit(false);
 
 
@@ -302,7 +309,7 @@ public class TaskRepository implements ITaskRepository{
         List<String> comments = new ArrayList<>();
         Connection con = null;
         try {
-            con = DBManager.getConnection();
+            con = dbManager.getConnection();
             String SQL = "SELECT comment FROM comments WHERE task_id = ?;";
             PreparedStatement ps = con.prepareStatement(SQL);
             ps.setInt(1, taskId);
@@ -329,7 +336,7 @@ public class TaskRepository implements ITaskRepository{
     public void deleteCommentsForTask(int taskId) {
         Connection con = null;
         try{
-            con = DBManager.getConnection();
+            con = dbManager.getConnection();
             con.setAutoCommit(false);
 
 
@@ -363,7 +370,7 @@ public class TaskRepository implements ITaskRepository{
     public void addCommentToTask(int taskId, String comment) {
         Connection con = null;
         try {
-            con = DBManager.getConnection();
+            con = dbManager.getConnection();
             con.setAutoCommit(false);
             String SQL = "INSERT INTO comments (comment, task_id) VALUES (?, ?);";
             PreparedStatement ps = con.prepareStatement(SQL);
@@ -397,7 +404,7 @@ public class TaskRepository implements ITaskRepository{
     @Override
     public List<TaskAndSubtaskDTO> getTasksWithSubtasksByProjectId(int id) {
         try{
-            Connection con = DBManager.getConnection();
+            Connection con = dbManager.getConnection();
             String SQL = "SELECT " + "t.id AS task_id," + " t.title AS task_title, " + "t.description AS task_description, " + "t.start_date AS task_start_date, " +
                     "t.end_date AS task_end_date, " + "t.assignee_id AS task_assignee_id, " + "t.cost AS task_cost, " + "t.status AS task_status, " +
                     "st.id AS subtask_id, " + "st.title AS subtask_title, " + "st.description AS subtask_description, " +
