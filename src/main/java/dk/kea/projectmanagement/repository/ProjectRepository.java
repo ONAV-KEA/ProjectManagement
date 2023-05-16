@@ -12,11 +12,18 @@ import java.util.List;
 
 @Repository("project_repo")
 public class ProjectRepository implements IProjectRepository{
+
+    private final DBManager dbManager;
+
+    public ProjectRepository(DBManager dbManager) {
+        this.dbManager = dbManager;
+    }
+
     @Override
     public List<Project> getProjectByUserId(int id) {
         Connection con = null;
         try {
-            con = DBManager.getConnection();
+            con = dbManager.getConnection();
             con.setAutoCommit(false);
             String SQL = "SELECT project.* " +
                     "FROM project_user " +
@@ -63,7 +70,7 @@ public class ProjectRepository implements IProjectRepository{
     public Project createProject(Project form, User user) {
         Connection con = null;
         try {
-            con = DBManager.getConnection();
+            con = dbManager.getConnection();
             con.setAutoCommit(false);
             String SQL = "INSERT INTO project (name, description, start_date, end_date) VALUES (?, ?, ?, ?);";
             PreparedStatement ps = con.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
@@ -119,7 +126,7 @@ public class ProjectRepository implements IProjectRepository{
     @Override
     public Project getProjectById(int id) {
         try {
-            Connection con = DBManager.getConnection();
+            Connection con = dbManager.getConnection();
             String SQL = "SELECT * FROM project WHERE id = ?;";
             PreparedStatement ps = con.prepareStatement(SQL);
             ps.setInt(1, id);
@@ -142,7 +149,7 @@ public class ProjectRepository implements IProjectRepository{
     public void deleteProject(int projectId, int userId) {
         Connection con = null;
         try{
-            con = DBManager.getConnection();
+            con = dbManager.getConnection();
             con.setAutoCommit(false);
 
             String SQL = "DELETE FROM project WHERE id = ?;";
@@ -180,7 +187,7 @@ public class ProjectRepository implements IProjectRepository{
     public void editProject(Project form, int projectId) {
         Connection con = null;
         try {
-            con = DBManager.getConnection();
+            con = dbManager.getConnection();
             con.setAutoCommit(false);
             String SQL = "UPDATE project SET name = ?, description = ?, start_date = ?, end_date = ? WHERE id = ?;";
             PreparedStatement ps = con.prepareStatement(SQL);
