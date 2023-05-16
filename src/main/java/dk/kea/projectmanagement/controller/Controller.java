@@ -31,9 +31,14 @@ public class Controller {
         this.subtaskService = subtaskService;
     }
 
+    private boolean isLoggedIn(HttpSession session) {
+        return session.getAttribute("user") != null;
+    }
+
+
     @GetMapping({"/",""})
-    public String index(HttpServletRequest request){
-        if(request.getSession().getAttribute("id") != null){
+    public String index(HttpSession session){
+        if(isLoggedIn(session)){
             return "redirect:/dashboard";
         }
         return "index";
@@ -291,11 +296,6 @@ public String createUser(@ModelAttribute User form, HttpSession session) {
 
         return "redirect:/project/" + projectId;
     }
-
-    private boolean isLoggedIn(HttpSession session) {
-        return session.getAttribute("user") != null;
-    }
-
     @PostMapping("/project/{projectId}/addsubtaskcomment")
     public String addCommentToSubtask(@RequestParam("subtaskId") int subtaskId, @RequestParam("comment") String comment, HttpSession session, @PathVariable int projectId) {
         // Redirects to login site if user is not logged in

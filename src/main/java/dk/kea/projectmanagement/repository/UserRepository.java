@@ -185,7 +185,7 @@ public class UserRepository implements IUserRepository {
     @Override
     public void deleteUser(int id) {
         try {
-            Connection con = DBManager.getConnection();
+            Connection con = dbManager.getConnection();
             String SQL = "DELETE FROM user WHERE id = ?;";
             PreparedStatement ps = con.prepareStatement(SQL);
             ps.setInt(1, id);
