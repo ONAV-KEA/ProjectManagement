@@ -56,7 +56,7 @@
       <div class="row mb-3">
         <label for="username" class="col-sm-2 col-form-label">Username</label>
         <div class="col-sm-10">
-          <input type="text" class="form-control" id="username" name="username" th:value="*{username}">
+            <input type="text" class="form-control" id="username" name="username" th:value="*{username}" th:disabled="${true}">
         </div>
       </div>
       <div class="row mb-3">
