@@ -528,5 +528,19 @@ public String createUser(@ModelAttribute User form, HttpSession session) {
         return "redirect:/project/" + projectId;
     }
 
+    @PostMapping("invitation/accept")
+    public String acceptInvitation(@RequestParam("invitationId") int invitationId, @RequestParam("userId") int userId, @RequestParam("projectId") int projectId){
+        invitationService.acceptInvitation(invitationId, userId, projectId);
+
+        return "redirect:/dashboard";
+    }
+
+    @PostMapping("invitation/decline")
+    public String declineInvitation(@RequestParam("invitationId") int invitationId){
+        invitationService.declineInvitation(invitationId);
+
+        return "redirect:/dashboard";
+    }
+
 
 }

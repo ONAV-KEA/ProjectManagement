@@ -7,4 +7,8 @@ import java.util.List;
 
 public interface IInvitationRepository {
     List<InvitationDTO> getInvitationsByUserId(int id);
+
+    void acceptInvitation(int invitationId, int userId, int projectId);
+
+    void declineInvitation(int invitationId);
 }

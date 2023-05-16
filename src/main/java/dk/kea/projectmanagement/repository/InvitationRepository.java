@@ -51,4 +51,37 @@ public class InvitationRepository implements IInvitationRepository{
         }
         return invitations;
     }
+
+    @Override
+    public void acceptInvitation(int invitationId, int userId, int projectId) {
+        try {
+            Connection con = dbManager.getConnection();
+            String SQL = "UPDATE invitations SET status = 'accepted' WHERE id = ?";
+            PreparedStatement ps = con.prepareStatement(SQL);
+            ps.setInt(1, invitationId);
+            ps.executeUpdate();
+
+            String SQL2 = "INSERT INTO project_user (project_id, user_id) VALUES (?, ?)";
+            PreparedStatement ps2 = con.prepareStatement(SQL2);
+            ps2.setInt(1, projectId);
+            ps2.setInt(2, userId);
+            ps2.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void declineInvitation(int invitationId) {
+        try {
+            Connection con = dbManager.getConnection();
+            String SQL = "UPDATE invitations SET status = 'declined' WHERE id = ?";
+            PreparedStatement ps = con.prepareStatement(SQL);
+            ps.setInt(1, invitationId);
+            ps.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

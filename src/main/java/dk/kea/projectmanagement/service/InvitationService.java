@@ -20,4 +20,12 @@ public class InvitationService {
     public List<InvitationDTO> getInvitationsByUserId(int id) {
         return repository.getInvitationsByUserId(id);
     }
+
+    public void acceptInvitation(int invitationId, int userId, int projectId) {
+        repository.acceptInvitation(invitationId, userId, projectId);
+    }
+
+    public void declineInvitation(int invitationId) {
+        repository.declineInvitation(invitationId);
+    }
 }
