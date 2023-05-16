@@ -1,5 +1,6 @@
 package dk.kea.projectmanagement.repository;
 
+import dk.kea.projectmanagement.dto.TaskAndSubtaskDTO;
 import dk.kea.projectmanagement.model.Project;
 import dk.kea.projectmanagement.model.User;
 
@@ -15,4 +16,6 @@ public interface IProjectRepository {
     void deleteProject(int projectId, int userId);
 
     void editProject(Project form, int projectId);
+
+    List<List<Object>> createGanttData(List<TaskAndSubtaskDTO> tasks);
 }
