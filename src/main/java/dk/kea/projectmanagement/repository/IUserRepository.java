@@ -13,7 +13,7 @@ public interface IUserRepository {
 
     void createUser(User form);
 
-    void editUser(User form, int userId);
+    User editUser(User form, int userId);
 
     void deleteUser(int id);
 

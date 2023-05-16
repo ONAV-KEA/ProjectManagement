@@ -142,7 +142,7 @@ public class UserRepository implements IUserRepository {
     }
 
     @Override
-    public void editUser(User form, int userId) {
+    public User editUser(User form, int userId) {
         Connection con = null;
         try {
             con = dbManager.getConnection();
@@ -157,12 +157,14 @@ public class UserRepository implements IUserRepository {
             ps.setDate(5, form.getBirthday() != null ? Date.valueOf(form.getBirthday()) : Date.valueOf(getUserByID(userId).getBirthday()));
             ps.setString(6, form.getRole() != null ? form.getRole() : getUserByID(userId).getRole());
             ps.setInt(7, userId);
+            User user = new User(userId,form.getUsername(), form.getPassword(), form.getFirstName(), form.getLastName(), form.getBirthday(), form.getRole());
             int affectedRows = ps.executeUpdate();
             if (affectedRows == 1) {
                 con.commit();
             } else {
                 throw new RuntimeException("Could not edit user");
             }
+            return user;
         } catch (SQLException e) {
             if (con != null) {
                 try {
