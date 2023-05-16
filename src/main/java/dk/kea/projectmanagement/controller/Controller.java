@@ -219,12 +219,16 @@ public String createUser(@ModelAttribute User form, HttpSession session) {
             return "redirect:/";
         }
         User user = (User) session.getAttribute("user");
+        // Set models
         model.addAttribute("user", user);
         model.addAttribute("project", projectService.getProjectById(id));
         model.addAttribute("tasks", taskService.getTasksByProjectId(id));
         model.addAttribute("subtasks", subtaskService.getSubtasksByProjectId(id));
         model.addAttribute("tasksAndSubtasks", taskService.getTasksWithSubtasksByProjectId(id));
+
+        // Set sessions
         session.setAttribute("projectId", id);
+        session.setAttribute("project", projectService.getProjectById(id));
         session.setAttribute("tasks", taskService.getTasksByProjectId(id));
         session.setAttribute("subtasks", subtaskService.getSubtasksByProjectId(id));
         List<Task> tasks = (List<Task>) session.getAttribute("tasks");
@@ -478,6 +482,23 @@ public String createUser(@ModelAttribute User form, HttpSession session) {
         }
         projectService.deleteProject(projectId, user.getId());
         return "redirect:/projects";
+    }
+
+    @GetMapping("/project/{projectId}/invitemember")
+    public String inviteMember(@PathVariable int projectId, Model model, HttpSession session) {
+        // Redirects to login site if user is not logged in
+        if (!isLoggedIn(session)) {
+            return "redirect:/";
+        }
+
+        Project project = (Project) session.getAttribute("project");
+        if (project == null) {
+            return "redirect:/"; // Redirects to project page if task is not found
+        }
+        model.addAttribute("project", project);
+        model.addAttribute("projectId", projectId);
+        model.addAttribute("members", userService.getAllMembers());
+        return "invitemember";
     }
 
 

@@ -16,4 +16,6 @@ public interface IUserRepository {
     void editUser(User form, int userId);
 
     void deleteUser(int id);
+
+    List<User> getAllMembers();
 }

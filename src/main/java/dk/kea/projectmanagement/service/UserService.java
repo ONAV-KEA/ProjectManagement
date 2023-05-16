@@ -42,4 +42,8 @@ public class UserService {
     public void deleteUser(int id) {
         repository.deleteUser(id);
     }
+
+    public List<User> getAllMembers(){
+        return repository.getAllMembers();
+    }
 }
