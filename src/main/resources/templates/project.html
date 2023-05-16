@@ -286,59 +286,67 @@
 
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
-<script type="text/javascript">
+<script th:inline="javascript">
+
     // Load the Visualization API and the gantt package.
     google.charts.load('current', {'packages':['gantt']});
 
-    // Set a callback to run when the Google Visualization API is loaded.
     google.charts.setOnLoadCallback(drawChart);
 
     function drawChart() {
         var data = new google.visualization.DataTable();
         data.addColumn('string', 'Task ID');
         data.addColumn('string', 'Task Name');
-        data.addColumn('string', 'Resource');
         data.addColumn('date', 'Start Date');
         data.addColumn('date', 'End Date');
         data.addColumn('number', 'Duration');
         data.addColumn('number', 'Percent Complete');
         data.addColumn('string', 'Dependencies');
 
-        // Add rows. You need to replace this part with a Thymeleaf th:each loop to iterate over your tasks and subtasks
-        data.addRows([
-            ['Project1', 'Project 1', null, new Date(2023, 4, 1), new Date(2023, 7, 31), null,  75, null],
+        var ganttData = /*[[${ganttData}]]*/ null;
+        ganttData = ganttData ? ganttData : [];
 
-            ['Task1', 'Design Phase', 'Project 1', new Date(2023, 4, 2), new Date(2023, 4, 20), null, 100, null],
-            ['Subtask1', 'Gather Requirements', 'Design Phase', new Date(2023, 4, 2), new Date(2023, 4, 5), null, 100, 'Task1'],
-            ['Subtask2', 'Create Wireframes', 'Design Phase', new Date(2023, 4, 6), new Date(2023, 4, 10), null, 100, 'Task1'],
-            ['Subtask3', 'Create Mockups', 'Design Phase', new Date(2023, 4, 11), new Date(2023, 4, 15), null, 100, 'Task1'],
-            ['Subtask4', 'Finalize Design', 'Design Phase', new Date(2023, 4, 16), new Date(2023, 4, 20), null, 100, 'Task1'],
+        for (var i = 0; i < ganttData.length; i++) {
+            var row = ganttData[i];
 
-            ['Task2', 'Development Phase', 'Project 1', new Date(2023, 4, 21), new Date(2023, 6, 15), null, 70, 'Task1'],
-            ['Subtask5', 'Setup Project', 'Development Phase', new Date(2023, 4, 21), new Date(2023, 4, 22), null, 100, 'Task2'],
-            ['Subtask6', 'Develop Features', 'Development Phase', new Date(2023, 4, 23), new Date(2023, 6, 10), null, 60, 'Task2'],
-            ['Subtask7', 'Initial Testing', 'Development Phase', new Date(2023, 6, 11), new Date(2023, 6, 15), null, 50, 'Task2'],
+            // Here we parse the dates because Google Charts expects UTC.
+            var startDateComponents = row[2].split("-");
+            var startDate = new Date(Date.UTC(startDateComponents[0], startDateComponents[1]-1, startDateComponents[2]));
 
-            ['Task3', 'Testing Phase', 'Project 1', new Date(2023, 6, 16), new Date(2023, 7, 15), null, 50, 'Task2'],
-            ['Subtask8', 'Test Cases Creation', 'Testing Phase', new Date(2023, 6, 16), new Date(2023, 6, 20), null, 100, 'Task3'],
-            ['Subtask9', 'Testing', 'Testing Phase', new Date(2023, 6, 21), new Date(2023, 7, 10), null, 40, 'Task3'],
-            ['Subtask10', 'Bug Fixing', 'Testing Phase', new Date(2023, 7, 11), new Date(2023, 7, 15), null, 0, 'Task3'],
+            var endDateComponents = row[3].split("-");
+            var endDate = new Date(Date.UTC(endDateComponents[0], endDateComponents[1]-1, endDateComponents[2]));
 
-        ]);
+            // Convert 'Percent Complete' to a decimal
+            var percentComplete = row[5] / 100;
+
+            data.addRow([row[0], row[1], startDate, endDate, row[4], percentComplete, row[6]]);
+        }
 
         var options = {
             height: 600,
             width: 1200,
             gantt: {
-                trackHeight: 30
+                trackHeight: 30,
+                criticalPathEnabled: false,
+                arrow: {
+                    angle: 50,
+                    width: 5,
+                    color: 'green',
+                    radius: 20,
+                    spaceAfter: 0,
+                    length: 5
+                }
             }
         };
+
 
         var chart = new google.visualization.Gantt(document.getElementById('chart_div'));
 
         chart.draw(data, options);
     }
 </script>
+
+
 
 
 
