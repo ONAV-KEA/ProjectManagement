@@ -490,11 +490,13 @@ public String createUser(@ModelAttribute User form, HttpSession session) {
     }
 
     @GetMapping("/project/{projectId}/invitemember")
-    public String inviteMember(@PathVariable int projectId, Model model, HttpSession session) {
+    public String getInviteMember(@PathVariable int projectId, Model model, HttpSession session) {
         // Redirects to login site if user is not logged in
         if (!isLoggedIn(session)) {
             return "redirect:/";
         }
+
+        User sender = (User) session.getAttribute("user");
 
         Project project = (Project) session.getAttribute("project");
         if (project == null) {
@@ -502,8 +504,26 @@ public String createUser(@ModelAttribute User form, HttpSession session) {
         }
         model.addAttribute("project", project);
         model.addAttribute("projectId", projectId);
+        model.addAttribute("senderId", sender.getId());
         model.addAttribute("members", userService.getAllMembers());
         return "invitemember";
+    }
+
+    @PostMapping("/project/{projectId}/invitemember")
+    public String inviteMember(@PathVariable int projectId, @RequestParam("senderId") int senderId, @RequestParam("recipientId") int recipientId, HttpSession session) {
+        // Redirects to login site if user is not logged in
+        if (!isLoggedIn(session)) {
+            return "redirect:/";
+        }
+
+        User sender = (User) session.getAttribute("user");
+        User recipient = userService.getUserByID(recipientId);
+        Project project = (Project) session.getAttribute("project");
+        if (project == null) {
+            return "redirect:/"; // Redirects to project page if task is not found
+        }
+        projectService.inviteMember(senderId, recipientId, projectId);
+        return "redirect:/project/" + projectId;
     }
 
 

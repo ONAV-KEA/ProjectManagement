@@ -15,4 +15,6 @@ public interface IProjectRepository {
     void deleteProject(int projectId, int userId);
 
     void editProject(Project form, int projectId);
+
+    void inviteMember(int senderId, int recipientId, int projectId);
 }
