@@ -174,4 +174,20 @@ public class UserRepository implements IUserRepository {
             }
         }
     }
+
+    @Override
+    public void deleteUser(int id) {
+        try {
+            Connection con = DBManager.getConnection();
+            String SQL = "DELETE FROM user WHERE id = ?;";
+            PreparedStatement ps = con.prepareStatement(SQL);
+            ps.setInt(1, id);
+            int affectedRows = ps.executeUpdate();
+            if (affectedRows != 1) {
+                throw new RuntimeException("Could not delete user");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Could not delete user", e);
+        }
+    }
 }

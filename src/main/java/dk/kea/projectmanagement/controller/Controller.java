@@ -159,6 +159,17 @@ public String createUser(@ModelAttribute User form, HttpSession session) {
         return "redirect:/admin";
     }
 
+    @GetMapping("/deleteuser/{id}")
+    public String deleteUser(@PathVariable int id, HttpSession session) {
+        if (!isLoggedIn(session)) {
+            return "redirect:/";
+        }
+        User user = (User) session.getAttribute("user");
+        userService.deleteUser(id);
+
+        return "redirect:/admin";
+    }
+
     @GetMapping("/profile")
     public String profile(Model model, HttpSession session){
         // Redirects to login site if user is not logged in

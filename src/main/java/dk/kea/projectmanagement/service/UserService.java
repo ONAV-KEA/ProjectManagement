@@ -38,4 +38,8 @@ public class UserService {
     public void editUser(User form, int userId){
         repository.editUser(form, userId);
     }
+
+    public void deleteUser(int id) {
+        repository.deleteUser(id);
+    }
 }
