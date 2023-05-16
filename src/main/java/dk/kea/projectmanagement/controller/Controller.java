@@ -50,6 +50,7 @@ public class Controller {
             User user = userService.login(form.getUsername(), form.getPassword());
 
             session.setAttribute("user", user);
+            session.setAttribute("projects", projectService.getProjectByUserId(user.getId()));
             if (user.getRole().equals("admin")){
                 return "redirect:/admin";
             }else{
@@ -159,7 +160,11 @@ public String createUser(@ModelAttribute User form, HttpSession session) {
             return "redirect:/";
         }
         User user = (User) session.getAttribute("user");
-        userService.editUser(form, id);
+
+        User editedUser = userService.editUser(form, id);
+
+        session.setAttribute("user", editedUser);
+        System.out.println(editedUser.getId());
 
         return "redirect:/admin";
     }
