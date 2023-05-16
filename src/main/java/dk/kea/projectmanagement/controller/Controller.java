@@ -62,8 +62,8 @@ public class Controller {
         }
     }
 
-    @GetMapping("/logout")
-    public String logout(HttpSession session){
+    @PostMapping("/logout")
+    public String logoutPost(HttpSession session){
         session.invalidate();
         return "redirect:/";
     }
@@ -477,7 +477,7 @@ public String createUser(@ModelAttribute User form, HttpSession session) {
             subtaskService.deleteCommentsForSubtask(subtask.getId());
         }
         projectService.deleteProject(projectId, user.getId());
-        return "redirect:/dashboard";
+        return "redirect:/projects";
     }
 
 

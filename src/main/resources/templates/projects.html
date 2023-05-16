@@ -60,8 +60,8 @@
                 <th scope="col">Start Date</th>
                 <th scope="col">End Date</th>
                 <th></th>
-                <th></th>
-                <th></th>
+                <th th:if="${user.role == ('project_manager')}"></th>
+                <th th:if="${user.role == ('project_manager')}"></th>
             </tr>
             </thead>
             <tbody>
@@ -77,11 +77,11 @@
                     </a>
                 </td>
                 <td th:if="${user.role == ('project_manager')}">
-                    <a class="btn main-color-bg btn-sm">
+                    <a class="btn main-color-bg btn-sm" th:href="'/project/' + ${project.id} + '/projectsettings'">
                         Edit</a>
                 </td>
                 <td th:if="${user.role == ('project_manager')}">
-                    <a class="btn btn-outline-danger btn-sm">
+                    <a class="btn btn-outline-danger btn-sm" th:href="@{'/project/' + ${project.id} + '/deleteproject'}">
                         Delete</a>
                 </td>
             </tr>

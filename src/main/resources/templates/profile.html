@@ -85,8 +85,13 @@
       </div>
       <input type="hidden" th:value="*{role}" name="role">
       <input type="hidden" th:value="*{id}" name="userId">
-      <button type="submit" class="btn btn-primary">Update profile details</button>
+      <button type="submit" class="btn main-color-bg w-50 mb-4">Update profile details</button>
     </form>
+<hr>
+          <!-- Log out button -->
+          <form method="post" th:action="@{/logout}">
+              <button type="submit" class="btn btn-danger w-50 m-4">Log out</button>
+          </form>
   </div>
 </div>
 
