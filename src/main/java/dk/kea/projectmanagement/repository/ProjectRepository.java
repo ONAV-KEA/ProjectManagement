@@ -219,7 +219,7 @@ public class ProjectRepository implements IProjectRepository{
 
     @Override
     public void inviteMember(int senderId, int recipientId, int projectId) {
-Connection con = null;
+        Connection con = null;
         try {
             con = dbManager.getConnection();
             con.setAutoCommit(false);

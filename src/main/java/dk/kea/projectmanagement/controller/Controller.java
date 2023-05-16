@@ -1,9 +1,7 @@
 package dk.kea.projectmanagement.controller;
 
-import dk.kea.projectmanagement.model.Project;
-import dk.kea.projectmanagement.model.Subtask;
-import dk.kea.projectmanagement.model.Task;
-import dk.kea.projectmanagement.model.User;
+import dk.kea.projectmanagement.dto.InvitationDTO;
+import dk.kea.projectmanagement.model.*;
 import dk.kea.projectmanagement.service.*;
 import dk.kea.projectmanagement.utility.LoginSampleException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,12 +21,14 @@ public class Controller {
     private ProjectService projectService;
     private TaskService taskService;
     private SubtaskService subtaskService;
+    private InvitationService invitationService;
 
-    public Controller(UserService userService, ProjectService projectService, TaskService taskService, SubtaskService subtaskService){
+    public Controller(UserService userService, ProjectService projectService, TaskService taskService, SubtaskService subtaskService, InvitationService invitationService){
         this.userService = userService;
         this.projectService = projectService;
         this.taskService = taskService;
         this.subtaskService = subtaskService;
+        this.invitationService = invitationService;
     }
 
     private boolean isLoggedIn(HttpSession session) {
@@ -82,6 +82,8 @@ public class Controller {
             return "redirect:/";
         }
         User user = (User) session.getAttribute("user");
+        List<InvitationDTO> invitations = invitationService.getInvitationsByUserId(user.getId());
+        model.addAttribute("invitationsDTO", invitations);
         model.addAttribute("user", user);
         model.addAttribute("projects", projectService.getProjectByUserId(user.getId()));
 
