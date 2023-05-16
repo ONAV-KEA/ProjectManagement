@@ -54,6 +54,34 @@
         <p class="text-body-secondary">Welcome to your dashboard, <b><span th:text="${user.username}"></span></b>.</p>
     </div>
 
+    <div class="container mt-5" th:if="${not #lists.isEmpty(invitationsDTO)}">
+        <h3>Invitations</h3>
+        <p>If you have any new invitations to participate in projects, they will show up here!</p>
+        <hr>
+        <div>
+            <ul>
+                <li th:each="invitation : ${invitationsDTO}" th:if="${invitation.invitation.status.equals('pending')}">
+                    <p>Project: <span th:text="${invitation.project.name}"></span></p>
+                    <p>Status: <span th:text="${invitation.invitation.status}"></span></p>
+                    <div class="btn-group">
+                        <form th:action="@{/invitation/accept}" method="post">
+                            <input type="hidden" th:name="invitationId" th:value="${invitation.invitation.id}">
+                            <input type="hidden" name="userId" th:value="${user.id}">
+                            <input type="hidden" name="projectId" th:value="${invitation.project.id}">
+                            <button type="submit" class="btn btn-success">Accept</button>
+                        </form>
+                        <form th:action="@{/invitation/decline}" method="post">
+                            <input type="hidden" th:name="invitationId" th:value="${invitation.invitation.id}">
+                            <button type="submit" class="btn btn-danger">Decline</button>
+                        </form>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+
+
     <div class="text-center">
         <div class="row justify-content-center">
             <div class="container col-sm-10 col-md-7 p-4 mb-5">
