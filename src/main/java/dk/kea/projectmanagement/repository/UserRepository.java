@@ -142,7 +142,7 @@ public class UserRepository implements IUserRepository {
     }
 
     @Override
-    public void editUser(User form, int userId) {
+    public User editUser(User form, int userId) {
         Connection con = null;
         try {
             con = dbManager.getConnection();
@@ -157,12 +157,14 @@ public class UserRepository implements IUserRepository {
             ps.setDate(5, form.getBirthday() != null ? Date.valueOf(form.getBirthday()) : Date.valueOf(getUserByID(userId).getBirthday()));
             ps.setString(6, form.getRole() != null ? form.getRole() : getUserByID(userId).getRole());
             ps.setInt(7, userId);
+            User user = new User(userId,form.getUsername(), form.getPassword(), form.getFirstName(), form.getLastName(), form.getBirthday(), form.getRole());
             int affectedRows = ps.executeUpdate();
             if (affectedRows == 1) {
                 con.commit();
             } else {
                 throw new RuntimeException("Could not edit user");
             }
+            return user;
         } catch (SQLException e) {
             if (con != null) {
                 try {
@@ -195,6 +197,32 @@ public class UserRepository implements IUserRepository {
             }
         } catch (SQLException e) {
             throw new RuntimeException("Could not delete user", e);
+        }
+    }
+
+    @Override
+    public List<User> getAllMembers() {
+try {
+            Connection con = dbManager.getConnection();
+            String SQL = "SELECT * FROM user WHERE role = 'project_member';";
+            PreparedStatement ps = con.prepareStatement(SQL);
+            ResultSet rs = ps.executeQuery();
+            List<User> users = new ArrayList<>();
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String username = rs.getString("username");
+                String password = rs.getString("password");
+                String firstName = rs.getString("first_name");
+                String lastName = rs.getString("last_name");
+                LocalDate birthday = rs.getDate("birthday") == null ? null : rs.getDate("birthday").toLocalDate();
+                String role = rs.getString("role");
+                User user = new User(username, password, firstName, lastName, birthday, role);
+                user.setId(id);
+                users.add(user);
+            }
+            return users;
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
         }
     }
 }

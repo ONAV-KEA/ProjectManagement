@@ -18,4 +18,6 @@ public interface IProjectRepository {
     void editProject(Project form, int projectId);
 
     List<List<Object>> createGanttData(List<TaskAndSubtaskDTO> tasks);
+
+    void inviteMember(int senderId, int recipientId, int projectId);
 }

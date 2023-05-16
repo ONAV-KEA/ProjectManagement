@@ -35,11 +35,15 @@ public class UserService {
         repository.createUser(form);
     }
 
-    public void editUser(User form, int userId){
-        repository.editUser(form, userId);
+    public User editUser(User form, int userId){
+        return repository.editUser(form, userId);
     }
 
     public void deleteUser(int id) {
         repository.deleteUser(id);
+    }
+
+    public List<User> getAllMembers(){
+        return repository.getAllMembers();
     }
 }

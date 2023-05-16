@@ -39,4 +39,8 @@ public class ProjectService {
     public void editProject(Project form, int projectId){
         repository.editProject(form, projectId);
     }
+
+    public void inviteMember(int senderId, int recipientId, int projectId){
+        repository.inviteMember(senderId, recipientId, projectId);
+    }
 }
