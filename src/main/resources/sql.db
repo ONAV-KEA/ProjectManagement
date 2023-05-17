@@ -29,7 +29,7 @@ CREATE TABLE `task` (
   `end_date` DATE,
   `cost` DECIMAL,
   `status` ENUM('todo', 'in_progress', 'completed') NOT NULL,
-  `project_id` INT UNSIGNED
+  `project_id` INT UNSIGNED,
   `percentage_completion` DECIMAL(5, 2) CHECK (percentage_completion >= 0 AND percentage_completion <= 100)
 );
 
@@ -42,7 +42,8 @@ CREATE TABLE `subtask` (
   `assignee_id` INT UNSIGNED,
   `cost` DECIMAL,
   `status` ENUM('todo', 'in_progress', 'completed') NOT NULL,
-  `task_id` INT UNSIGNED
+  `task_id` INT UNSIGNED,
+  `project_id` INT UNSIGNED,
   `percentage_completion` DECIMAL(5, 2) CHECK (percentage_completion >= 0 AND percentage_completion <= 100)
 );
 
@@ -80,11 +81,20 @@ CREATE TABLE `subtask_assignee` (
 );
 
 CREATE TABLE comments (
-  id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-  comment TEXT,
-  task_id INT,
-  subtask_id INT
+  `id` INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+  `comment` TEXT,
+  `task_id` INT,
+  `subtask_id` INT
 );
+
+CREATE TABLE invitations (
+`id` INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+`project_id` INT NOT NULL,
+`sender_id` INT NOT NULL,
+`recipient_id` INT NOT NULL,
+`status` ENUM('pending', 'accepted', 'declined') NOT NULL
+);
+
 
 CREATE INDEX `project_user_project_id_idx` ON `project_user` (`project_id`);
 CREATE INDEX `project_user_user_id_idx` ON `project_user` (`user_id`);
@@ -94,6 +104,7 @@ CREATE INDEX `task_project_id_idx` ON `task` (`project_id`);
 
 CREATE INDEX `subtask_assignee_id_idx` ON `subtask` (`assignee_id`);
 CREATE INDEX `subtask_task_id_idx` ON `subtask` (`task_id`);
+CREATE INDEX `subtask_project_id_idx` ON `subtask` (`project_id`);
 
 CREATE INDEX `organization_user_organization_id_idx` ON `organization_user` (`organization_id`);
 CREATE INDEX `organization_user_user_id_idx` ON `organization_user` (`user_id`);
@@ -110,5 +121,9 @@ CREATE INDEX `task_assignee_user_id_idx` ON `task_assignee` (`user_id`);
 CREATE INDEX `subtask_assignee_subtask_id_idx` ON `subtask_assignee` (`subtask_id`);
 CREATE INDEX `subtask_assignee_user_id_idx` ON `subtask_assignee` (`user_id`);
 
-CREATE INDEX idx_task_id ON comments (task_id);
-CREATE INDEX idx_subtask_id ON comments (subtask_id);
+CREATE INDEX `idx_task_id` ON comments (`task_id`);
+CREATE INDEX `idx_subtask_id` ON comments (`subtask_id`);
+
+CREATE INDEX `idx_project_id` ON invitations (`project_id`);
+CREATE INDEX `idx_sender_id` ON invitations (`sender_id`);
+CREATE INDEX `idx_recipient_id` ON invitations (`recipient_id`);
