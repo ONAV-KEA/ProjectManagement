@@ -164,6 +164,7 @@ public String createUser(@ModelAttribute User form, HttpSession session) {
         }
         User user = (User) session.getAttribute("user");
 
+        form.setUsername(user.getUsername());
         User editedUser = userService.editUser(form, id);
 
         session.setAttribute("user", editedUser);
