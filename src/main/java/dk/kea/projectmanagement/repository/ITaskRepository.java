@@ -26,4 +26,6 @@ public interface ITaskRepository {
     void addCommentToTask(int taskId, String comment);
 
     List<TaskAndSubtaskDTO> getTasksWithSubtasksByProjectId(int id);
+
+    void updateTaskCostFromSubtasks(int taskId);
 }
