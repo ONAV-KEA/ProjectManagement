@@ -84,7 +84,8 @@
                 <div class="container-fluid text-center">
                     <button type="submit" class="btn main-color-bg w-100 mt-3">Update Project</button>
 
-                    <a class="btn btn-danger w-100 mt-3" th:href="@{'/project/' + ${project.id} + '/deleteproject'}">
+                    <a class="btn btn-danger w-100 mt-3" onclick="return confirm('Are you sure you want to delete this project?')"
+                        th:href="@{'/project/' + ${project.id} + '/deleteproject'}">
                         Delete project: "<span th:text="${project.getName()}"></span>"
                     </a>
                 </div>
@@ -110,7 +111,8 @@
                 <td th:text="${projectMember.username}"></td>
                 <td th:text="${projectMember.role}"></td>
                 <td>
-                    <a class="btn btn-danger btn-sm" th:href="@{'/project/' + ${project.id} + '/deleteprojectmember/' + ${projectMember.id}}">
+                    <a class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to remove this user from the project?')"
+                       th:href="@{'/project/' + ${project.id} + '/deleteprojectmember/' + ${projectMember.id}}">
                         Remove
                     </a>
             </tr>
