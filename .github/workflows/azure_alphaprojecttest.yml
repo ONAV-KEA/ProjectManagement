@@ -6,7 +6,8 @@ name: Build and deploy JAR app to Azure Web App - alphaprojecttest
 on:
   push:
     branches:
-      - 24-as-a-project-member-i-want-to-be-able-to-edit-tasks-from-the-project-so-i-can-adjust-them-along-the-way-1
+      - '*'
+      - '!main' # Exclude the main branch
   workflow_dispatch:
 
 jobs:
