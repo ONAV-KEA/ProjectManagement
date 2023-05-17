@@ -20,4 +20,6 @@ public interface IUserRepository {
     List<User> getAllMembers();
 
     List<User> getMembersOfProject(int projectId);
+
+    boolean isUserMemberOfProject(int userId, int projectId);
 }

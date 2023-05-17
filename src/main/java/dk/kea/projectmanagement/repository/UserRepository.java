@@ -252,4 +252,19 @@ public class UserRepository implements IUserRepository {
             throw new RuntimeException(ex);
         }
     }
+
+    @Override
+    public boolean isUserMemberOfProject(int userId, int projectId) {
+        try{
+            Connection con = dbManager.getConnection();
+            String SQL = "SELECT * FROM project_user WHERE user_id = ? AND project_id = ?;";
+            PreparedStatement ps = con.prepareStatement(SQL);
+            ps.setInt(1, userId);
+            ps.setInt(2, projectId);
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
 }

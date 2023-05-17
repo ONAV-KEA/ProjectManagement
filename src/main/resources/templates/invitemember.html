@@ -60,7 +60,7 @@
     <div class="mb-3">
       <label for="selectUsers" class="form-label">Invite Member</label>
       <select class="form-select" id="selectUsers" name="recipientId">
-        <option th:each="member : ${members}" th:value="${member.id}" th:text="${member.username}"></option>
+        <option th:each="member : ${members}" th:value="${member.id}" th:text="${member.username}" th:unless="${projectUtility.isUserMemberOfProject(member.id, projectId)}"></option>
       </select>
     </div>
     <input type="hidden" th:value="${senderId}" name="senderId">
