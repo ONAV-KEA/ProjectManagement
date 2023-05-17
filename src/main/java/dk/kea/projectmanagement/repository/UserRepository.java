@@ -202,7 +202,7 @@ public class UserRepository implements IUserRepository {
 
     @Override
     public List<User> getAllMembers() {
-try {
+        try {
             Connection con = dbManager.getConnection();
             String SQL = "SELECT * FROM user WHERE role = 'project_member';";
             PreparedStatement ps = con.prepareStatement(SQL);
@@ -221,6 +221,48 @@ try {
                 users.add(user);
             }
             return users;
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    @Override
+    public List<User> getMembersOfProject(int projectId) {
+        try{
+            Connection con = dbManager.getConnection();
+            String SQL = "SELECT u.* FROM user u JOIN project_user pu ON u.id = pu.user_id WHERE pu.project_id = ?;";
+            PreparedStatement ps = con.prepareStatement(SQL);
+            ps.setInt(1, projectId);
+            ResultSet rs = ps.executeQuery();
+            List<User> users = new ArrayList<>();
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String username = rs.getString("username");
+                String password = rs.getString("password");
+                String firstName = rs.getString("first_name");
+                String lastName = rs.getString("last_name");
+                LocalDate birthday = rs.getDate("birthday") == null ? null : rs.getDate("birthday").toLocalDate();
+                String role = rs.getString("role");
+                User user = new User(username, password, firstName, lastName, birthday, role);
+                user.setId(id);
+                users.add(user);
+            }
+            return users;
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    @Override
+    public boolean isUserMemberOfProject(int userId, int projectId) {
+        try{
+            Connection con = dbManager.getConnection();
+            String SQL = "SELECT * FROM project_user WHERE user_id = ? AND project_id = ?;";
+            PreparedStatement ps = con.prepareStatement(SQL);
+            ps.setInt(1, userId);
+            ps.setInt(2, projectId);
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
         }
