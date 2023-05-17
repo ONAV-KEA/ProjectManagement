@@ -118,9 +118,9 @@
                                 <a class="btn btn-danger"
                                    th:href="@{'/project/' + ${project.id} + '/delete/task/' + ${task.id}}">Delete
                                     Task</a>
-                                <a class="btn btn-warning"
-                                   th:href="@{'/project/' + ${project.id} + '/edittask/' + ${task.id}}">Edit Task</a>
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <a class="btn main-color-bg"
+                                   th:href="@{'/project/' + ${project.id} + '/edittask/' + ${task.id}}">Edit Task
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -214,14 +214,12 @@
                                                 </form>
                                             </div>
                                             <div class="modal-footer">
-                                                <a class="btn btn-primary"
+                                                <a class="btn btn-danger"
                                                    th:href="@{'/project/' + ${project.id} + '/delete/subtask/' + ${subtask.id}}">Delete
                                                     Subtask</a>
-                                                <a class="btn btn-warning"
-                                                   th:href="@{'/project/' + ${project.id} + '/editsubtask/' + ${task.id} + '/' + ${subtask.id}}">Edit Subtask</a>
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                                    Close
-                                                </button>
+                                                <a class="btn main-color-bg"
+                                                   th:href="@{'/project/' + ${project.id} + '/editsubtask/' + ${task.id} + '/' + ${subtask.id}}">Edit Subtask
+                                                </a>
                                             </div>
                                         </div>
                                     </div>
