@@ -55,7 +55,7 @@
     <hr>
 </div>
 
-<div class="container mt-5 p-4">
+<div class="container mt-5 p-4 projectsettings-form">
     <form th:action="@{/project/{projectId}/projectsettings(projectId=${projectId})}" th:object="${projectForm}"
           method="post" onsubmit="return validateForm()">
         <div class="mb-3">
@@ -84,8 +84,33 @@
                 </a>
         </div>
     </form>
+</div>
 
-
+<div class="text-center">
+    <div class="row justify-content-center">
+        <div class="container col-sm-10 col-md-7 p-4 mb-5">
+            <h3>Members of project</h3>
+            <hr>
+            <table class="table-light table">
+                <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Username</th>
+                    <th scope="col">Role</th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="projectMember : ${projectMembers}">
+                    <td th:text="${projectMember.firstName} + ' ' + ${projectMember.lastName}"></td>
+                    <td th:text="${projectMember.username}"></td>
+                    <td th:text="${projectMember.role}"></td>
+                    <td th:text="${projectMember.role}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 
