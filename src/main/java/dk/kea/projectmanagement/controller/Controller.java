@@ -306,6 +306,7 @@ public String createUser(@ModelAttribute User form, HttpSession session) {
         User user = (User) session.getAttribute("user");
         Subtask subtask = subtaskService.createSubtask(form, taskId, projectId);
 
+        taskService.updateTaskCostFromSubtasks(taskId);
         return "redirect:/project/" + projectId;
     }
     @PostMapping("/project/{projectId}/addsubtaskcomment")
@@ -402,8 +403,9 @@ public String createUser(@ModelAttribute User form, HttpSession session) {
             return "redirect:/";
         }
         boolean isEdited = subtaskService.editSubtask(form, subtaskId, taskId);
-        if (!isEdited) {
-            // Handle error if task is not updated, e.g., show an error message or redirect to an error page
+        // Check if subtask cost is updated
+        if (isEdited) {
+            taskService.updateTaskCostFromSubtasks(taskId);
         }
         return "redirect:/project/" + projectId;
     }

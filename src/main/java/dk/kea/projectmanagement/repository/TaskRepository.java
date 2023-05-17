@@ -459,4 +459,36 @@ public class TaskRepository implements ITaskRepository{
             throw new RuntimeException(ex);
         }
     }
+
+    @Override
+    public void updateTaskCostFromSubtasks(int taskId) {
+        Connection con = null;
+        try{
+            con = dbManager.getConnection();
+            con.setAutoCommit(false);
+            String SQL = "SELECT SUM(cost) AS total_cost FROM subtask WHERE task_id = ?;";
+            PreparedStatement ps = con.prepareStatement(SQL);
+            ps.setInt(1, taskId);
+            ResultSet rs = ps.executeQuery();
+
+            if(rs.next()){
+                double totalCost = rs.getDouble("total_cost");
+                String SQL2 = "UPDATE task SET cost = ? WHERE id = ?;";
+                PreparedStatement ps2 = con.prepareStatement(SQL2);
+                ps2.setDouble(1, totalCost);
+                ps2.setInt(2, taskId);
+                ps2.executeUpdate();
+            }
+            con.commit();
+        } catch(SQLException ex){
+            throw new RuntimeException(ex);
+        } finally {
+            try{
+                con.setAutoCommit(true);
+                con.close();
+            } catch(SQLException e){
+                e.printStackTrace();
+            }
+        }
+    }
 }
