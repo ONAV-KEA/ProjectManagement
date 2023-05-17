@@ -52,10 +52,10 @@
 
 <div class="projectInfo" id="navbarSupportedContent">
     <ul class="navbar-nav ml-auto d-flex flex-row">
-        <li class="pi-item nav-link">
+        <li class="pi-item nav-link" th:if="${user.role.equals('project_manager')}">
             <a class="pi-link" th:href="'/project/' + ${project.id} + '/invitemember'"><span>Invite Member</span> <i class="fa fa-user-plus"></i></a>
         </li>
-        <li class="pi-item nav-link">
+        <li class="pi-item nav-link" th:if="${user.role.equals('project_manager')}">
             <a class="pi-link" th:href="'/project/' + ${project.id} + '/projectsettings'"><span>Project Settings</span> <i class="fa fa-cogs"></i></a>
         </li>
     </ul>
