@@ -46,4 +46,8 @@ public class UserService {
     public List<User> getAllMembers(){
         return repository.getAllMembers();
     }
+
+    public List<User> getMembersOfProject(int projectId){
+        return repository.getMembersOfProject(projectId);
+    }
 }

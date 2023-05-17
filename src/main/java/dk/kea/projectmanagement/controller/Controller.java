@@ -453,6 +453,7 @@ public String createUser(@ModelAttribute User form, HttpSession session) {
         model.addAttribute("projectForm", form);
         model.addAttribute("project", project);
         model.addAttribute("projectId", projectId);
+        model.addAttribute("projectMembers", userService.getMembersOfProject(projectId));
         return "projectsettings";
     }
 

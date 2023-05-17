@@ -18,4 +18,6 @@ public interface IUserRepository {
     void deleteUser(int id);
 
     List<User> getAllMembers();
+
+    List<User> getMembersOfProject(int projectId);
 }
