@@ -248,4 +248,35 @@ public class ProjectRepository implements IProjectRepository{
             }
         }
     }
+
+    @Override
+    public void deleteProjectMember(int projectId, int userId) {
+        Connection con = null;
+        try {
+            con = dbManager.getConnection();
+            con.setAutoCommit(false);
+            String SQL = "DELETE FROM project_user WHERE project_id = ? AND user_id = ?;";
+            PreparedStatement ps = con.prepareStatement(SQL);
+            ps.setInt(1, projectId);
+            ps.setInt(2, userId);
+            ps.executeUpdate();
+            con.commit();
+        } catch (SQLException e) {
+            if (con != null) {
+                try {
+                    con.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            throw new RuntimeException("Could not delete project member", e);
+        } finally {
+            try {
+                con.setAutoCommit(true);
+                con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

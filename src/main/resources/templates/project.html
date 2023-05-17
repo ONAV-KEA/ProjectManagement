@@ -61,8 +61,13 @@
     </ul>
 </div>
 
-<div class="container mt-3 p-3 container-fluid">
-    <h3 class="text-center">Tasks for <span th:text="${project.name}"></span></h3>
+<div class="text-center mt-3">
+    <h3 th:text="${project.name}"></h3>
+    <hr>
+</div>
+
+<div class="container mt-4 p-3 container-fluid">
+    <h3 class="text-center">Tasks and subtasks</h3>
     <table class="table table-light border border-black">
         <thead>
         <tr>
