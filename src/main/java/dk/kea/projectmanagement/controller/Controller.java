@@ -2,7 +2,7 @@ package dk.kea.projectmanagement.controller;
 
 import dk.kea.projectmanagement.dto.InvitationDTO;
 import dk.kea.projectmanagement.model.*;
-import dk.kea.projectmanagement.repository.utility.PrrojectUtility;
+import dk.kea.projectmanagement.repository.utility.ProjectUtility;
 import dk.kea.projectmanagement.service.*;
 import dk.kea.projectmanagement.utility.LoginSampleException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -512,7 +512,7 @@ public String createUser(@ModelAttribute User form, HttpSession session) {
         model.addAttribute("projectId", projectId);
         model.addAttribute("senderId", sender.getId());
         model.addAttribute("members", userService.getAllMembers());
-        model.addAttribute("projectUtility", new PrrojectUtility(userService));
+        model.addAttribute("projectUtility", new ProjectUtility(userService));
         return "invitemember";
     }
 
