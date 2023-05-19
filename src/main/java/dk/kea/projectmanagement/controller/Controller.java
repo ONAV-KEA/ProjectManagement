@@ -1,6 +1,7 @@
 package dk.kea.projectmanagement.controller;
 
 import dk.kea.projectmanagement.dto.InvitationDTO;
+import dk.kea.projectmanagement.dto.TaskAndSubtaskDTO;
 import dk.kea.projectmanagement.model.*;
 import dk.kea.projectmanagement.repository.utility.ProjectUtility;
 import dk.kea.projectmanagement.service.*;
@@ -242,6 +243,9 @@ public String createUser(@ModelAttribute User form, HttpSession session) {
         session.setAttribute("subtasks", subtaskService.getSubtasksByProjectId(id));
         List<Task> tasks = (List<Task>) session.getAttribute("tasks");
         List<Subtask> subtasks = (List<Subtask>) session.getAttribute("subtasks");
+
+        List<TaskAndSubtaskDTO> tasksAndSubtasks = taskService.getTasksWithSubtasksByProjectId(id);
+        model.addAttribute("ganttData", projectService.createGanttData(tasksAndSubtasks));
 
         return "project";
     }

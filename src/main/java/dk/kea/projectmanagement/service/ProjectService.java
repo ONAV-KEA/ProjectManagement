@@ -1,5 +1,6 @@
 package dk.kea.projectmanagement.service;
 
+import dk.kea.projectmanagement.dto.TaskAndSubtaskDTO;
 import dk.kea.projectmanagement.model.Project;
 import dk.kea.projectmanagement.model.User;
 import dk.kea.projectmanagement.repository.IProjectRepository;
@@ -38,6 +39,10 @@ public class ProjectService {
 
     public void editProject(Project form, int projectId){
         repository.editProject(form, projectId);
+    }
+
+    public List<List<Object>> createGanttData(List<TaskAndSubtaskDTO> tasks){
+        return repository.createGanttData(tasks);
     }
 
     public void inviteMember(int senderId, int recipientId, int projectId){
