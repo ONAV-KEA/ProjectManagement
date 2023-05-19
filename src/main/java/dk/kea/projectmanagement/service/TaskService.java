@@ -64,4 +64,8 @@ public class TaskService {
         return repository.getTasksWithSubtasksByProjectId(id);
     }
 
+    public void updateTaskCostFromSubtasks(int taskId){
+        repository.updateTaskCostFromSubtasks(taskId);
+    }
+
 }

@@ -3,6 +3,7 @@ package dk.kea.projectmanagement.controller;
 import dk.kea.projectmanagement.dto.InvitationDTO;
 import dk.kea.projectmanagement.dto.TaskAndSubtaskDTO;
 import dk.kea.projectmanagement.model.*;
+import dk.kea.projectmanagement.repository.utility.ProjectUtility;
 import dk.kea.projectmanagement.service.*;
 import dk.kea.projectmanagement.utility.LoginSampleException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -309,6 +310,7 @@ public String createUser(@ModelAttribute User form, HttpSession session) {
         User user = (User) session.getAttribute("user");
         Subtask subtask = subtaskService.createSubtask(form, taskId, projectId);
 
+        taskService.updateTaskCostFromSubtasks(taskId);
         return "redirect:/project/" + projectId;
     }
     @PostMapping("/project/{projectId}/addsubtaskcomment")
@@ -405,8 +407,9 @@ public String createUser(@ModelAttribute User form, HttpSession session) {
             return "redirect:/";
         }
         boolean isEdited = subtaskService.editSubtask(form, subtaskId, taskId);
-        if (!isEdited) {
-            // Handle error if task is not updated, e.g., show an error message or redirect to an error page
+        // Check if subtask cost is updated
+        if (isEdited) {
+            taskService.updateTaskCostFromSubtasks(taskId);
         }
         return "redirect:/project/" + projectId;
     }
@@ -457,6 +460,7 @@ public String createUser(@ModelAttribute User form, HttpSession session) {
         model.addAttribute("projectForm", form);
         model.addAttribute("project", project);
         model.addAttribute("projectId", projectId);
+        model.addAttribute("projectMembers", userService.getMembersOfProject(projectId));
         return "projectsettings";
     }
 
@@ -512,6 +516,7 @@ public String createUser(@ModelAttribute User form, HttpSession session) {
         model.addAttribute("projectId", projectId);
         model.addAttribute("senderId", sender.getId());
         model.addAttribute("members", userService.getAllMembers());
+        model.addAttribute("projectUtility", new ProjectUtility(userService));
         return "invitemember";
     }
 
