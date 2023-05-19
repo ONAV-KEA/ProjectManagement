@@ -227,12 +227,12 @@ public class ProjectRepository implements IProjectRepository{
         //List to hold task and subtask data
         List<List<Object>> ganttData = new ArrayList<>();
 
-        //id that will increment throughout this method, so every task and subtask have different ids
+        // id that will increment throughout this method, so every task and subtask have different ids
         int id = 1;
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-        //in the loops task and subtask data is added (in order of what the google charts api needs,
+        // In the loops, task and subtask data is added (in order of what the google charts api needs,
         //starting wih task id, task name and so on
         for (TaskAndSubtaskDTO task : tasks) {
             List<Object> taskData = new ArrayList<>();
@@ -245,9 +245,14 @@ public class ProjectRepository implements IProjectRepository{
             if (localStartDate != null && localEndDate != null) {
                 taskData.add(localStartDate.format(formatter)); // Start Date
                 taskData.add(localEndDate.format(formatter)); // End Date
+            } else {
+                // We add null placeholders, as they are updated later if data is available
+                taskData.add(null);
+                taskData.add(null);
             }
 
             taskData.add(0); // Percent Complete
+            taskData.add(null); // Placeholder for duration
             taskData.add(null); // Dependencies
 
             ganttData.add(taskData);
@@ -272,14 +277,18 @@ public class ProjectRepository implements IProjectRepository{
                     subtaskData.add(subtaskEndDate);
 
                     // Calculate subtask duration in milliseconds
-                    long subtaskDuration = ChronoUnit.MILLIS.between(localSubtaskStartDate.atStartOfDay(), localSubtaskEndDate.atStartOfDay());
-                    subtaskData.add(subtaskDuration);
+                    if (localSubtaskStartDate != null && localSubtaskEndDate != null) {
+                        long subtaskDuration = ChronoUnit.MILLIS.between(localSubtaskStartDate.atStartOfDay(), localSubtaskEndDate.atStartOfDay());
+                        subtaskData.add(subtaskDuration);
+                    } else {
+                        subtaskData.add(null); // Add null if start or end date is null
+                    }
 
-                    // Update task's start and end dates based on subtask's dates
-                    if (localSubtaskStartDate.isBefore(localStartDate)) {
+                    // Update task start and end dates based on subtask dates
+                    if (localSubtaskStartDate != null && (localStartDate == null || localSubtaskStartDate.isBefore(localStartDate))) {
                         localStartDate = localSubtaskStartDate;
                     }
-                    if (localSubtaskEndDate.isAfter(localEndDate)) {
+                    if (localSubtaskEndDate != null && (localEndDate == null || localSubtaskEndDate.isAfter(localEndDate))) {
                         localEndDate = localSubtaskEndDate;
                     }
                 }
@@ -290,22 +299,25 @@ public class ProjectRepository implements IProjectRepository{
                 ganttData.add(subtaskData);
             }
 
-            //task and subtask duration calculated because google charts api need it to be in milliseconds
+            // Task and subtask duration calculated because google charts api need it to be in milliseconds
             if (localStartDate != task.getStartDate() || localEndDate != task.getEndDate()) {
                 java.util.Date utilStartDate = Date.from(localStartDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
                 java.sql.Date startDate = new java.sql.Date(utilStartDate.getTime());
-                taskData.set(2, startDate);  // Update task's start date
+                taskData.set(2, startDate);  // Update task start date
 
                 java.util.Date utilEndDate = Date.from(localEndDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
                 java.sql.Date endDate = new java.sql.Date(utilEndDate.getTime());
-                taskData.set(3, endDate);  // Update task's end date
+                taskData.set(3, endDate);  // Update task end date
 
                 // Calculate new task duration in milliseconds
-                long duration = ChronoUnit.MILLIS.between(localStartDate.atStartOfDay(), localEndDate.atStartOfDay());
-                taskData.set(4, duration);  // Update task's duration
-
+                if (localStartDate != null && localEndDate != null) {
+                    long duration = ChronoUnit.MILLIS.between(localStartDate.atStartOfDay(), localEndDate.atStartOfDay());
+                    taskData.set(4, duration);  // Update task duration
+                } else {
+                    taskData.set(4, null); // Set duration as null if start or end date is null
+                }
             }
-                id++;
+            id++;
         }
         return ganttData;
     }
