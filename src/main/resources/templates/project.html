@@ -287,7 +287,6 @@
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
 <script th:inline="javascript">
-
     // Load the Visualization API and the gantt package.
     google.charts.load('current', {'packages':['gantt']});
 
@@ -304,12 +303,18 @@
         data.addColumn('string', 'Dependencies');
 
         var ganttData = /*[[${ganttData}]]*/ null;
-        ganttData = ganttData ? ganttData : [];
+        ganttData = ganttData ? ganttData : []; // Check if the array is false/null
 
+        var nullDateFound = false;
         for (var i = 0; i < ganttData.length; i++) {
             var row = ganttData[i];
 
-            // Here we parse the dates because Google Charts expects UTC.
+            if (row[2] == null || row[3] == null) {
+                nullDateFound = true;
+                break; // We break if null date is found
+            }
+
+            // We parse the dates because Google Charts expects UTC
             var startDateComponents = row[2].split("-");
             var startDate = new Date(Date.UTC(startDateComponents[0], startDateComponents[1]-1, startDateComponents[2]));
 
@@ -322,33 +327,32 @@
             data.addRow([row[0], row[1], startDate, endDate, row[4], percentComplete, row[6]]);
         }
 
-        var options = {
-            height: 600,
-            width: 1200,
-            gantt: {
-                trackHeight: 30,
-                criticalPathEnabled: false,
-                arrow: {
-                    angle: 50,
-                    width: 5,
-                    color: 'green',
-                    radius: 20,
-                    spaceAfter: 0,
-                    length: 5
+        if (nullDateFound) {
+            // If some date values are missing/are null, a message is displayed
+            document.getElementById('chart_div').innerHTML = "To view the gantt chart, all tasks and subtasks must have start/end-dates set.";
+        } else {
+            var options = {
+                height: 600,
+                width: 1200,
+                gantt: {
+                    trackHeight: 30,
+                    criticalPathEnabled: false,
+                    arrow: {
+                        angle: 50,
+                        width: 5,
+                        color: 'green',
+                        radius: 20,
+                        spaceAfter: 0,
+                        length: 5
+                    }
                 }
-            }
-        };
+            };
 
-
-        var chart = new google.visualization.Gantt(document.getElementById('chart_div'));
-
-        chart.draw(data, options);
+            var chart = new google.visualization.Gantt(document.getElementById('chart_div'));
+            chart.draw(data, options);
+        }
     }
 </script>
-
-
-
-
 
 </body>
 </html>
