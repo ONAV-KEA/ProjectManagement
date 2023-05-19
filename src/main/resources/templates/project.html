@@ -200,7 +200,29 @@
                                                     </form>
                                                 </div>
                                                 <p th:text="'Cost: ' + ${subtask.cost}"></p>
-                                                <p th:text="'Assignee: ' + ${subtask.assigneeId}"></p>
+                                                <p th:if="${projectUtility.getAssignedUserBySubtaskId(subtask.id) != null}"
+                                                   th:text="'Assignee: ' + ${projectUtility.getAssignedUserBySubtaskId(subtask.id).username}">
+                                                    Assignee: [Username]
+                                                </p>
+                                                <p th:unless="${projectUtility.getAssignedUserBySubtaskId(subtask.id) != null}">
+                                                    Assignee: [Not Assigned]
+                                                </p>
+
+                                                <div id="assignToTask">
+                                                    <form th:action="@{/project/{projectId}/addtosubtask(projectId=${project.id})}" method="post">
+                                                        <div class="mb-3">
+                                                            <label for="selectUsers" class="form-label">Add to task</label>
+                                                            <select class="form-select" id="selectUsers" name="userId">
+                                                                <option th:each="member : ${members}" th:value="${member.id}" th:text="${member.username}"></option>
+                                                            </select>
+                                                        </div>
+                                                        <input type="hidden" th:value="${project.id}" name="projectId">
+                                                        <input type="hidden" th:value="${subtask.id}" name="subtaskId">
+                                                        <div class="container-fluid text-center">
+                                                            <button type="submit" class="btn main-color-bg w-50 m-4">Add to subtask</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
                                                 <h3 th:text="'Comment'"></h3>
                                                 <div th:each="comment : ${subtask.comments}">
                                                     <p th:text = "${comment}"></p>

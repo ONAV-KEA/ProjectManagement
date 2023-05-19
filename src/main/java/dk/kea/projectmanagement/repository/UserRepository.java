@@ -267,4 +267,34 @@ public class UserRepository implements IUserRepository {
             throw new RuntimeException(ex);
         }
     }
+
+    @Override
+    public User getAssignedUserBySubtaskId(int subtaskId) {
+        Connection con = null;
+        User user = null;
+        try {
+            con = dbManager.getConnection();
+            String SQL = "SELECT * FROM subtask_assignee WHERE subtask_id = ?;";
+            PreparedStatement ps = con.prepareStatement(SQL);
+            ps.setInt(1, subtaskId);
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                int userId = rs.getInt("user_id");
+                // Retrieve the user information based on the userId
+                user = getUserByID(userId);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Could not get assigned user for subtask", e);
+        } finally {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return user;
+    }
 }

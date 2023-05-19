@@ -1,5 +1,6 @@
 package dk.kea.projectmanagement.repository.utility;
 
+import dk.kea.projectmanagement.model.User;
 import dk.kea.projectmanagement.service.UserService;
 
 public class ProjectUtility {
@@ -12,5 +13,9 @@ public class ProjectUtility {
 
     public boolean isUserMemberOfProject(int userId, int projectId){
         return userService.isUserMemberOfProject(userId, projectId);
+    }
+
+    public User getAssignedUserBySubtaskId(int subtaskId){
+        return userService.getAssignedUserBySubtaskId(subtaskId);
     }
 }
