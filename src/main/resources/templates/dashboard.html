@@ -8,16 +8,16 @@
           integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" th:href="@{/main.css}" href="/static/main.css">
-    <link rel="icon" type="image/x-icon" href="../src/main/resources/static/images/favicon.png"
-          th:src="@{images/favicon.png}">
+    <link rel="icon" type="image/x-icon" href="/../src/main/resources/static/images/favicon.png"
+          th:src="@{/images/favicon.png}">
     <link href='https://fonts.googleapis.com/css?family=IBM Plex Sans Condensed' rel='stylesheet'>
 </head>
 <body>
 <nav class="navbar sticky-lg-top  text-end p-3">
     <div class="container-fluid">
         <a class="navbar-brand" href="/dashboard">
-            <img src="../src/main/resources/static/images/projectplanner-logo.png"
-                 th:src="@{images/projectplanner-logo.png}" alt="Logo" width="220px"
+            <img src="/../src/main/resources/static/images/projectplanner-logo.png"
+                 th:src="@{/images/projectplanner-logo.png}" alt="Logo" width="220px"
                  class="d-inline-block align-text-top">
         </a>
 
@@ -54,12 +54,12 @@
         <p class="text-body-secondary">Welcome to your dashboard, <b><span th:text="${user.username}"></span></b>.</p>
     </div>
 
-    <div class="container mt-5" th:if="${not #lists.isEmpty(invitationsDTO)}">
+    <div class="container mt-4 mb-4 p-2 col-sm-10 col-md-6" th:if="${not #lists.isEmpty(invitationsDTO)}">
         <h3>Invitations</h3>
         <p>If you have any new invitations to participate in projects, they will show up here!</p>
         <hr>
         <div>
-            <ul>
+            <ul class="list-unstyled">
                 <li th:each="invitation : ${invitationsDTO}" th:if="${invitation.invitation.status.equals('pending')}">
                     <p>Project: <span th:text="${invitation.project.name}"></span></p>
                     <p>Status: <span th:text="${invitation.invitation.status}"></span></p>
@@ -68,11 +68,11 @@
                             <input type="hidden" th:name="invitationId" th:value="${invitation.invitation.id}">
                             <input type="hidden" name="userId" th:value="${user.id}">
                             <input type="hidden" name="projectId" th:value="${invitation.project.id}">
-                            <button type="submit" class="btn btn-success">Accept</button>
+                            <button type="submit" class="btn btn-success m-2">Accept</button>
                         </form>
                         <form th:action="@{/invitation/decline}" method="post">
                             <input type="hidden" th:name="invitationId" th:value="${invitation.invitation.id}">
-                            <button type="submit" class="btn btn-danger">Decline</button>
+                            <button type="submit" class="btn btn-danger m-2">Decline</button>
                         </form>
                     </div>
                 </li>

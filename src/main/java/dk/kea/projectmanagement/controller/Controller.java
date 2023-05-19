@@ -165,6 +165,7 @@ public String createUser(@ModelAttribute User form, HttpSession session) {
         }
         User user = (User) session.getAttribute("user");
 
+        form.setUsername(user.getUsername());
         User editedUser = userService.editUser(form, id);
 
         session.setAttribute("user", editedUser);
@@ -452,6 +453,13 @@ public String createUser(@ModelAttribute User form, HttpSession session) {
         if (!isLoggedIn(session)) {
             return "redirect:/";
         }
+
+        //Redirects to project-page if user is not manager or admin
+        User user = (User) session.getAttribute("user");
+        if (user.getRole().equals("project_member")){
+            return "redirect:/project/" + projectId;
+        }
+
         Project project = projectService.getProjectById(projectId);
         if (project == null) {
             return "redirect:/"; // Redirects to project page if task is not found
@@ -472,6 +480,17 @@ public String createUser(@ModelAttribute User form, HttpSession session) {
         }
         projectService.editProject(form, projectId);
 
+        return "redirect:/project/" + projectId;
+    }
+
+    @GetMapping("/project/{projectId}/deleteprojectmember/{userId}")
+    public String deleteProjectMember(@PathVariable int projectId, @PathVariable int userId, HttpSession session) {
+        // Redirects to login site if user is not logged in
+        if (!isLoggedIn(session)) {
+            return "redirect:/";
+        }
+
+        projectService.deleteProjectMember(projectId, userId);
         return "redirect:/project/" + projectId;
     }
 

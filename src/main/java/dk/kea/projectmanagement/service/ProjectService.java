@@ -49,4 +49,7 @@ public class ProjectService {
         repository.inviteMember(senderId, recipientId, projectId);
     }
 
+    public void deleteProjectMember(int projectId, int userId) {
+        repository.deleteProjectMember(projectId, userId);
+    }
 }

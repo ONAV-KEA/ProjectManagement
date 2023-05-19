@@ -52,17 +52,22 @@
 
 <div class="projectInfo" id="navbarSupportedContent">
     <ul class="navbar-nav ml-auto d-flex flex-row">
-        <li class="pi-item nav-link">
+        <li class="pi-item nav-link" th:if="${user.role.equals('project_manager')}">
             <a class="pi-link" th:href="'/project/' + ${project.id} + '/invitemember'"><span>Invite Member</span> <i class="fa fa-user-plus"></i></a>
         </li>
-        <li class="pi-item nav-link">
+        <li class="pi-item nav-link" th:if="${user.role.equals('project_manager')}">
             <a class="pi-link" th:href="'/project/' + ${project.id} + '/projectsettings'"><span>Project Settings</span> <i class="fa fa-cogs"></i></a>
         </li>
     </ul>
 </div>
 
-<div class="container mt-3 p-3 container-fluid">
-    <h3 class="text-center">Tasks for <span th:text="${project.name}"></span></h3>
+<div class="text-center mt-3">
+    <h3 th:text="${project.name}"></h3>
+    <hr>
+</div>
+
+<div class="container mt-4 p-3 container-fluid">
+    <h3 class="text-center">Tasks and subtasks</h3>
     <table class="table table-light border border-black">
         <thead>
         <tr>
@@ -115,12 +120,12 @@
                                 </form>
                             </div>
                             <div class="modal-footer">
-                                <a class="btn btn-danger"
+                                <a class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this task?')"
                                    th:href="@{'/project/' + ${project.id} + '/delete/task/' + ${task.id}}">Delete
                                     Task</a>
-                                <a class="btn btn-warning"
-                                   th:href="@{'/project/' + ${project.id} + '/edittask/' + ${task.id}}">Edit Task</a>
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <a class="btn main-color-bg"
+                                   th:href="@{'/project/' + ${project.id} + '/edittask/' + ${task.id}}">Edit Task
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -214,14 +219,12 @@
                                                 </form>
                                             </div>
                                             <div class="modal-footer">
-                                                <a class="btn btn-primary"
+                                                <a class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this subtask?')"
                                                    th:href="@{'/project/' + ${project.id} + '/delete/subtask/' + ${subtask.id}}">Delete
                                                     Subtask</a>
-                                                <a class="btn btn-warning"
-                                                   th:href="@{'/project/' + ${project.id} + '/editsubtask/' + ${task.id} + '/' + ${subtask.id}}">Edit Subtask</a>
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                                    Close
-                                                </button>
+                                                <a class="btn main-color-bg"
+                                                   th:href="@{'/project/' + ${project.id} + '/editsubtask/' + ${task.id} + '/' + ${subtask.id}}">Edit Subtask
+                                                </a>
                                             </div>
                                         </div>
                                     </div>
