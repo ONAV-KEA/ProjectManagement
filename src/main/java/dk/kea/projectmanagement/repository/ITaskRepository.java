@@ -34,4 +34,6 @@ public interface ITaskRepository {
     void removeMemberFromTask(int taskId, int memberId);
 
     void addAllSubtaskAssigneesToMainTask(int taskId);
+
+    void updateTaskCompletionPercentage(int taskId, double percentageCompletion);
 }

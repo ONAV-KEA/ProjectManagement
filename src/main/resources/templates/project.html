@@ -136,6 +136,7 @@
             </td>
             <!-- Update the task status -->
             <td>
+                <span th:text="${task.percentageCompletion} + '%'"></span>
                 <form th:action="@{'/project/' + ${project.id} + '/update-task-status/' + ${task.id}}" method="post">
                     <select class="form-select " id="statusDropdown" th:name="taskStatus" onchange="this.form.submit()">
                         <option th:value="tasks.status" th:text="${task.status}"></option>
@@ -265,6 +266,7 @@
                                         <input type="number" class="subtask-percentage-input" min="0" max="100"
                                                th:value="${subtask.percentageCompletion}" name="subtaskPercentage"
                                                onkeydown="if(event.keyCode === 13) this.form.submit();"/>
+                                        <input type="hidden" name="taskId" th:value="${task.id}" />
                                         <input type="submit" style="display: none">
                                     </form>
                                 </div>

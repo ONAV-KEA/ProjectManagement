@@ -586,7 +586,8 @@ public String createUser(@ModelAttribute User form, HttpSession session) {
     }
 
     @PostMapping("/project/{projectId}/update-subtask-percentage/{subtaskId}")
-    public String updateSubtaskPercentage(@PathVariable int projectId, @PathVariable int subtaskId, HttpSession session, @RequestParam("subtaskPercentage") int subtaskPercentage) {
+    public String updateSubtaskPercentage(@PathVariable int projectId, @PathVariable int subtaskId, @RequestParam("subtaskPercentage") int subtaskPercentage, @RequestParam("taskId") int taskId, HttpSession session) {
+        ProjectUtility projectUtility = new ProjectUtility(subtaskService, taskService);
         // Redirects to login site if user is not logged in
         if (!isLoggedIn(session)){
             return "redirect:/";
@@ -594,9 +595,11 @@ public String createUser(@ModelAttribute User form, HttpSession session) {
 
         System.out.println("Subtask percentage: " + subtaskPercentage);
         subtaskService.updatePercentage(subtaskId, subtaskPercentage);
+        projectUtility.updateTaskCompletionPercentage(taskId);
 
         User user = (User) session.getAttribute("user");
         return "redirect:/project/" + projectId;
     }
+
 
 }
