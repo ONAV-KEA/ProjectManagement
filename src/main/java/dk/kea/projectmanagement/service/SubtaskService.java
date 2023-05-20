@@ -65,4 +65,8 @@ public class SubtaskService {
     public void addUserToSubtask(int subtaskId, int userId){
         repository.addUserToSubtask(subtaskId, userId);
     }
+
+    public void updatePercentage(int subtaskId, int percentage){
+        repository.updatePercentage(subtaskId, percentage);
+    }
 }

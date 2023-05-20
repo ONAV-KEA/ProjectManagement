@@ -59,7 +59,7 @@ public class SubtaskRepository implements ISubtaskRepository{
         try {
             con = dbManager.getConnection();
             con.setAutoCommit(false);
-            String SQL = "INSERT INTO subtask (title, description, start_date, end_date, cost, task_id, project_id) VALUES (?, ?, ?, ?, ?, ?, ?);";
+            String SQL = "INSERT INTO subtask (title, description, start_date, end_date, cost, task_id, project_id, completion_percentage) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
             PreparedStatement ps = con.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, form.getTitle());
             ps.setString(2, form.getDescription());
@@ -68,13 +68,14 @@ public class SubtaskRepository implements ISubtaskRepository{
             ps.setDouble(5, form.getCost());
             ps.setInt(6, taskId);
             ps.setInt(7, projectId);
+            ps.setDouble(8, form.getPercentageCompletion());
 
             int affectedRows = ps.executeUpdate();
             if (affectedRows == 1) {
                 ResultSet rs = ps.getGeneratedKeys();
                 if (rs.next()) {
                     int id = rs.getInt(1);
-                    Subtask subtask = new Subtask(id, form.getTitle(), form.getDescription(), form.getStartDate(), form.getEndDate(), form.getCost(), taskId, projectId);
+                    Subtask subtask = new Subtask(id, form.getTitle(), form.getDescription(), form.getStartDate(), form.getEndDate(), form.getCost(), taskId, projectId, form.getPercentageCompletion());
                     con.commit();
                     return subtask;
                 } else {
@@ -152,7 +153,8 @@ public class SubtaskRepository implements ISubtaskRepository{
                 LocalDate endDate = rs.getDate("end_date") == null ? null : rs.getDate("end_date").toLocalDate();
                 double cost = rs.getDouble("cost");
                 int projectId = rs.getInt("project_id");
-                subtask = new Subtask(subtaskId, title, description, startDate, endDate, cost, taskId, projectId);
+                double percentageCompletion = rs.getDouble("completion_percentage");
+                subtask = new Subtask(subtaskId, title, description, startDate, endDate, cost, taskId, projectId, percentageCompletion);
             }
         } catch (SQLException e) {
             throw new RuntimeException("Could not get subtask", e);
@@ -188,7 +190,8 @@ public class SubtaskRepository implements ISubtaskRepository{
                 double cost = rs.getDouble("cost");
                 int task_id = rs.getInt("task_id");
                 int projectId = rs.getInt("project_id");
-                Subtask subtask = new Subtask(subtaskId, title, description, startDate, endDate, cost, task_id, projectId);
+                double percentageCompletion = rs.getDouble("completion_percentage");
+                Subtask subtask = new Subtask(subtaskId, title, description, startDate, endDate, cost, task_id, projectId, percentageCompletion);
                 subtasks.add(subtask);
             }
         } catch (SQLException e) {
@@ -361,7 +364,8 @@ public class SubtaskRepository implements ISubtaskRepository{
                 double cost = rs.getDouble("cost");
                 int task_id = rs.getInt("task_id");
                 int project_id = rs.getInt("project_id");
-                Subtask subtask = new Subtask(subtaskId, title, description, startDate, endDate, cost, task_id, project_id);
+                double completionPercentage = rs.getDouble("completion_percentage");
+                Subtask subtask = new Subtask(subtaskId, title, description, startDate, endDate, cost, task_id, project_id, completionPercentage);
                 subtasks.add(subtask);
             }
         } catch (SQLException e) {
@@ -435,6 +439,39 @@ public class SubtaskRepository implements ISubtaskRepository{
                 }
             }
             throw new RuntimeException("Could not add user to subtask", e);
+        } finally {
+            try {
+                con.setAutoCommit(true);
+                con.close();
+            } catch(SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void updatePercentage(int subtaskId, int percentage) {
+        Connection con = null;
+        try{
+            con = dbManager.getConnection();
+            con.setAutoCommit(false);
+
+            String SQL = "UPDATE subtask SET completion_percentage = ? WHERE id = ?;";
+            PreparedStatement ps = con.prepareStatement(SQL);
+            ps.setInt(1, percentage);
+            ps.setInt(2, subtaskId);
+            ps.executeUpdate();
+
+            con.commit();
+        } catch(SQLException e){
+            if(con != null) {
+                try {
+                    con.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            throw new RuntimeException("Could not update percentage", e);
         } finally {
             try {
                 con.setAutoCommit(true);

@@ -32,5 +32,7 @@ public interface ISubtaskRepository {
 
     void addUserToSubtask(int subtaskId, int userId);
 
+    void updatePercentage(int subtaskId, int percentage);
+
 
 }

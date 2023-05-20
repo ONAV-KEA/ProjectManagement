@@ -72,4 +72,8 @@ public class TaskService {
         repository.addAllSubtaskAssigneesToMainTask(taskId);
     }
 
+    public void updateTaskCompletionPercentage(int taskId, double percentageCompletion){
+        repository.updateTaskCompletionPercentage(taskId, percentageCompletion);
+    }
+
 }
