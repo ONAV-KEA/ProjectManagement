@@ -259,7 +259,14 @@
                             <td>
                                 <div class="subtask-info">
                                     <span class="status subtask-status" th:text="${subtask.status}"></span>
-                                    <span th:text="${subtask.percentageCompletion} + '%'"></span>
+                                    <span class="subtask-perecentage" th:text="${subtask.percentageCompletion} + '%'"></span>
+                                    <form th:action="@{'/project/' + ${project.id} + '/update-subtask-percentage/' + ${subtask.id}}" method="post"
+                                          onsubmit="event.preventDefault();">
+                                        <input type="number" class="subtask-percentage-input" min="0" max="100"
+                                               th:value="${subtask.percentageCompletion}" name="subtaskPercentage"
+                                               onkeydown="if(event.keyCode === 13) this.form.submit();"/>
+                                        <input type="submit" style="display: none">
+                                    </form>
                                 </div>
                             </td>
                         </tr>

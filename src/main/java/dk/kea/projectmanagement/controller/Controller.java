@@ -238,6 +238,7 @@ public String createUser(@ModelAttribute User form, HttpSession session) {
         model.addAttribute("members", userService.getMembersOfProject(id));
         model.addAttribute("projectUtility", new ProjectUtility(userService));
         model.addAttribute("projectCost", projectService.getTotalProjectCost(id));
+        System.out.println(subtaskService.getSubtasksByProjectId(id).get(0).getPercentageCompletion());
 
         // Set sessions
         session.setAttribute("projectId", id);
@@ -581,6 +582,20 @@ public String createUser(@ModelAttribute User form, HttpSession session) {
         }
         subtaskService.addUserToSubtask(subtaskId, userId);
         taskService.addAllSubtaskAssigneesToMainTask(taskId);
+        return "redirect:/project/" + projectId;
+    }
+
+    @PostMapping("/project/{projectId}/update-subtask-percentage/{subtaskId}")
+    public String updateSubtaskPercentage(@PathVariable int projectId, @PathVariable int subtaskId, HttpSession session, @RequestParam("subtaskPercentage") int subtaskPercentage) {
+        // Redirects to login site if user is not logged in
+        if (!isLoggedIn(session)){
+            return "redirect:/";
+        }
+
+        System.out.println("Subtask percentage: " + subtaskPercentage);
+        subtaskService.updatePercentage(subtaskId, subtaskPercentage);
+
+        User user = (User) session.getAttribute("user");
         return "redirect:/project/" + projectId;
     }
 
