@@ -58,4 +58,8 @@ public class UserService {
     public User getAssignedUserBySubtaskId(int subtaskId){
         return repository.getAssignedUserBySubtaskId(subtaskId);
     }
+
+    public List<User> getAllTaskAssignees(int taskId){
+        return repository.getAllTaskAssignees(taskId);
+    }
 }

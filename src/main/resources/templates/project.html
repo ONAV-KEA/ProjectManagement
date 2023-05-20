@@ -103,7 +103,10 @@
                                 <p th:text="'End Date: ' + ${task.endDate}"></p>
                                 <p th:text="'Status: ' + ${task.status}" class="status"></p>
                                 <p th:text="'Cost: ' + ${task.cost}"></p>
-                                <p th:text="'Assignee: ' + ${task.assigneeId}"></p>
+                                <p>Assignees: </p>
+                                <div th:each = "assignee : ${projectUtility.getAllTaskAssignees(task.id)}">
+                                    <p th:text="${assignee.username}"></p>
+                                </div>
                                 <h3 th:text="'Comment'"></h3>
                                 <div th:each = "comment : ${task.comments}">
                                     <p th:text="${comment}"></p>

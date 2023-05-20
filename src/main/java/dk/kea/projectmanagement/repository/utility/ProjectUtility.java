@@ -3,6 +3,8 @@ package dk.kea.projectmanagement.repository.utility;
 import dk.kea.projectmanagement.model.User;
 import dk.kea.projectmanagement.service.UserService;
 
+import java.util.List;
+
 public class ProjectUtility {
 
     private UserService userService;
@@ -17,5 +19,9 @@ public class ProjectUtility {
 
     public User getAssignedUserBySubtaskId(int subtaskId){
         return userService.getAssignedUserBySubtaskId(subtaskId);
+    }
+
+    public List<User> getAllTaskAssignees(int taskId){
+        return userService.getAllTaskAssignees(taskId);
     }
 }
