@@ -385,4 +385,28 @@ public class ProjectRepository implements IProjectRepository{
             }
         }
     }
+
+    @Override
+    public int getTotalProjectCost(int projectId) {
+        Connection con = null;
+        try {
+            con = dbManager.getConnection();
+            String SQL = "SELECT SUM(cost) AS total_cost FROM task WHERE project_id = ?;";
+            PreparedStatement ps = con.prepareStatement(SQL);
+            ps.setInt(1, projectId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("total_cost");
+            }
+            return 0;
+        } catch (SQLException e) {
+            throw new RuntimeException("Could not get total project cost", e);
+        } finally {
+            try {
+                con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

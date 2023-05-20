@@ -52,4 +52,8 @@ public class ProjectService {
     public void deleteProjectMember(int projectId, int userId) {
         repository.deleteProjectMember(projectId, userId);
     }
+
+    public int getTotalProjectCost(int projectId) {
+        return repository.getTotalProjectCost(projectId);
+    }
 }
