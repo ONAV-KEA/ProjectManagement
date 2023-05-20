@@ -17,7 +17,8 @@ public class Subtask {
     private int projectId;
     private double percentageCompletion;
 
-    public Subtask(int id, String title, String description, LocalDate startDate, LocalDate endDate, int assigneeId, double cost, String status, List<String> comments, int taskId, int projectId) {
+    public Subtask(int id, String title, String description, LocalDate startDate, LocalDate endDate, int assigneeId, double cost,
+                   String status, List<String> comments, int taskId, int projectId, double percentageCompletion) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -29,9 +30,10 @@ public class Subtask {
         this.comments = comments;
         this.taskId = taskId;
         this.projectId = projectId;
+        this.percentageCompletion = percentageCompletion;
     }
 
-    public Subtask(int id, String title, String description, LocalDate startDate, LocalDate endDate, double cost, int taskId, int projectId) {
+    public Subtask(int id, String title, String description, LocalDate startDate, LocalDate endDate, double cost, int taskId, int projectId, double percentageCompletion) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -41,6 +43,7 @@ public class Subtask {
         this.taskId = taskId;
         this.status = "todo";
         this.projectId = projectId;
+        this.percentageCompletion = percentageCompletion;
     }
 
     public Subtask(String title, String description, LocalDate startDate, LocalDate endDate, double cost, String status) {

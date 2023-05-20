@@ -403,13 +403,27 @@ public class TaskRepository implements ITaskRepository{
 
     @Override
     public List<TaskAndSubtaskDTO> getTasksWithSubtasksByProjectId(int id) {
-        try{
+        try {
             Connection con = dbManager.getConnection();
-            String SQL = "SELECT " + "t.id AS task_id," + " t.title AS task_title, " + "t.description AS task_description, " + "t.start_date AS task_start_date, " +
-                    "t.end_date AS task_end_date, " + "t.assignee_id AS task_assignee_id, " + "t.cost AS task_cost, " + "t.status AS task_status, " +
-                    "st.id AS subtask_id, " + "st.title AS subtask_title, " + "st.description AS subtask_description, " +
-                    "st.start_date AS subtask_start_date, " + "st.end_date AS subtask_end_date, " + "st.assignee_id AS subtask_assignee_id, " +
-                    "st.cost AS subtask_cost, " + "st.status AS subtask_status " +
+            String SQL = "SELECT " +
+                    "t.id AS task_id, " +
+                    "t.title AS task_title, " +
+                    "t.description AS task_description, " +
+                    "t.start_date AS task_start_date, " +
+                    "t.end_date AS task_end_date, " +
+                    "t.assignee_id AS task_assignee_id, " +
+                    "t.cost AS task_cost, " +
+                    "t.status AS task_status, " +
+                    "t.completion_percentage AS task_completion_percentage, " +
+                    "st.id AS subtask_id, " +
+                    "st.title AS subtask_title, " +
+                    "st.description AS subtask_description, " +
+                    "st.start_date AS subtask_start_date, " +
+                    "st.end_date AS subtask_end_date, " +
+                    "st.assignee_id AS subtask_assignee_id, " +
+                    "st.cost AS subtask_cost, " +
+                    "st.status AS subtask_status, " +
+                    "st.completion_percentage AS subtask_completion_percentage " +
                     "FROM task t " +
                     "LEFT JOIN subtask st ON t.id = st.task_id " +
                     "WHERE t.project_id = ? " +
@@ -430,8 +444,9 @@ public class TaskRepository implements ITaskRepository{
                     int assigneeId = rs.getInt("task_assignee_id");
                     double cost = rs.getDouble("task_cost");
                     String status = rs.getString("task_status");
+                    int taskCompletionPercentage = rs.getInt("task_completion_percentage");
                     List<String> comments = getCommentsForTask(taskId);
-                    task = new TaskAndSubtaskDTO(taskId, title, description, startDate, endDate, assigneeId, cost, status, comments, id, new ArrayList<>());
+                    task = new TaskAndSubtaskDTO(taskId, title, description, startDate, endDate, assigneeId, cost, status, comments, id, new ArrayList<>(), taskCompletionPercentage);
                     taskMap.put(taskId, task);
                 } else {
                     task = taskMap.get(taskId);
@@ -446,19 +461,22 @@ public class TaskRepository implements ITaskRepository{
                     int subtaskAssigneeId = rs.getInt("subtask_assignee_id");
                     double subtaskCost = rs.getDouble("subtask_cost");
                     String subtaskStatus = rs.getString("subtask_status");
+                    int subtaskCompletionPercentage = rs.getInt("subtask_completion_percentage");
                     List<String> subtaskComments = subtaskRepository.getCommentsForSubtask(subtaskId);
                     Subtask subtask = new Subtask(subtaskId, subtaskTitle, subtaskDescription, subtaskStartDate, subtaskEndDate,
-                            subtaskAssigneeId, subtaskCost, subtaskStatus, subtaskComments, taskId, id);
+                            subtaskAssigneeId, subtaskCost, subtaskStatus, subtaskComments, taskId, id, subtaskCompletionPercentage);
                     task.getSubtasks().add(subtask);
                 }
             }
 
             return new ArrayList<>(taskMap.values());
 
-        }catch(SQLException ex){
+        } catch (SQLException ex) {
             throw new RuntimeException(ex);
         }
     }
+
+
 
     @Override
     public void updateTaskCostFromSubtasks(int taskId) {
@@ -536,6 +554,27 @@ public class TaskRepository implements ITaskRepository{
                 ps2.setInt(2, assigneeId);
                 ps2.executeUpdate();
             }
+        } catch(SQLException ex){
+            throw new RuntimeException(ex);
+        } finally {
+            try{
+                con.close();
+            } catch(SQLException e){
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void updateTaskCompletionPercentage(int taskId, double percentageCompletion) {
+        Connection con = null;
+        try{
+            con = dbManager.getConnection();
+            String SQL = "UPDATE task SET completion_percentage = ? WHERE id = ?;";
+            PreparedStatement ps = con.prepareStatement(SQL);
+            ps.setDouble(1, percentageCompletion);
+            ps.setInt(2, taskId);
+            ps.executeUpdate();
         } catch(SQLException ex){
             throw new RuntimeException(ex);
         } finally {
