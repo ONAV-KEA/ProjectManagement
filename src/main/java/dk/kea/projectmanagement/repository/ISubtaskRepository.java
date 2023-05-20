@@ -29,4 +29,8 @@ public interface ISubtaskRepository {
     List<Subtask> getSubtasksByProjectId(int projectId);
 
     void completeSubtask(int subtaskId);
+
+    void addUserToSubtask(int subtaskId, int userId);
+
+
 }

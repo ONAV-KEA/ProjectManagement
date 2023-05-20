@@ -267,4 +267,66 @@ public class UserRepository implements IUserRepository {
             throw new RuntimeException(ex);
         }
     }
+
+    @Override
+    public User getAssignedUserBySubtaskId(int subtaskId) {
+        Connection con = null;
+        User user = null;
+        try {
+            con = dbManager.getConnection();
+            String SQL = "SELECT * FROM subtask WHERE id = ?;";
+            PreparedStatement ps = con.prepareStatement(SQL);
+            ps.setInt(1, subtaskId);
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                int assigneeId = rs.getInt("assignee_id");
+                // Retrieve the user information based on the userId
+                user = getUserByID(assigneeId);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Could not get assigned user for subtask", e);
+        } finally {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return user;
+    }
+
+    @Override
+    public List<User> getAllTaskAssignees(int taskId) {
+        Connection con = null;
+        List<User> users = new ArrayList<>();
+        try{
+            con = dbManager.getConnection();
+            String SQL = "SELECT user_id FROM task_assignee WHERE task_id = ?;";
+            PreparedStatement ps = con.prepareStatement(SQL);
+            ps.setInt(1, taskId);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                int userId = rs.getInt("user_id");
+                User user = getUserByID(userId);
+                if (user != null) {
+                    users.add(user);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Could not get all task assignees", e);
+        } finally {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return users;
+    }
 }

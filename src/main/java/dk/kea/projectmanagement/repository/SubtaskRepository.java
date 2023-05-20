@@ -411,4 +411,37 @@ public class SubtaskRepository implements ISubtaskRepository{
             }
         }
     }
+
+    @Override
+    public void addUserToSubtask(int subtaskId, int userId) {
+        Connection con = null;
+        try{
+            con = dbManager.getConnection();
+            con.setAutoCommit(false);
+
+            String SQL = "UPDATE subtask SET assignee_id = ? WHERE id = ?;";
+            PreparedStatement ps = con.prepareStatement(SQL);
+            ps.setInt(1, userId);
+            ps.setInt(2, subtaskId);
+            ps.executeUpdate();
+
+            con.commit();
+        } catch(SQLException e){
+            if(con != null) {
+                try {
+                    con.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            throw new RuntimeException("Could not add user to subtask", e);
+        } finally {
+            try {
+                con.setAutoCommit(true);
+                con.close();
+            } catch(SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

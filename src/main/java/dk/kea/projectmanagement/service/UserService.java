@@ -54,4 +54,12 @@ public class UserService {
     public boolean isUserMemberOfProject(int userId, int projectId){
         return repository.isUserMemberOfProject(userId, projectId);
     }
+
+    public User getAssignedUserBySubtaskId(int subtaskId){
+        return repository.getAssignedUserBySubtaskId(subtaskId);
+    }
+
+    public List<User> getAllTaskAssignees(int taskId){
+        return repository.getAllTaskAssignees(taskId);
+    }
 }

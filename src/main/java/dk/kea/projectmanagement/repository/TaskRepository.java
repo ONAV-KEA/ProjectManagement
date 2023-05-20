@@ -491,4 +491,59 @@ public class TaskRepository implements ITaskRepository{
             }
         }
     }
+    @Override
+    public void addMemberToTask(int taskId, int memberId) {
+        try {
+            Connection con = dbManager.getConnection();
+            String sql = "INSERT INTO task_assignee (task_id, user_id) VALUES (?, ?);";
+            PreparedStatement stmt = con.prepareStatement(sql);
+            stmt.setInt(1, taskId);
+            stmt.setInt(2, memberId);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    @Override
+    public void removeMemberFromTask(int taskId, int memberId) {
+        try {
+            Connection con = dbManager.getConnection();
+            String sql = "DELETE FROM task_assignee WHERE task_id = ? AND user_id = ?;";
+            PreparedStatement stmt = con.prepareStatement(sql);
+            stmt.setInt(1, taskId);
+            stmt.setInt(2, memberId);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+}
+    }
+
+    @Override
+    public void addAllSubtaskAssigneesToMainTask(int taskId) {
+        Connection con = null;
+        try{
+            con = dbManager.getConnection();
+            String SQL1 = "SELECT assignee_id FROM subtask WHERE task_id = ?;";
+            PreparedStatement ps1 = con.prepareStatement(SQL1);
+            ps1.setInt(1, taskId);
+            ResultSet rs = ps1.executeQuery();
+
+            String SQL2 = "INSERT INTO task_assignee (task_id, user_id) VALUES (?, ?);";
+            PreparedStatement ps2 = con.prepareStatement(SQL2);
+            ps2.setInt(1, taskId);
+            while(rs.next()){
+                int assigneeId = rs.getInt("assignee_id");
+                ps2.setInt(2, assigneeId);
+                ps2.executeUpdate();
+            }
+        } catch(SQLException ex){
+            throw new RuntimeException(ex);
+        } finally {
+            try{
+                con.close();
+            } catch(SQLException e){
+                e.printStackTrace();
+            }
+        }
+    }
 }
