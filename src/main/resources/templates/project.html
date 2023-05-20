@@ -102,7 +102,7 @@
                                 <p th:text="'Start Date: ' + ${task.startDate}"></p>
                                 <p th:text="'End Date: ' + ${task.endDate}"></p>
                                 <p th:text="'Status: ' + ${task.status}" class="status"></p>
-                                <p th:text="'Cost: ' + ${task.cost}"></p>
+                                <p th:text="'Cost: ' + ${task.cost} + '$'"></p>
                                 <p>Assignees: </p>
                                 <div th:each = "assignee : ${projectUtility.getAllTaskAssignees(task.id)}">
                                     <p th:text="${assignee.username}"></p>
@@ -202,7 +202,7 @@
                                                         </select>
                                                     </form>
                                                 </div>
-                                                <p th:text="'Cost: ' + ${subtask.cost}"></p>
+                                                <p th:text="'Cost: ' + ${subtask.cost} + '$'"></p>
                                                 <p th:if="${projectUtility.getAssignedUserBySubtaskId(subtask.id) != null}"
                                                    th:text="'Assignee: ' + ${projectUtility.getAssignedUserBySubtaskId(subtask.id).username}">
                                                     Assignee: [Username]
@@ -283,6 +283,10 @@
         </tr>
         </tbody>
     </table>
+</div>
+
+<div class="text-center mt-3">
+    <h6 th:text="'Total estimated cost of project: ' + ${projectCost} + '$'"></h6>
 </div>
 
 <div class="container mt-3 p-3 container-fluid">

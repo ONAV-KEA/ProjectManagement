@@ -22,4 +22,6 @@ public interface IProjectRepository {
     void inviteMember(int senderId, int recipientId, int projectId);
 
     void deleteProjectMember(int projectId, int userId);
+
+    int getTotalProjectCost(int projectId);
 }

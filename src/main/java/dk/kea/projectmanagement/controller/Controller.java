@@ -237,6 +237,7 @@ public String createUser(@ModelAttribute User form, HttpSession session) {
         model.addAttribute("tasksAndSubtasks", taskService.getTasksWithSubtasksByProjectId(id));
         model.addAttribute("members", userService.getMembersOfProject(id));
         model.addAttribute("projectUtility", new ProjectUtility(userService));
+        model.addAttribute("projectCost", projectService.getTotalProjectCost(id));
 
         // Set sessions
         session.setAttribute("projectId", id);
