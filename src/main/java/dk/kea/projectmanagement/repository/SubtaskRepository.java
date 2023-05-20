@@ -419,10 +419,10 @@ public class SubtaskRepository implements ISubtaskRepository{
             con = dbManager.getConnection();
             con.setAutoCommit(false);
 
-            String SQL = "INSERT INTO subtask_assignee (subtask_id, user_id) VALUES (?, ?);";
+            String SQL = "UPDATE subtask SET assignee_id = ? WHERE id = ?;";
             PreparedStatement ps = con.prepareStatement(SQL);
-            ps.setInt(1, subtaskId);
-            ps.setInt(2, userId);
+            ps.setInt(1, userId);
+            ps.setInt(2, subtaskId);
             ps.executeUpdate();
 
             con.commit();
