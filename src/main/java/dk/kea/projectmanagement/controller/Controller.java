@@ -235,6 +235,8 @@ public String createUser(@ModelAttribute User form, HttpSession session) {
         model.addAttribute("tasks", taskService.getTasksByProjectId(id));
         model.addAttribute("subtasks", subtaskService.getSubtasksByProjectId(id));
         model.addAttribute("tasksAndSubtasks", taskService.getTasksWithSubtasksByProjectId(id));
+        model.addAttribute("members", userService.getMembersOfProject(id));
+        model.addAttribute("projectUtility", new ProjectUtility(userService));
 
         // Set sessions
         session.setAttribute("projectId", id);
@@ -570,5 +572,15 @@ public String createUser(@ModelAttribute User form, HttpSession session) {
         return "redirect:/dashboard";
     }
 
+    @PostMapping("/project/{projectId}/addtosubtask")
+    public String addToSubtask(@PathVariable int projectId, @RequestParam("subtaskId") int subtaskId, @RequestParam("userId") int userId, @RequestParam("taskId") int taskId, HttpSession session) {
+        // Redirects to login site if user is not logged in
+        if (!isLoggedIn(session)) {
+            return "redirect:/";
+        }
+        subtaskService.addUserToSubtask(subtaskId, userId);
+        taskService.addAllSubtaskAssigneesToMainTask(taskId);
+        return "redirect:/project/" + projectId;
+    }
 
 }

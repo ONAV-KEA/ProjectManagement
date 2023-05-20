@@ -28,4 +28,10 @@ public interface ITaskRepository {
     List<TaskAndSubtaskDTO> getTasksWithSubtasksByProjectId(int id);
 
     void updateTaskCostFromSubtasks(int taskId);
+
+    void addMemberToTask(int taskId, int memberId);
+
+    void removeMemberFromTask(int taskId, int memberId);
+
+    void addAllSubtaskAssigneesToMainTask(int taskId);
 }

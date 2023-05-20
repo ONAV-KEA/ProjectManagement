@@ -61,4 +61,8 @@ public class SubtaskService {
     public void completeSubtask(int subtaskId){
         repository.completeSubtask(subtaskId);
     }
+
+    public void addUserToSubtask(int subtaskId, int userId){
+        repository.addUserToSubtask(subtaskId, userId);
+    }
 }

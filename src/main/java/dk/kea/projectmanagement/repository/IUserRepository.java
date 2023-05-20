@@ -22,4 +22,8 @@ public interface IUserRepository {
     List<User> getMembersOfProject(int projectId);
 
     boolean isUserMemberOfProject(int userId, int projectId);
+
+    User getAssignedUserBySubtaskId(int subtaskId);
+
+    List<User> getAllTaskAssignees(int taskId);
 }
