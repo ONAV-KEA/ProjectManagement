@@ -32,4 +32,6 @@ public interface ITaskRepository {
     void addMemberToTask(int taskId, int memberId);
 
     void removeMemberFromTask(int taskId, int memberId);
+
+    void addAllSubtaskAssigneesToMainTask(int taskId);
 }

@@ -68,4 +68,8 @@ public class TaskService {
         repository.updateTaskCostFromSubtasks(taskId);
     }
 
+    public void addAllSubtaskAssigneesToMainTask(int taskId){
+        repository.addAllSubtaskAssigneesToMainTask(taskId);
+    }
+
 }

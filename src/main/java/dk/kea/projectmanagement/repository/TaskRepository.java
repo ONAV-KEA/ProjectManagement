@@ -517,4 +517,33 @@ public class TaskRepository implements ITaskRepository{
             e.printStackTrace();
 }
     }
+
+    @Override
+    public void addAllSubtaskAssigneesToMainTask(int taskId) {
+        Connection con = null;
+        try{
+            con = dbManager.getConnection();
+            String SQL1 = "SELECT assignee_id FROM subtask WHERE task_id = ?;";
+            PreparedStatement ps1 = con.prepareStatement(SQL1);
+            ps1.setInt(1, taskId);
+            ResultSet rs = ps1.executeQuery();
+
+            String SQL2 = "INSERT INTO task_assignee (task_id, user_id) VALUES (?, ?);";
+            PreparedStatement ps2 = con.prepareStatement(SQL2);
+            ps2.setInt(1, taskId);
+            while(rs.next()){
+                int assigneeId = rs.getInt("assignee_id");
+                ps2.setInt(2, assigneeId);
+                ps2.executeUpdate();
+            }
+        } catch(SQLException ex){
+            throw new RuntimeException(ex);
+        } finally {
+            try{
+                con.close();
+            } catch(SQLException e){
+                e.printStackTrace();
+            }
+        }
+    }
 }

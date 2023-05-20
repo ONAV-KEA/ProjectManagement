@@ -573,12 +573,13 @@ public String createUser(@ModelAttribute User form, HttpSession session) {
     }
 
     @PostMapping("/project/{projectId}/addtosubtask")
-    public String addToSubtask(@PathVariable int projectId, @RequestParam("subtaskId") int subtaskId, @RequestParam("userId") int userId, HttpSession session) {
+    public String addToSubtask(@PathVariable int projectId, @RequestParam("subtaskId") int subtaskId, @RequestParam("userId") int userId, @RequestParam("taskId") int taskId, HttpSession session) {
         // Redirects to login site if user is not logged in
         if (!isLoggedIn(session)) {
             return "redirect:/";
         }
         subtaskService.addUserToSubtask(subtaskId, userId);
+        taskService.addAllSubtaskAssigneesToMainTask(taskId);
         return "redirect:/project/" + projectId;
     }
 
