@@ -301,6 +301,7 @@ public String createUser(@ModelAttribute User form, HttpSession session) {
         model.addAttribute("subtask", new Subtask());
         model.addAttribute("projectId", projectId);
         model.addAttribute("taskId", taskId);
+        model.addAttribute("project", projectService.getProjectById(projectId));
         User user = (User) session.getAttribute("user");
         return "createsubtask";
     }
@@ -366,6 +367,7 @@ public String createUser(@ModelAttribute User form, HttpSession session) {
         model.addAttribute("taskForm", form);
         model.addAttribute("taskId", taskId);
         model.addAttribute("projectId", projectId);
+        model.addAttribute("project", projectService.getProjectById(projectId));
         return "edittask";
     }
 
@@ -401,6 +403,7 @@ public String createUser(@ModelAttribute User form, HttpSession session) {
         model.addAttribute("taskId", taskId);
         model.addAttribute("subtaskId", subtaskId);
         model.addAttribute("projectId", projectId);
+        model.addAttribute("project", projectService.getProjectById(projectId));
         return "editsubtask";
     }
 

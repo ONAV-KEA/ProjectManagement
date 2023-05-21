@@ -68,14 +68,14 @@ public class SubtaskRepository implements ISubtaskRepository{
             ps.setDouble(5, form.getCost());
             ps.setInt(6, taskId);
             ps.setInt(7, projectId);
-            ps.setDouble(8, form.getPercentageCompletion());
+            ps.setDouble(8, 0);
 
             int affectedRows = ps.executeUpdate();
             if (affectedRows == 1) {
                 ResultSet rs = ps.getGeneratedKeys();
                 if (rs.next()) {
                     int id = rs.getInt(1);
-                    Subtask subtask = new Subtask(id, form.getTitle(), form.getDescription(), form.getStartDate(), form.getEndDate(), form.getCost(), taskId, projectId, form.getPercentageCompletion());
+                    Subtask subtask = new Subtask(id, form.getTitle(), form.getDescription(), form.getStartDate(), form.getEndDate(), form.getCost(), taskId, projectId, 0);
                     con.commit();
                     return subtask;
                 } else {

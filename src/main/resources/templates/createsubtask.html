@@ -71,6 +71,7 @@
             <div class="mb-3">
                 <label for="inputEndDate" class="form-label">End Date</label>
                 <input type="date" class="form-control" id="inputEndDate" name="endDate" th:value="*{endDate}">
+                <input type="hidden" th:value="${project.endDate}" name="projectEndDate" id="projectEndDate">
             </div>
             <div class="mb-3">
                 <label for="cost" class="form-label">Estimated Cost ($)</label>

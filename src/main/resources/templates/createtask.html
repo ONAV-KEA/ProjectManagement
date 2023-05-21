@@ -68,6 +68,7 @@
             <div class="mb-3">
                 <label for="inputEndDate" class="form-label">End Date</label>
                 <input type="date" class="form-control" id="inputEndDate" name="endDate" th:value="*{endDate}">
+                <input type="hidden" th:value="${project.endDate}" name="projectEndDate" id="projectEndDate">
             </div>
             <input type="hidden" th:value="${projectId}" name="projectId">
             <input type="submit" value="Submit" class="btn main-color-bg m-2" />
