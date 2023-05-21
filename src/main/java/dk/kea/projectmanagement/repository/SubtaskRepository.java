@@ -390,7 +390,7 @@ public class SubtaskRepository implements ISubtaskRepository{
             con.setAutoCommit(false);
 
 
-            String SQL = "UPDATE subtask SET completion_percentage = 100, end_date = ? WHERE id = ?;";
+            String SQL = "UPDATE subtask SET completion_percentage = 100, end_date = ?, status = 'completed' WHERE id = ?;";
             PreparedStatement ps = con.prepareStatement(SQL);
             ps.setDate(1, Date.valueOf(LocalDate.now()));
             ps.setInt(2, subtaskId);

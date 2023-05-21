@@ -200,6 +200,7 @@
                                                                     th:selected="${subtask.status == 'in_progress'}"></option>
                                                             <option value="completed" th:text="'Completed'"
                                                                     th:selected="${subtask.status == 'completed'}"></option>
+                                                            <input type="hidden" name="taskId" th:value="${task.id}"/>
                                                         </select>
                                                     </form>
                                                 </div>

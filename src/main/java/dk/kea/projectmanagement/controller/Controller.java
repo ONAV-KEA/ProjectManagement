@@ -434,7 +434,7 @@ public String createUser(@ModelAttribute User form, HttpSession session) {
     }
 
     @PostMapping("/project/{projectId}/update-subtask-status/{subtaskId}")
-    public String updateSubtaskStatus(@PathVariable int projectId, @PathVariable int subtaskId, HttpSession session, @RequestParam("subtaskStatus") String subtaskStatus) {
+    public String updateSubtaskStatus(@PathVariable int projectId, @PathVariable int subtaskId, HttpSession session, @RequestParam("subtaskStatus") String subtaskStatus, @RequestParam("taskId") int taskId) {
         // Redirects to login site if user is not logged in
         if (!isLoggedIn(session)){
             return "redirect:/";
@@ -442,9 +442,26 @@ public String createUser(@ModelAttribute User form, HttpSession session) {
 
         System.out.println("Subtask status: " + subtaskStatus);
         subtaskService.updateSubtaskStatus(subtaskId, subtaskStatus);
+        // Check if subtaskStatus is "completed"
         if (subtaskStatus.equals("completed")) {
             subtaskService.completeSubtask(subtaskId);
+
+            // Check if all subtasks are completed for the task
+            List<Subtask> subtasks = subtaskService.getSubtasksByTaskId(subtaskId);
+            boolean allSubtasksCompleted = true;
+            for (Subtask subtask : subtasks) {
+                if (!subtask.getStatus().equals("completed")) {
+                    allSubtasksCompleted = false;
+                    break;
+                }
+            }
+
+            // If all subtasks are completed, update the task status to "completed"
+            if (allSubtasksCompleted) {
+                taskService.completeTask(taskId);
+            }
         }
+
 
         User user = (User) session.getAttribute("user");
         return "redirect:/project/" + projectId;
