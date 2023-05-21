@@ -613,6 +613,11 @@ public String createUser(@ModelAttribute User form, HttpSession session) {
         subtaskService.updatePercentage(subtaskId, subtaskPercentage);
         projectUtility.updateTaskCompletionPercentage(taskId);
 
+        // if subtask percentage is 100, complete subtask
+        if (subtaskPercentage == 100) {
+            subtaskService.completeSubtask(subtaskId);
+        }
+
         User user = (User) session.getAttribute("user");
         return "redirect:/project/" + projectId;
     }
