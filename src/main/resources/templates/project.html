@@ -212,10 +212,10 @@
                                                     Assignee: [Not Assigned]
                                                 </p>
 
-                                                <div id="assignToTask">
+                                                <div id="assignToTask" th:if="${user.role.equals('project_manager')}">
                                                     <form th:action="@{/project/{projectId}/addtosubtask(projectId=${project.id})}" method="post">
                                                         <div class="mb-3">
-                                                            <label for="selectUsers" class="form-label">Add to task</label>
+                                                            <label for="selectUsers" class="form-label">Add assignee to subtask</label>
                                                             <select class="form-select" id="selectUsers" name="userId">
                                                                 <option th:each="member : ${members}" th:value="${member.id}" th:text="${member.username}"></option>
                                                             </select>
