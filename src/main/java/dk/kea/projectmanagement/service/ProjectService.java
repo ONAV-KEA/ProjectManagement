@@ -11,6 +11,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ProjectService {
@@ -40,9 +41,8 @@ public class ProjectService {
     public void editProject(Project form, int projectId){
         repository.editProject(form, projectId);
     }
-
-    public List<List<Object>> createGanttData(List<TaskAndSubtaskDTO> tasks){
-        return repository.createGanttData(tasks);
+    public List<Map<String, Object>> createGanttData(List<TaskAndSubtaskDTO> tasksAndSubtasks) {
+        return repository.createGanttData(tasksAndSubtasks);
     }
 
     public void inviteMember(int senderId, int recipientId, int projectId){
