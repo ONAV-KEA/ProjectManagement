@@ -269,6 +269,10 @@ public class ProjectRepository implements IProjectRepository{
             con.setAutoCommit(false);
             String SQL = "INSERT INTO invitations (project_id, sender_id, recipient_id, status) VALUES (?, ?, ?, 'pending')";
             PreparedStatement ps = con.prepareStatement(SQL);
+            // Throw IllegalArgumentException if Ids are not valid
+            if (projectId < 1 || senderId < 1 || recipientId < 1) {
+                throw new IllegalArgumentException("Invalid Ids");
+            }
             ps.setInt(1, projectId);
             ps.setInt(2, senderId);
             ps.setInt(3, recipientId);
