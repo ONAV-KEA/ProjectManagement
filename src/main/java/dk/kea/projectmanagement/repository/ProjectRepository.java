@@ -81,7 +81,7 @@ public class ProjectRepository implements IProjectRepository{
             PreparedStatement ps = con.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, form.getName());
             ps.setString(2, form.getDescription());
-            ps.setDate(3, form.getStartDate() != null ? Date.valueOf(form.getStartDate()) : null);
+            ps.setDate(3, form.getStartDate() != null ? Date.valueOf(form.getStartDate()) : Date.valueOf(LocalDate.now()));
             ps.setDate(4, form.getEndDate() != null ? Date.valueOf(form.getEndDate()) : null);
 
             int affectedRows = ps.executeUpdate();

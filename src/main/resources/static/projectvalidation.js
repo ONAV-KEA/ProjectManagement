@@ -19,5 +19,11 @@ function validateForm() {
         clearError("inputStartDate");
     }
 
+    // Checking that the end date is not null
+    if(endDate === "") {
+        displayError("inputEndDate", "End date is required");
+        return false; // Prevent form submission
+    }
+
     return true; // Allow form submission
 }

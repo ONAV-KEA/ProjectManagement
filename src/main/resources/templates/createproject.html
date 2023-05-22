@@ -56,7 +56,7 @@
             <form method="post" th:action="@{/createproject}" th:object="${project}" onsubmit="return validateForm()">
                 <div class="row g-3 align-items-center m-3">
                     <div class="col-md-3">
-                        <label for="inputName" class="col-form-label">Project Name: </label>
+                        <label for="inputName" class="col-form-label">Project Name:* </label>
                     </div>
                     <div class="col-md-4">
                         <input type="text" th:field="*{name}" id="inputName" class="form-control" aria-labelledby="nameHelpInline" />
@@ -84,31 +84,33 @@
 
                 <div class="row g-3 align-items-center m-3">
                     <div class="col-md-3">
-                        <label for="inputStartDate" class="col-form-label">Start Date:</label>
+                        <label for="inputStartDate" class="col-form-label">Start Date:*</label>
                     </div>
                     <div class="col-md-4">
                         <input type="date" th:field="*{startDate}" id="inputStartDate" class="form-control" aria-labelledby="startDateHelpInline" />
                     </div>
                     <div class="col-md-3">
                                 <span id="startDateHelpInline" class="form-text">
-                                    Enter start date of your project
+                                    Enter start date of your project <br>
+                                    (If you want to start today, leave it blank)
                                 </span>
                     </div>
                 </div>
 
                 <div class="row g-3 align-items-center m-3">
                     <div class="col-md-3">
-                        <label for="inputEndDate" class="col-form-label">End Date:</label>
+                        <label for="inputEndDate" class="col-form-label">End Date:*</label>
                     </div>
                     <div class="col-md-4">
                         <input type="date" th:field="*{endDate}" id="inputEndDate" class="form-control" aria-labelledby="endDateHelpInline" />
                     </div>
                     <div class="col-md-3">
-                                <span id="passwordHelpInline" class="form-text">
+                                <span id="endDateHelpInline" class="form-text">
                                     Enter end date of your project
                                 </span>
                     </div>
                 </div>
+                <span>* fields are required</span>
                 <div class="mt-5">
                     <input type="submit" value="Submit" class="btn btn-outline-success m-2" />
                     <input type="reset" value="Reset" class="btn btn-outline-danger m-2" />
