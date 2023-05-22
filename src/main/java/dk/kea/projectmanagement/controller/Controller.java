@@ -91,6 +91,7 @@ public class Controller {
         model.addAttribute("invitationsDTO", invitations);
         model.addAttribute("user", user);
         model.addAttribute("projects", projectService.getProjectByUserId(user.getId()));
+        model.addAttribute("userSubtasks", subtaskService.getSubtasksByUserId(user.getId()));
 
         return "dashboard";
     }

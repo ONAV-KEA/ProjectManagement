@@ -152,4 +152,12 @@ public class Subtask {
     public void setComments(List<String> comments) {
         this.comments = comments;
     }
+
+    public int getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(int projectId) {
+        this.projectId = projectId;
+    }
 }
