@@ -332,6 +332,8 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        let projectTitleElement = document.querySelector('.text-center h3');
+        let projectName = projectTitleElement.innerText.trim();
         let ganttDataStr = document.getElementById('json-data').innerText;
 
         if (ganttDataStr !== '{}') {
@@ -354,9 +356,10 @@
 
                 Highcharts.ganttChart('container', {
                     series: [{
+                        name: projectName,
                         data: ganttData
                     }]
-                });
+                })
             } catch (error) {
                 console.log("Error in script: ", error);
             }
