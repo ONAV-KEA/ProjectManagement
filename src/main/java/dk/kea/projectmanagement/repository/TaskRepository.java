@@ -526,8 +526,9 @@ public class TaskRepository implements ITaskRepository{
     }
     @Override
     public void addMemberToTask(int taskId, int memberId) {
+        Connection con = null;
         try {
-            Connection con = dbManager.getConnection();
+            con = dbManager.getConnection();
             String sql = "INSERT INTO task_assignee (task_id, user_id) VALUES (?, ?);";
             PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setInt(1, taskId);
@@ -535,12 +536,21 @@ public class TaskRepository implements ITaskRepository{
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            if (con != null) {
+                try {
+                    con.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
     @Override
     public void removeMemberFromTask(int taskId, int memberId) {
+        Connection con = null;
         try {
-            Connection con = dbManager.getConnection();
+            con = dbManager.getConnection();
             String sql = "DELETE FROM task_assignee WHERE task_id = ? AND user_id = ?;";
             PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setInt(1, taskId);
@@ -548,8 +558,17 @@ public class TaskRepository implements ITaskRepository{
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
-}
+        } finally {
+            if (con != null) {
+                try {
+                    con.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
+
 
     @Override
     public void addAllSubtaskAssigneesToMainTask(int taskId) {
