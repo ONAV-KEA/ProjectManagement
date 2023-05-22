@@ -8,6 +8,9 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -440,7 +443,9 @@ public class TaskRepository implements ITaskRepository{
                     String title = rs.getString("task_title");
                     String description = rs.getString("task_description");
                     LocalDate startDate = rs.getDate("task_start_date") == null ? null : rs.getDate("task_start_date").toLocalDate();
+                    startDate = convertToUTC(startDate);
                     LocalDate endDate = rs.getDate("task_end_date") == null ? null : rs.getDate("task_end_date").toLocalDate();
+                    endDate = convertToUTC(endDate);
                     int assigneeId = rs.getInt("task_assignee_id");
                     double cost = rs.getDouble("task_cost");
                     String status = rs.getString("task_status");
@@ -457,7 +462,9 @@ public class TaskRepository implements ITaskRepository{
                     String subtaskTitle = rs.getString("subtask_title");
                     String subtaskDescription = rs.getString("subtask_description");
                     LocalDate subtaskStartDate = rs.getDate("subtask_start_date") == null ? null : rs.getDate("subtask_start_date").toLocalDate();
+                    subtaskStartDate = convertToUTC(subtaskStartDate);
                     LocalDate subtaskEndDate = rs.getDate("subtask_end_date") == null ? null : rs.getDate("subtask_end_date").toLocalDate();
+                    subtaskEndDate = convertToUTC(subtaskEndDate);
                     int subtaskAssigneeId = rs.getInt("subtask_assignee_id");
                     double subtaskCost = rs.getDouble("subtask_cost");
                     String subtaskStatus = rs.getString("subtask_status");
@@ -476,6 +483,14 @@ public class TaskRepository implements ITaskRepository{
         }
     }
 
+    private LocalDate convertToUTC(LocalDate date) {
+        if (date == null) {
+            return null;
+        }
+        ZonedDateTime zdt = date.atStartOfDay(ZoneId.systemDefault());
+        ZonedDateTime utcZdt = zdt.withZoneSameInstant(ZoneOffset.UTC);
+        return utcZdt.toLocalDate();
+    }
 
 
     @Override

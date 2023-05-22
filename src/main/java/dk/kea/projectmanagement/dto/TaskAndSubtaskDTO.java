@@ -18,6 +18,7 @@ public class TaskAndSubtaskDTO {
     private int projectId;
     private List<Subtask> subtasks;
     private double percentageCompletion;
+    private Integer parentTaskId;
 
     public TaskAndSubtaskDTO(int id, String name, String description, LocalDate startDate, LocalDate endDate, int assigneeId, double cost, String status, List<String> comments, int projectId, List<Subtask> subtasks, double percentageCompletion) {
         this.id = id;
@@ -136,5 +137,13 @@ public class TaskAndSubtaskDTO {
 
     public void setPercentageCompletion(double percentageCompletion) {
         this.percentageCompletion = percentageCompletion;
+    }
+
+    public Integer getParentTaskId() {
+        return parentTaskId;
+    }
+
+    public void setParentTaskId(Integer parentTaskId) {
+        this.parentTaskId = parentTaskId;
     }
 }

@@ -1,5 +1,7 @@
 package dk.kea.projectmanagement.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dk.kea.projectmanagement.dto.InvitationDTO;
 import dk.kea.projectmanagement.dto.TaskAndSubtaskDTO;
 import dk.kea.projectmanagement.model.*;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @org.springframework.stereotype.Controller
 public class Controller {
@@ -223,7 +226,7 @@ public String createUser(@ModelAttribute User form, HttpSession session) {
     }
 
     @GetMapping("/project/{id}")
-    public String project(Model model, HttpSession session, @PathVariable("id") int id){
+    public String project(Model model, HttpSession session, @PathVariable("id") int id) throws JsonProcessingException {
         // Redirects to login site if user is not logged in
         if (!isLoggedIn(session)){
             return "redirect:/";
@@ -249,7 +252,11 @@ public String createUser(@ModelAttribute User form, HttpSession session) {
         List<Subtask> subtasks = (List<Subtask>) session.getAttribute("subtasks");
 
         List<TaskAndSubtaskDTO> tasksAndSubtasks = taskService.getTasksWithSubtasksByProjectId(id);
-        model.addAttribute("ganttData", projectService.createGanttData(tasksAndSubtasks));
+        List<Map<String, Object>> ganttData = projectService.createGanttData(tasksAndSubtasks);
+        ObjectMapper mapper = new ObjectMapper();
+        String ganttDataJson = mapper.writeValueAsString(ganttData);
+        model.addAttribute("ganttData", ganttDataJson);
+        System.out.println(ganttDataJson);
 
         return "project";
     }

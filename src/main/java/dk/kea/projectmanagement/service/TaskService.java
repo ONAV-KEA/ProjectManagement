@@ -20,6 +20,7 @@ public class TaskService {
         this.repository = repository;
     }
 
+
     public List<Task> getTasksByProjectId(int projectId){
         return repository.getTasksByProjectId(projectId);
     }

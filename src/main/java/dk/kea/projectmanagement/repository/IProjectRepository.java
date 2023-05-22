@@ -5,6 +5,7 @@ import dk.kea.projectmanagement.model.Project;
 import dk.kea.projectmanagement.model.User;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IProjectRepository {
 
@@ -17,7 +18,7 @@ public interface IProjectRepository {
 
     void editProject(Project form, int projectId);
 
-    List<List<Object>> createGanttData(List<TaskAndSubtaskDTO> tasks);
+    List<Map<String, Object>> createGanttData(List<TaskAndSubtaskDTO> tasksAndSubtasks);
 
     void inviteMember(int senderId, int recipientId, int projectId);
 
