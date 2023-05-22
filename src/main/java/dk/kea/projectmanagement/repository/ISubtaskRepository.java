@@ -34,5 +34,7 @@ public interface ISubtaskRepository {
 
     void updatePercentage(int subtaskId, int percentage);
 
+    List<Subtask> getSubtasksByUserId(int userId);
+
 
 }

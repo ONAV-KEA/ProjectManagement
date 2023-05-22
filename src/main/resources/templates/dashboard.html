@@ -117,6 +117,25 @@
             <div class="container col-4 p-4">
                 <h3>Assigned tasks:</h3>
                 <hr>
+
+                <table class="table-light table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Task</th>
+                        <th scope="col">Project</th>
+                        <th scope="col">Deadline</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="subtask : ${userSubtasks}">
+                        <td th:text="${subtask.title}"></td>
+                        <td>
+                            <a th:href="@{/project/{projectId}(projectId=${subtask.projectId})}" th:text="${subtask.projectId}" class="btn main-color-bg btn-sm"></a>
+                        </td>
+                        <td th:text="${subtask.endDate}"></td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

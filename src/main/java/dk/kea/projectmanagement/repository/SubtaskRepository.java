@@ -481,4 +481,42 @@ public class SubtaskRepository implements ISubtaskRepository{
             }
         }
     }
+
+    @Override
+    public List<Subtask> getSubtasksByUserId(int userId) {
+        Connection con = null;
+        List<Subtask> subtasks = new ArrayList<>();
+        try {
+            con = dbManager.getConnection();
+            String SQL = "SELECT * FROM subtask WHERE assignee_id = ?;";
+            PreparedStatement ps = con.prepareStatement(SQL);
+            ps.setInt(1, userId);
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int subtaskId = rs.getInt("id");
+                String title = rs.getString("title");
+                String description = rs.getString("description");
+                LocalDate startDate = rs.getDate("start_date") == null ? null : rs.getDate("start_date").toLocalDate();
+                LocalDate endDate = rs.getDate("end_date") == null ? null : rs.getDate("end_date").toLocalDate();
+                double cost = rs.getDouble("cost");
+                int task_id = rs.getInt("task_id");
+                int project_id = rs.getInt("project_id");
+                double completionPercentage = rs.getDouble("completion_percentage");
+                Subtask subtask = new Subtask(subtaskId, title, description, startDate, endDate, cost, task_id, project_id, completionPercentage);
+                subtasks.add(subtask);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Could not get subtasks by user id", e);
+        } finally {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return subtasks;
+    }
 }
