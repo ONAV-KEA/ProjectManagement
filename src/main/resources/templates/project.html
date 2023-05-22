@@ -350,7 +350,8 @@
                         start: task.start,
                         end: task.end,
                         completed: task.completed,
-                        parent: ganttData.find(t => t.id === task.parent) ? task.parent : undefined
+                        parent: ganttData.find(t => t.id === task.parent) ? task.parent : undefined,
+                        percentComplete: task.completed * 100 // Add percentComplete property
                     };
                 });
 
@@ -358,8 +359,18 @@
                     series: [{
                         name: projectName,
                         data: ganttData
-                    }]
-                })
+                    }],
+                    tooltip: {
+                        pointFormatter: function () {
+                            let point = this;
+                            let format = '<span style="font-weight:bold;">' + point.name + '</span><br/>';
+                            format += 'Start: ' + Highcharts.dateFormat('%Y-%m-%d', point.start) + '<br/>';
+                            format += 'End: ' + Highcharts.dateFormat('%Y-%m-%d', point.end) + '<br/>';
+                            format += 'Progress: ' + point.percentComplete + '%';
+                            return format;
+                        }
+                    },
+                });
             } catch (error) {
                 console.log("Error in script: ", error);
             }

@@ -232,7 +232,7 @@ public class ProjectRepository implements IProjectRepository{
             taskData.put("name", task.getName());
             taskData.put("start", getEpochMillis(task.getStartDate()));
             taskData.put("end", getEpochMillis(task.getEndDate()));
-            taskData.put("completed", task.getPercentageCompletion() / 100);
+            taskData.put("completed", task.getPercentageCompletion() / 100.0);
 
             ganttData.add(taskData);
 
@@ -243,7 +243,7 @@ public class ProjectRepository implements IProjectRepository{
                 subtaskData.put("name", subtask.getTitle());
                 subtaskData.put("start", getEpochMillis(subtask.getStartDate()));
                 subtaskData.put("end", getEpochMillis(subtask.getEndDate()));
-                subtaskData.put("completed", subtask.getPercentageCompletion() / 100);
+                subtaskData.put("completed", subtask.getPercentageCompletion() / 100.0);
 
                 ganttData.add(subtaskData);
             }
