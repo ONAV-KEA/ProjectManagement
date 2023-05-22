@@ -230,8 +230,8 @@ public class ProjectRepository implements IProjectRepository{
             Map<String, Object> taskData = new HashMap<>();
             taskData.put("id", String.valueOf(task.getId()));  // Convert to string
             taskData.put("name", task.getName());
-            taskData.put("start", task.getStartDate().atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli());
-            taskData.put("end", task.getEndDate().atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli());
+            taskData.put("start", getEpochMillis(task.getStartDate()));
+            taskData.put("end", getEpochMillis(task.getEndDate()));
             taskData.put("completed", task.getPercentageCompletion() / 100);
 
             ganttData.add(taskData);
@@ -241,8 +241,8 @@ public class ProjectRepository implements IProjectRepository{
                 subtaskData.put("id", String.valueOf(subtask.getId()));  // Convert to string
                 subtaskData.put("parent", String.valueOf(task.getId()));  // Convert to string
                 subtaskData.put("name", subtask.getTitle());
-                subtaskData.put("start", subtask.getStartDate().atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli());
-                subtaskData.put("end", subtask.getEndDate().atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli());
+                subtaskData.put("start", getEpochMillis(subtask.getStartDate()));
+                subtaskData.put("end", getEpochMillis(subtask.getEndDate()));
                 subtaskData.put("completed", subtask.getPercentageCompletion() / 100);
 
                 ganttData.add(subtaskData);
@@ -251,6 +251,14 @@ public class ProjectRepository implements IProjectRepository{
 
         return ganttData;
     }
+
+    private Long getEpochMillis(LocalDate date) {
+        if (date != null) {
+            return date.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        }
+        return null;
+    }
+
 
 
     @Override
