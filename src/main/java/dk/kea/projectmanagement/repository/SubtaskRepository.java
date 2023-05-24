@@ -120,8 +120,10 @@ public class SubtaskRepository implements ISubtaskRepository{
                     con.rollback();
                 } catch (SQLException ex) {
                     ex.printStackTrace();
+                    throw new RuntimeException("Could not delete subtask", ex);
                 }
             }
+            throw new RuntimeException("Could not delete subtask", e);
         }finally {
             if (con != null) {
                 try {
