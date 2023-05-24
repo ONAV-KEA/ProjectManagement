@@ -1,4 +1,4 @@
-package dk.kea.projectmanagement;
+package dk.kea.projectmanagement.repository;
 
 import dk.kea.projectmanagement.dto.TaskAndSubtaskDTO;
 import dk.kea.projectmanagement.model.Subtask;
@@ -32,8 +32,6 @@ public class TaskRepositoryTest {
         when(connectionMock.prepareStatement(any(String.class))).thenReturn(preparedStatementMock);
         when(preparedStatementMock.executeQuery()).thenReturn(resultSetMock);
         when(resultSetMock.next()).thenReturn(true, false);// Simulate one row in the result set
-
-        // And then we set up the results to get the data that we want to get from the mocked database
         when(resultSetMock.getInt("id")).thenReturn(1);
         when(resultSetMock.getString("title")).thenReturn("title");
         when(resultSetMock.getString("description")).thenReturn("description");

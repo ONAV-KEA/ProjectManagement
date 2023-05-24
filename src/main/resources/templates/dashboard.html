@@ -100,7 +100,7 @@
                     <tbody>
                     <tr th:each="project : ${projects}">
                         <td>
-                            <a th:href="@{/project/{projectId}(projectId=${project.id})}" th:text="${project.name}" class="btn main-color-bg btn-sm"></a>
+                            <a th:href="@{/project/{projectId}(projectId=${project.id})}" class="btn main-color-bg btn-sm">View</a>
                         </td>
                         <td th:text="${project.name}"></td>
                         <td th:text="${project.description}"></td>

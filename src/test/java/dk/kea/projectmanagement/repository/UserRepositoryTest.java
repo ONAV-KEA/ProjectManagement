@@ -1,4 +1,4 @@
-package dk.kea.projectmanagement;
+package dk.kea.projectmanagement.repository;
 
 import dk.kea.projectmanagement.model.User;
 import dk.kea.projectmanagement.repository.UserRepository;
