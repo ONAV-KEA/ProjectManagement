@@ -3,6 +3,7 @@ package dk.kea.projectmanagement.repository;
 
 import dk.kea.projectmanagement.model.Subtask;
 import dk.kea.projectmanagement.repository.utility.DBManager;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.sql.*;
@@ -661,5 +662,249 @@ public class SubtaskRepositoryTest {
         verify(connectionMock).setAutoCommit(true);
         verify(connectionMock).close();
     }
+
+    @Test
+    public void getSubtasksByProjectIdTest() throws SQLException {
+        // Mocking Connection, PreparedStatement, and ResultSet
+        Connection connectionMock = mock(Connection.class);
+        PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
+        ResultSet resultSetMock = mock(ResultSet.class);
+
+        // When the connection prepares the statement, return the prepared statement mock
+        when(connectionMock.prepareStatement(any(String.class))).thenReturn(preparedStatementMock);
+
+        // When the prepared statement sets the project ID, do nothing
+        doNothing().when(preparedStatementMock).setInt(eq(1), anyInt());
+
+        // When the prepared statement executes a query, return the result set mock
+        when(preparedStatementMock.executeQuery()).thenReturn(resultSetMock);
+
+        // When the result set is asked for next, return true for the first time and false after that to simulate one row in the result set
+        when(resultSetMock.next()).thenReturn(true, false);
+
+        // When the result set is asked for values, return the expected values
+        when(resultSetMock.getInt("id")).thenReturn(1);
+        when(resultSetMock.getString("title")).thenReturn("Subtask 1");
+        when(resultSetMock.getString("description")).thenReturn("Description 1");
+        when(resultSetMock.getDate("start_date")).thenReturn(null);
+        when(resultSetMock.getDate("end_date")).thenReturn(null);
+        when(resultSetMock.getDouble("cost")).thenReturn(10.0);
+        when(resultSetMock.getInt("task_id")).thenReturn(1);
+        when(resultSetMock.getInt("project_id")).thenReturn(1);
+        when(resultSetMock.getDouble("completion_percentage")).thenReturn(50.0);
+
+        // We mock DBManager
+        DBManager dbManagerMock = mock(DBManager.class);
+        when(dbManagerMock.getConnection()).thenReturn(connectionMock);
+
+        // Create the subtaskRepository with the mocked DBManager
+        SubtaskRepository subtaskRepository = new SubtaskRepository(dbManagerMock);
+
+        // Input for the getSubtasksByProjectId method
+        int projectId = 1;
+
+        // Call the method under test
+        List<Subtask> subtasks = subtaskRepository.getSubtasksByProjectId(projectId);
+
+        // Check the returned subtasks
+        assertNotNull(subtasks);
+        assertEquals(1, subtasks.size());
+
+        Subtask subtask = subtasks.get(0);
+        assertEquals(1, subtask.getId());
+        assertEquals("Subtask 1", subtask.getTitle());
+        assertEquals("Description 1", subtask.getDescription());
+        assertNull(subtask.getStartDate());
+        assertNull(subtask.getEndDate());
+        assertEquals(10.0, subtask.getCost());
+        assertEquals(1, subtask.getTaskId());
+        assertEquals(1, subtask.getProjectId());
+        assertEquals(50.0, subtask.getPercentageCompletion(), 0.01);
+
+        // Verify the interactions with the mocked objects
+        verify(connectionMock).prepareStatement(any(String.class));
+        verify(preparedStatementMock).setInt(1, projectId);
+        verify(preparedStatementMock).executeQuery();
+        verify(resultSetMock, times(2)).next();
+        verify(resultSetMock).getInt("id");
+        verify(resultSetMock).getString("title");
+        verify(resultSetMock).getString("description");
+        verify(resultSetMock).getDate("start_date");
+        verify(resultSetMock).getDate("end_date");
+        verify(resultSetMock).getDouble("cost");
+        verify(resultSetMock).getInt("task_id");
+        verify(resultSetMock).getInt("project_id");
+        verify(resultSetMock).getDouble("completion_percentage");
+    }
+
+    @Test
+    public void getSubtasksByProjectIdNegativeTest() throws SQLException {
+        // Mocking Connection, PreparedStatement, and ResultSet
+        Connection connectionMock = mock(Connection.class);
+        PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
+        ResultSet resultSetMock = mock(ResultSet.class);
+
+        // When the connection prepares the statement, return the prepared statement mock
+        when(connectionMock.prepareStatement(any(String.class))).thenReturn(preparedStatementMock);
+
+        // When the prepared statement sets the project ID, do nothing
+        doNothing().when(preparedStatementMock).setInt(eq(1), anyInt());
+
+        // When the prepared statement executes a query, throw SQLException to simulate a database error
+        when(preparedStatementMock.executeQuery()).thenThrow(new SQLException("Database connection error"));
+
+        // We mock DBManager
+        DBManager dbManagerMock = mock(DBManager.class);
+        when(dbManagerMock.getConnection()).thenReturn(connectionMock);
+
+        // Create the subtaskRepository with the mocked DBManager
+        SubtaskRepository subtaskRepository = new SubtaskRepository(dbManagerMock);
+
+        // Input for the getSubtasksByProjectId method
+        int projectId = 1;
+
+        // Call the method under test and expect an exception
+        assertThrows(RuntimeException.class, () -> subtaskRepository.getSubtasksByProjectId(projectId));
+
+        // Verify the interactions with the mocked objects
+        verify(connectionMock).prepareStatement(any(String.class));
+        verify(preparedStatementMock).setInt(1, projectId);
+        verify(preparedStatementMock).executeQuery();
+    }
+
+    @Test
+    public void completeSubtaskTest() throws SQLException {
+        // Mocking Connection and PreparedStatement classes to be used to update data
+        Connection connectionMock = mock(Connection.class);
+        PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
+
+        // And then define what should happen when they are called
+        when(connectionMock.prepareStatement(any(String.class))).thenReturn(preparedStatementMock);
+        when(preparedStatementMock.executeUpdate()).thenReturn(1); // Indicate that one row was affected
+
+        // We mock DBManager
+        DBManager dbManagerMock = mock(DBManager.class);
+        when(dbManagerMock.getConnection()).thenReturn(connectionMock);
+
+        // We create the subtaskRepository with the mocked DBManager
+        SubtaskRepository subtaskRepository = new SubtaskRepository(dbManagerMock);
+
+        // Input for the completeSubtask method
+        int subtaskId = 1;
+
+        // Call the method under test
+        subtaskRepository.completeSubtask(subtaskId);
+
+        // Verify the interactions with the mocked objects
+        verify(connectionMock).prepareStatement(any(String.class));
+        verify(preparedStatementMock).setDate(1, Date.valueOf(LocalDate.now()));
+        verify(preparedStatementMock).setInt(2, subtaskId);
+        verify(preparedStatementMock).executeUpdate();
+        verify(connectionMock).commit();
+    }
+
+
+    @Test
+    public void completeSubtaskNegativeTest() throws SQLException {
+        // Mocking Connection and PreparedStatement classes to be used to update data
+        Connection connectionMock = mock(Connection.class);
+        PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
+
+        // And then define what should happen when they are called
+        when(connectionMock.prepareStatement(any(String.class))).thenReturn(preparedStatementMock);
+        when(preparedStatementMock.executeUpdate()).thenReturn(0); // Indicate that no rows were affected
+
+        // We mock DBManager
+        DBManager dbManagerMock = mock(DBManager.class);
+        when(dbManagerMock.getConnection()).thenReturn(connectionMock);
+
+        // We create the subtaskRepository with the mocked DBManager
+        SubtaskRepository subtaskRepository = new SubtaskRepository(dbManagerMock);
+
+        // Input for the completeSubtask method
+        int subtaskId = 1;
+
+        // Call the method under test
+        subtaskRepository.completeSubtask(subtaskId);
+
+        // Verify the interactions with the mocked objects
+        verify(connectionMock).prepareStatement(any(String.class));
+        verify(preparedStatementMock).setDate(1, Date.valueOf(LocalDate.now()));
+        verify(preparedStatementMock).setInt(2, subtaskId);
+        verify(preparedStatementMock).executeUpdate();
+        verify(connectionMock, never()).rollback(); // no rollback, since no rows are affected
+    }
+
+    @Test
+    public void addUserToSubtaskTest() throws SQLException {
+        // Mocking Connection and PreparedStatement classes to be used to update data
+        Connection connectionMock = mock(Connection.class);
+        PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
+
+        // And then define what should happen when they are called
+        when(connectionMock.prepareStatement(any(String.class))).thenReturn(preparedStatementMock);
+        when(preparedStatementMock.executeUpdate()).thenReturn(1); // Indicate that one row was affected
+
+        // We mock DBManager
+        DBManager dbManagerMock = mock(DBManager.class);
+        when(dbManagerMock.getConnection()).thenReturn(connectionMock);
+
+        // We create the subtaskRepository with the mocked DBManager
+        SubtaskRepository subtaskRepository = new SubtaskRepository(dbManagerMock);
+
+        // Inputs for the addUserToSubtask method
+        int subtaskId = 1;
+        int userId = 1;
+
+        // Call the method under test
+        subtaskRepository.addUserToSubtask(subtaskId, userId);
+
+        // Verify the interactions with the mocked objects
+        verify(connectionMock).prepareStatement(any(String.class));
+        verify(preparedStatementMock).setInt(1, userId);
+        verify(preparedStatementMock).setInt(2, subtaskId);
+        verify(preparedStatementMock).executeUpdate();
+        verify(connectionMock).commit();
+    }
+
+    @Test
+    public void updatePercentagePositiveTest() throws SQLException {
+        // Mocking Connection, PreparedStatement, and DBManager
+        Connection connectionMock = mock(Connection.class);
+        PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
+        DBManager dbManagerMock = mock(DBManager.class);
+
+        // When the DBManager retrieves the connection, return the connection mock
+        when(dbManagerMock.getConnection()).thenReturn(connectionMock);
+
+        // When the connection prepares the statement, return the prepared statement mock
+        when(connectionMock.prepareStatement(any(String.class))).thenReturn(preparedStatementMock);
+
+        // Create the subtask repository with the mocked DBManager
+        SubtaskRepository subtaskRepository = new SubtaskRepository(dbManagerMock);
+
+        // Inputs for the updatePercentage method
+        int subtaskId = 1;
+        int percentage = 75;
+
+        // Perform the update
+        subtaskRepository.updatePercentage(subtaskId, percentage);
+
+        // Verify the interactions with the mocked objects
+        verify(dbManagerMock).getConnection();
+        verify(connectionMock).prepareStatement(any(String.class));
+        verify(preparedStatementMock).setInt(1, percentage);
+        verify(preparedStatementMock).setInt(2, subtaskId);
+        verify(preparedStatementMock).executeUpdate();
+        verify(connectionMock).commit();
+        verify(connectionMock).setAutoCommit(true);
+        verify(connectionMock).close();
+    }
+
+/*
+    @Test
+    public void getSubtasksByUserIdTest() throws SQLException {
+
+*/
 
 }
