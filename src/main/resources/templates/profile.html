@@ -48,7 +48,7 @@
 </nav>
 
 <div class="container-fluid mt-5 text-center">
-  <h3>Profile - edit user</h3>
+  <h3>Profile - edit user <i class="fa fa-pencil"></i></h3>
   <hr>
   <div class="container p-3">
     <form method="post" th:action="@{/edituser/{id}(id=${user.id})}" th:object="${user}">
@@ -85,12 +85,15 @@
       </div>
       <input type="hidden" th:value="*{role}" name="role">
       <input type="hidden" th:value="*{id}" name="userId">
-      <button type="submit" class="btn main-color-bg w-50 mb-4">Update profile details</button>
+      <button type="submit" class="btn main-color-bg w-50 mb-4">Update profile details
+          <i class="fa fa-refresh"></i>
+      </button>
     </form>
 <hr>
           <!-- Log out button -->
           <form method="post" th:action="@{/logout}">
-              <button type="submit" class="btn btn-danger w-50 m-4">Log out</button>
+              <button type="submit" class="btn btn-danger w-50 m-4">Log out
+              <i class="fa fa-sign-out"></i></button>
           </form>
   </div>
 </div>

@@ -73,17 +73,17 @@
                 <td th:text="${project.endDate}"></td>
                 <td>
                     <a th:href="@{/project/{projectId}(projectId=${project.id})}" class="btn main-color-bg btn-sm">
-                        View Tasks
+                        View Tasks <i class="fa fa-eye"></i>
                     </a>
                 </td>
                 <td th:if="${user.role == ('project_manager')}">
                     <a class="btn main-color-bg btn-sm" th:href="'/project/' + ${project.id} + '/projectsettings'">
-                        Edit</a>
+                        Edit <i class="fa fa-pencil"></i></a>
                 </td>
                 <td th:if="${user.role == ('project_manager')}">
                     <a class="btn btn-outline-danger btn-sm" onclick="return confirm('Are you sure you want to delete this project?')"
                         th:href="@{'/project/' + ${project.id} + '/deleteproject'}">
-                        Delete</a>
+                        Delete <i class="fa fa-trash"></i></a>
                 </td>
             </tr>
             </tbody>
