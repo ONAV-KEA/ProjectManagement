@@ -6,9 +6,9 @@ import java.sql.SQLException;
 
 public class TestDBManager implements DBManager {
     public Connection getConnection(){
-        String url = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1";
-        String username = "sa";
-        String password = "";
+        String url = System.getenv("TEST_DB_URL");
+        String username = System.getenv("TEST_DB_USERNAME");
+        String password = System.getenv("TEST_DB_PASSWORD");
 
         try{
             return DriverManager.getConnection(url,username,password);
@@ -18,3 +18,4 @@ public class TestDBManager implements DBManager {
         }
     }
 }
+
