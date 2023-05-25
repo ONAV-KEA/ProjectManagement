@@ -36,5 +36,7 @@ public interface ISubtaskRepository {
 
     List<Subtask> getSubtasksByUserId(int userId);
 
+    Subtask getSubtaskById(int subtaskId);
+
 
 }

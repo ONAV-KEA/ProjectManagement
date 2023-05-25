@@ -36,4 +36,6 @@ public interface ITaskRepository {
     void addAllSubtaskAssigneesToMainTask(int taskId);
 
     void updateTaskCompletionPercentage(int taskId, double percentageCompletion);
+
+    Task getTaskById(int taskId);
 }

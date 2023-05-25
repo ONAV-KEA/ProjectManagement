@@ -4,6 +4,7 @@ import dk.kea.projectmanagement.dto.TaskAndSubtaskDTO;
 import dk.kea.projectmanagement.model.Project;
 import dk.kea.projectmanagement.model.User;
 import dk.kea.projectmanagement.repository.IProjectRepository;
+import dk.kea.projectmanagement.repository.ITaskRepository;
 import dk.kea.projectmanagement.repository.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,8 +19,8 @@ public class ProjectService {
 
     private final IProjectRepository repository;
 
-    public ProjectService(@Autowired IProjectRepository repository){
-        this.repository = repository;
+    public ProjectService(ApplicationContext context, @Value("${projectrepository.impl}") String impl){
+        this.repository = (IProjectRepository) context.getBean(impl);
     }
 
     public List<Project> getProjectByUserId(int id){

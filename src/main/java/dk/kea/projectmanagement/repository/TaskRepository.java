@@ -619,4 +619,41 @@ public class TaskRepository implements ITaskRepository{
             }
         }
     }
+
+    @Override
+    public Task getTaskById(int taskId) {
+        Connection con = null;
+        try{
+            con = dbManager.getConnection();
+            String SQL = "SELECT * FROM task WHERE id = ?;";
+            PreparedStatement ps = con.prepareStatement(SQL);
+            ps.setInt(1, taskId);
+            ResultSet rs = ps.executeQuery();
+
+            if(rs.next()){
+                String title = rs.getString("title");
+                String description = rs.getString("description");
+                LocalDate startDate = rs.getDate("start_date") == null ? null : rs.getDate("start_date").toLocalDate();
+                startDate = convertToUTC(startDate);
+                LocalDate endDate = rs.getDate("end_date") == null ? null : rs.getDate("end_date").toLocalDate();
+                endDate = convertToUTC(endDate);
+                int assigneeId = rs.getInt("assignee_id");
+                double cost = rs.getDouble("cost");
+                String status = rs.getString("status");
+                int completionPercentage = rs.getInt("completion_percentage");
+                List<String> comments = getCommentsForTask(taskId);
+                Task task = new Task(taskId, title, description, startDate, endDate, assigneeId, cost, status, comments, completionPercentage);
+                return task;
+            }
+            return null;
+        } catch(SQLException ex){
+            throw new RuntimeException(ex);
+        } finally {
+            try{
+                con.close();
+            } catch(SQLException e){
+                e.printStackTrace();
+            }
+        }
+    }
 }
