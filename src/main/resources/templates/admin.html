@@ -161,60 +161,60 @@
                                                     aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <form th:action="@{'/edituser/' + ${user.getId()}}" th:object="${user}" method="post">
+                                            <form th:action="@{/edituser/{id}(id=${user.id})}" th:object="${user}" method="post">
                                                 <input type="hidden" th:field="*{id}"/>
 
                                                 <div class="row g-3 align-items-center m-1">
                                                     <div class="col-md-4">
-                                                        <label for="editUsername" class="col-form-label">Edit username:</label>
+                                                        <label for="username" class="col-form-label">Edit username:</label>
                                                     </div>
                                                     <div class="col-md-8">
-                                                        <input type="text" th:value="*{username}" id="editUsername" class="form-control">
+                                                        <input type="text" class="form-control" id="username" name="username" th:value="*{username}" th:disabled="${true}">
                                                     </div>
                                                 </div>
 
                                                 <div class="row g-3 align-items-center m-1">
                                                     <div class="col-md-4">
-                                                        <label for="editPassword" class="col-form-label">Edit password:</label>
+                                                        <label for="password" class="col-form-label">Edit password:</label>
                                                     </div>
                                                     <div class="col-md-8">
-                                                        <input type="text" th:value="*{password}" id="editPassword" class="form-control">
+                                                        <input type="password" class="form-control" id="password" name="password" th:value="*{password}">
                                                     </div>
                                                 </div>
 
                                                 <div class="row g-3 align-items-center m-1">
                                                     <div class="col-md-4">
-                                                        <label for="editFirstName" class="col-form-label">Edit first name:</label>
+                                                        <label for="firstName" class="col-form-label">Edit first name:</label>
                                                     </div>
                                                     <div class="col-md-8">
-                                                        <input type="text" th:value="*{firstName}" id="editFirstName" class="form-control">
+                                                        <input type="text" class="form-control" id="firstName" name="firstName" th:value="*{firstName}">
                                                     </div>
                                                 </div>
 
                                                 <div class="row g-3 align-items-center m-1">
                                                     <div class="col-md-4">
-                                                        <label for="editLastName" class="col-form-label">Edit last name:</label>
+                                                        <label for="lastName" class="col-form-label">Edit last name:</label>
                                                     </div>
                                                     <div class="col-md-8">
-                                                        <input type="text" th:value="*{lastName}" id="editLastName" class="form-control">
+                                                        <input type="text" class="form-control" id="lastName" name="lastName" th:value="*{lastName}">
                                                     </div>
                                                 </div>
 
                                                 <div class="row g-3 align-items-center m-1">
                                                     <div class="col-md-4">
-                                                        <label for="editBirthday" class="col-form-label">Edit birthday:</label>
+                                                        <label for="birthday" class="col-form-label">Edit birthday:</label>
                                                     </div>
                                                     <div class="col-md-8">
-                                                        <input type="date" th:value="*{birthday}" id="editBirthday" class="form-control">
+                                                        <input type="date" class="form-control" id="birthday" name="birthday" th:value="*{birthday}">
                                                     </div>
                                                 </div>
 
                                                 <div class="row g-3 align-items-center m-1">
                                                     <div class="col-md-4">
-                                                        <label for="editRole" class="col-form-label">Edit role:</label>
+                                                        <label for="role" class="col-form-label">Edit role:</label>
                                                     </div>
                                                     <div class="col-md-8">
-                                                        <select th:value="*{role}" id="editRole" class="form-select">
+                                                        <select th:value="*{role}" id="role" name="role" class="form-select">
                                                             <option value="project_manager">Project manager</option>
                                                             <option value="member">Member</option>
                                                         </select>
@@ -270,7 +270,7 @@
                                                     aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <form th:action="@{'/edituser/' + ${user.getId()}}" th:object="${user}" method="post">
+                                            <form th:action="@{/edituser/{id}(id=${user.id})}" th:object="${user}" method="post">
                                                 <input type="hidden" th:field="*{id}"/>
 
                                                 <div class="row g-3 align-items-center m-1">
@@ -278,7 +278,7 @@
                                                         <label for="editUsername2" class="col-form-label">Edit username:</label>
                                                     </div>
                                                     <div class="col-md-8">
-                                                        <input type="text" th:value="*{username}" id="editUsername2" class="form-control">
+                                                        <input type="text" name="username" th:value="*{username}" id="editUsername2" class="form-control">
                                                     </div>
                                                 </div>
 
@@ -287,7 +287,7 @@
                                                         <label for="editPassword2" class="col-form-label">Edit password:</label>
                                                     </div>
                                                     <div class="col-md-8">
-                                                        <input type="text" th:value="*{password}" id="editPassword2" class="form-control">
+                                                        <input type="text" name = "password" th:value="*{password}" id="editPassword2" class="form-control">
                                                     </div>
                                                 </div>
 
@@ -296,7 +296,7 @@
                                                         <label for="editFirstName2" class="col-form-label">Edit first name:</label>
                                                     </div>
                                                     <div class="col-md-8">
-                                                        <input type="text" th:value="*{firstName}" id="editFirstName2" class="form-control">
+                                                        <input type="text" name="firstName" th:value="*{firstName}" id="editFirstName2" class="form-control">
                                                     </div>
                                                 </div>
 
@@ -305,7 +305,7 @@
                                                         <label for="editLastName2" class="col-form-label">Edit last name:</label>
                                                     </div>
                                                     <div class="col-md-8">
-                                                        <input type="text" th:value="*{lastName}" id="editLastName2" class="form-control">
+                                                        <input type="text" name="lastName" th:value="*{lastName}" id="editLastName2" class="form-control">
                                                     </div>
                                                 </div>
 
@@ -314,7 +314,7 @@
                                                         <label for="editBirthday2" class="col-form-label">Edit birthday:</label>
                                                     </div>
                                                     <div class="col-md-8">
-                                                        <input type="date" th:value="*{birthday}" id="editBirthday2" class="form-control">
+                                                        <input type="date" name="birthday" th:value="*{birthday}" id="editBirthday2" class="form-control">
                                                     </div>
                                                 </div>
 

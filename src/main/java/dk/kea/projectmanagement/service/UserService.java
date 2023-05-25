@@ -15,8 +15,8 @@ public class UserService {
 
     private final IUserRepository repository;
 
-    public UserService(@Autowired IUserRepository repository){
-        this.repository = repository;
+    public UserService(ApplicationContext context, @Value("${userrepository.impl}") String impl){
+        this.repository = (IUserRepository) context.getBean(impl);
     }
 
     public List<User> getAllUsers(){
@@ -36,6 +36,7 @@ public class UserService {
     }
 
     public User editUser(User form, int userId){
+        System.out.println("User edited");
         return repository.editUser(form, userId);
     }
 
