@@ -8,6 +8,12 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    env:
+      TEST_DB_URL: ${{ secrets.TEST_DB_URL }}
+      TEST_DB_USERNAME: ${{ secrets.TEST_DB_USERNAME }}
+      TEST_DB_PASSWORD: ${{ secrets.TEST_DB_PASSWORD }}
+
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK 17
