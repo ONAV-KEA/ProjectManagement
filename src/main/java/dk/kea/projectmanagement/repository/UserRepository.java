@@ -100,6 +100,9 @@ public class UserRepository implements IUserRepository {
         Connection con = null;
         try {
             con = dbManager.getConnection();
+            if (con == null) {
+                throw new RuntimeException("Could not create a database connection");
+            }
             con.setAutoCommit(false);
             String SQL = "INSERT INTO user (username, password, first_name, last_name, birthday, role) VALUES (?, ?, ?, ?, ?, ?);";
             PreparedStatement ps = con.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
@@ -121,6 +124,7 @@ public class UserRepository implements IUserRepository {
             } else {
                 throw new RuntimeException("Could not create user");
             }
+
             con.commit();
         } catch (SQLException e) {
             if (con != null) {
@@ -133,13 +137,16 @@ public class UserRepository implements IUserRepository {
             throw new RuntimeException("Could not create user", e);
         } finally {
             try {
-                con.setAutoCommit(true);
-                con.close();
+                if (con != null) {
+                    con.setAutoCommit(true);
+                    con.close();
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
     }
+
 
     @Override
     public User editUser(User form, int userId) {
