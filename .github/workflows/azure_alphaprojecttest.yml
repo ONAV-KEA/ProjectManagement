@@ -1,18 +1,22 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy JAR app to Azure Web App - alphaprojecttest
+name: Build and deploy JAR app to Azure Web App - alphaprojectplanner
 
 on:
   push:
     branches:
-      - '*'
-      - '!main' # Exclude the main branch
+      - main
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    env:
+      TEST_DB_URL: ${{ secrets.TEST_DB_URL }}
+      TEST_DB_USERNAME: ${{ secrets.TEST_DB_USERNAME }}
+      TEST_DB_PASSWORD: ${{ secrets.TEST_DB_PASSWORD }}
 
     steps:
       - uses: actions/checkout@v2
@@ -37,7 +41,7 @@ jobs:
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-    
+
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v2
@@ -48,7 +52,7 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'alphaprojecttest'
+          app-name: 'alphaprojectplanner'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_AB31868F3F0C49029B08DC9D75BCE3EF }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_1522E1634C264978B9DF5D6C1F564276 }}
           package: '*.jar'
