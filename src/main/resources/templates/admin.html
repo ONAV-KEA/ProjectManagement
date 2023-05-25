@@ -57,7 +57,8 @@
         <div class="row justify-content-center">
 
             <div class="container col-sm-10 col-md-4 p-4 mb-5">
-                <h3>Register a new profile</h3>
+                <h3>Register a new profile <i class="fa fa-user-plus"></i>
+                </h3>
                 <p>Create a new member or project-leader and add it to the database.</p>
                 <form method="post" th:action="@{/admin}" th:object="${createUser}" onsubmit="return validateForm()">
                     <div class="row g-3 align-items-center m-1">
@@ -119,14 +120,20 @@
                         </div>
                     </div>
                     <div class="mt-5">
-                        <input type="submit" value="Create a new profile" class="w-100 btn main-color-bg mb-4"/>
-                        <input type="reset" value="Reset" class="w-100 btn btn-danger"/>
+                        <button type="submit" class="w-100 btn main-color-bg mb-4">
+                            Create a new profile
+                        </button>
+                        <button type="reset" class="w-100 btn btn-danger">
+                            Reset
+                            <i class="fa fa-undo"></i>
+                        </button>
                     </div>
                 </form>
             </div>
 
             <div class="container col-sm-10 col-md-6 p-4">
-                <h3 class="mb-4">Current profiles</h3>
+                <h3 class="mb-4">Current profiles <i class="fa fa-user"></i>
+                </h3>
                 <hr>
                 <p>Managers:</p>
                 <table class="table-light table">
@@ -222,11 +229,14 @@
                                                 </div>
 
                                                 <div class="mt-5">
-                                                    <input type="submit" value="Update user" class="w-100 btn main-color-bg mb-4"/>
+                                                    <button type="submit" class="w-100 btn main-color-bg mb-4">Update user
+                                                        <i class="fa fa-refresh"></i>
+                                                    </button>
                                                 </div>
                                                 </form>
                                             <a class="btn btn-danger w-100" th:href="@{'/deleteuser/' + ${user.id}}">
                                                 Delete User
+                                                <i class="fa fa-trash"></i>
                                             </a>
                                         </div>
                                     </div>
@@ -324,19 +334,22 @@
                                                     </div>
                                                     <div class="col-md-8">
                                                         <select th:value="*{role}" id="editRole2" class="form-select">
-                                                            <option value="project_manager">Project manager</option>
                                                             <option value="member">Member</option>
+                                                            <option value="project_manager">Project manager</option>
                                                         </select>
                                                     </div>
                                                 </div>
 
                                                 <div class="mt-5">
-                                                    <input type="submit" value="Update user" class="w-100 btn main-color-bg mb-4"/>
+                                                    <button type="submit" class="w-100 btn main-color-bg mb-4">Update user
+                                                    <i class="fa fa-refresh"></i>
+                                                    </button>
                                                 </div>
                                             </form>
                                             <a class="btn btn-danger w-100" onclick="return confirm('Are you sure you want to delete this user?')"
                                                th:href="@{'/deleteuser/' + ${user.id}}">
                                                 Delete User
+                                                <i class="fa fa-trash"></i>
                                             </a>
                                         </div>
                                     </div>

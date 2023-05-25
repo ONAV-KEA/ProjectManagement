@@ -128,9 +128,10 @@
                             <div class="modal-footer">
                                 <a class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this task?')"
                                    th:href="@{'/project/' + ${project.id} + '/delete/task/' + ${task.id}}">Delete
-                                    Task</a>
+                                    Task <i class="fa fa-trash"></i></a>
                                 <a class="btn main-color-bg"
-                                   th:href="@{'/project/' + ${project.id} + '/edittask/' + ${task.id}}">Edit Task
+                                   th:href="@{'/project/' + ${project.id} + '/edittask/' + ${task.id}}">
+                                    Edit Task <i class="fa fa-pencil"></i>
                                 </a>
                             </div>
                         </div>
@@ -221,6 +222,7 @@
                                                         <div class="mb-3">
                                                             <label for="selectUsers" class="form-label">Add assignee to subtask</label>
                                                             <select class="form-select" id="selectUsers" name="userId">
+                                                                <option value="">--Choose a member--</option>
                                                                 <option th:each="member : ${members}" th:value="${member.id}" th:text="${member.username}"></option>
                                                             </select>
                                                         </div>
@@ -228,7 +230,7 @@
                                                         <input type="hidden" th:value="${subtask.id}" name="subtaskId">
                                                         <input type="hidden" th:value="${task.id}" name="taskId">
                                                         <div class="container-fluid text-center">
-                                                            <button type="submit" class="btn main-color-bg w-50 m-4">Add to subtask</button>
+                                                            <button type="submit" class="btn main-color-bg w-50 m-2">Add member to subtask</button>
                                                         </div>
                                                     </form>
                                                 </div>
@@ -252,9 +254,10 @@
                                             <div class="modal-footer">
                                                 <a class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this subtask?')"
                                                    th:href="@{'/project/' + ${project.id} + '/delete/subtask/' + ${subtask.id}}">Delete
-                                                    Subtask</a>
+                                                    Subtask <i class="fa fa-trash"></i></a>
                                                 <a class="btn main-color-bg"
-                                                   th:href="@{'/project/' + ${project.id} + '/editsubtask/' + ${task.id} + '/' + ${subtask.id}}">Edit Subtask
+                                                   th:href="@{'/project/' + ${project.id} + '/editsubtask/' + ${task.id} + '/' + ${subtask.id}}">
+                                                    Edit Subtask <i class="fa fa-pencil"></i>
                                                 </a>
                                             </div>
                                         </div>
