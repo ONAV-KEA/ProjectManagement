@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 
-/*
+
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -48,7 +48,7 @@ public class ProjectControllerIntegrationTest {
     @Autowired
     private UserService userService;
 
-    // Mock session object
+    // We mock the session object
     MockHttpSession session = new MockHttpSession();
 
 
@@ -68,34 +68,47 @@ public class ProjectControllerIntegrationTest {
 
     @AfterEach
     public void tearDown() throws Exception {
-        userService.deleteUser(((User) session.getAttribute("user")).getId());
+        User user = (User) session.getAttribute("user");
+        if (user != null) {
+            int userId = user.getId();
+            if (userId > 0) {
+                try {
+                    userService.deleteUser(userId);
+                } catch (RuntimeException e) {
+                    throw new Exception("Failed to delete user with ID: " + userId, e);
+                }
+            }
+        }
     }
 
     @Test
-    public void testProjectCreationAndView() throws Exception {
-        // Test project creation
+    public void ProjectCreationAndViewTest() throws Exception {
+        // We prepare a project and set some values for it - name and dates
         Project form = new Project();
+        form.setName("Test Project");
+        form.setStartDate(LocalDate.now());
+        form.setEndDate(LocalDate.now().plusDays(7));
 
+
+        // We go to the /createproject and the prepared project formula is entered
         this.mockMvc.perform(post("/createproject").session(session)
                         .flashAttr("project", form)
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED))
                 .andExpect(status().isFound())
-                .andExpect(redirectedUrl("/dashboard"));
+                .andExpect(redirectedUrl("/dashboard")); // After project has been created, we send the user back to the dashboard
 
-        // Test retrieving all projects for the user
+        // We then test opening the projects page
         this.mockMvc.perform(get("/projects").session(session))
                 .andExpect(status().isOk());
 
-        // Retrieve project id after creation
+        // Then we take the projectId from the /projects page and set it as int
         Project project = projectService.getProjectByUserId(((User) session.getAttribute("user")).getId()).get(0);
         int projectId = project.getId();
 
-        // Test retrieving the created project
+        // Which lets us set the id variable in the project/ url to the project and see if it works correctly
         this.mockMvc.perform(get("/project/" + projectId).session(session))
                 .andExpect(status().isOk());
     }
-
-
 }
 
-*/
+
