@@ -3,6 +3,7 @@ package dk.kea.projectmanagement.service;
 import dk.kea.projectmanagement.dto.TaskAndSubtaskDTO;
 import dk.kea.projectmanagement.model.Task;
 import dk.kea.projectmanagement.repository.ITaskRepository;
+import dk.kea.projectmanagement.repository.IUserRepository;
 import dk.kea.projectmanagement.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,8 +17,8 @@ public class TaskService {
 
     private final ITaskRepository repository;
 
-    public TaskService(@Autowired ITaskRepository repository){
-        this.repository = repository;
+    public TaskService(ApplicationContext context, @Value("${taskrepository.impl}") String impl){
+        this.repository = (ITaskRepository) context.getBean(impl);
     }
 
 
