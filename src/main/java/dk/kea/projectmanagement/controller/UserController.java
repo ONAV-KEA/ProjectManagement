@@ -36,20 +36,38 @@ public class UserController {
     }
 
     @PostMapping("/edituser/{id}")
-    public String editUser(@PathVariable int id, @ModelAttribute User form, HttpSession session) {
+    public String editUser(@PathVariable int id, @ModelAttribute("user") User form, HttpSession session) {
         if (!isLoggedIn(session)) {
             return "redirect:/";
         }
-        User user = (User) session.getAttribute("user");
 
-        form.setUsername(user.getUsername());
+        System.out.println("Edit user form: " + form.getFirstName() + ' ' + form.getLastName() + ' ' + form.getRole() + ' ' + form.getUsername() + ' ' + form.getPassword());
+
+        // Update the user information in the database
         User editedUser = userService.editUser(form, id);
+        System.out.println("Edited user: " + editedUser + " with id: " + id);
 
-        session.setAttribute("user", editedUser);
-        System.out.println(editedUser.getId());
+        if (editedUser != null) {
+            // Update the user information in the session, but only if the user edited himself
+            User user = (User) session.getAttribute("user");
+            if (user.getId() == editedUser.getId()) {
+                session.setAttribute("user", editedUser);
+                System.out.println("Updated user in session: " + editedUser);
+            }
+        }
+
+        // Update the list of users in the session
+        session.setAttribute("users", userService.getAllUsers());
+        System.out.println("Updated users in session: " + userService.getAllUsers());
 
         return "redirect:/admin";
     }
+
+
+
+
+
+
 
     @GetMapping("/deleteuser/{id}")
     public String deleteUser(@PathVariable int id, HttpSession session) {
