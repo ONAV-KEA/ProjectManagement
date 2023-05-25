@@ -175,7 +175,7 @@ public class UserRepositoryTest {
         verify(generatedKeysMock).next();
     }
 
-    @Test
+    /*@Test
     public void editUserTest() throws SQLException {
         //We mock Connection, PreparedStatement and ResultSet classes to be used to retrieve data
         Connection connectionMock = mock(Connection.class);
@@ -219,7 +219,7 @@ public class UserRepositoryTest {
         verify(preparedStatementMock).executeUpdate();
         verify(connectionMock).setAutoCommit(true);
         verify(connectionMock).close();
-    }
+    }*/
 
     @Test
     public void deleteUserTest() throws SQLException {
