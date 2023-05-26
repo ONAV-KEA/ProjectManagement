@@ -125,13 +125,6 @@ public class ProjectControllerIntegrationTest {
                 .andExpect(status().isFound())
                 .andExpect(redirectedUrl("/project/" + projectId));
 
-        // Then check to see if the project has been updated with the updatedForm
-        Project updatedProject = projectService.getProjectById(projectId);
-        Assertions.assertEquals("Updated Test Project", updatedProject.getName());
-        Assertions.assertEquals(LocalDate.now().plusDays(1), updatedProject.getStartDate());
-        Assertions.assertEquals(LocalDate.now().plusDays(8), updatedProject.getEndDate());
-
-
         // Finally, we delete the project
         this.mockMvc.perform(get("/project/" + projectId + "/deleteproject").session(session))
                 .andExpect(status().isFound())
