@@ -102,8 +102,8 @@
                             </div>
                             <div class="modal-body">
                                 <p th:text="${task.description}"></p>
-                                <p th:text="'Start Date: ' + ${task.startDate}"></p>
-                                <p th:text="'End Date: ' + ${task.endDate}"></p>
+                                <p th:text="'Start Date: ' + (${task.startDate} != null ? ${task.startDate} : '')"></p>
+                                <p th:text="'End Date: ' + (${task.endDate} != null ? ${task.endDate} : '')"></p>
                                 <p th:text="'Status: ' + ${task.status}" class="status"></p>
                                 <p th:text="'Cost: ' + ${task.cost} + '$'"></p>
                                 <p>Assignees: </p>
@@ -189,10 +189,11 @@
                                             </div>
                                             <div class="modal-body">
                                                 <p th:text="${subtask.description}"></p>
-                                                <p th:text="'Start Date: ' + ${subtask.startDate}"></p>
-                                                <p th:text="'End Date: ' + ${subtask.endDate}"></p>
+                                                <p th:text="'Start Date: ' + (${subtask.startDate} != null ? ${subtask.startDate} : '')"></p>
+                                                <p th:text="'End Date: ' + (${subtask.endDate} != null ? ${subtask.endDate} : '')"></p>
                                                 <div class="status-container">
-                                                    <p th:text="'Status: ' + ${subtask.status}" class="status"></p>
+                                                    <p th:text="'Status: ' + (${subtask.status} == 'todo' ? 'To Do' : (${subtask.status} == 'in_progress' ? 'In Progress'
+                                                    : 'Completed'))" class="status"></p>
                                                     <form th:action="@{'/project/' + ${project.id} + '/update-subtask-status/' + ${subtask.id}}"
                                                           method="post">
                                                         <select class="form-select" id="subtaskStatusDropdown"
