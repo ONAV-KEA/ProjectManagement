@@ -22,6 +22,7 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
       - name: Build with Maven
-        run: mvn -B clean package --file pom.xml
+        run: mvn -B clean package -Dspring.profiles.active=test --file pom.xml
       - name: Run unit tests
-        run: mvn test --file pom.xml
+        run: mvn test -Dspring.profiles.active=test --file pom.xml
+
