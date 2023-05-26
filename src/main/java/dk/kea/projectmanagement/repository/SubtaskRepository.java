@@ -263,6 +263,14 @@ public class SubtaskRepository implements ISubtaskRepository{
             PreparedStatement ps = con.prepareStatement(SQL);
             ps.setString(1, subtaskStatus);
             ps.setInt(2, taskId);
+            // set subtask start date to current date if status is changed to "In progress"
+            if (subtaskStatus.equals("in_progress")) {
+                String SQL2 = "UPDATE subtask SET start_date = ? WHERE id = ?";
+                PreparedStatement ps2 = con.prepareStatement(SQL2);
+                ps2.setDate(1, Date.valueOf(LocalDate.now()));
+                ps2.setInt(2, taskId);
+                ps2.executeUpdate();
+            }
             ps.executeUpdate();
             con.commit();
         } catch (SQLException e) {
