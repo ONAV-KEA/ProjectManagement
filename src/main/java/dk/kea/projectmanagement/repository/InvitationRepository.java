@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,8 +55,11 @@ public class InvitationRepository implements IInvitationRepository{
 
     @Override
     public void acceptInvitation(int invitationId, int userId, int projectId) {
+        Connection con = null;
         try {
-            Connection con = dbManager.getConnection();
+            con = dbManager.getConnection();
+            con.setAutoCommit(false); // transaction block start
+
             String SQL = "UPDATE invitations SET status = 'accepted' WHERE id = ?";
             PreparedStatement ps = con.prepareStatement(SQL);
             ps.setInt(1, invitationId);
@@ -66,10 +70,30 @@ public class InvitationRepository implements IInvitationRepository{
             ps2.setInt(1, projectId);
             ps2.setInt(2, userId);
             ps2.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
+
+            con.commit(); // transaction block end
+        } catch (SQLException e) {
+            // rollback the transaction
+            if (con != null) {
+                try {
+                    con.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            throw new RuntimeException("Could not accept invitation", e);
+        } finally {
+            try {
+                if (con != null) {
+                    con.setAutoCommit(true);
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
+
 
     @Override
     public void declineInvitation(int invitationId) {
