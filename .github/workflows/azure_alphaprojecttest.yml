@@ -54,5 +54,5 @@ jobs:
         with:
           app-name: 'alphaprojectplanner'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_1522E1634C264978B9DF5D6C1F564276 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_AB31868F3F0C49029B08DC9D75BCE3EF }}
           package: '*.jar'
