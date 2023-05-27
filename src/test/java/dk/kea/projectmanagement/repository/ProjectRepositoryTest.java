@@ -26,20 +26,37 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 class ProjectRepositoryTest {
+        /*
+  Our unit tests follow this template:
+
+1. We create mock objects for `Connection`, `PreparedStatement`, and `ResultSet`
+
+2. Then we define what the mocked object should do when called
+
+3. DBManager is mocked
+
+3. We create the object under test, injecting the mock objects as necessary
+
+4. Call the method under test
+
+5. Assert the results to see if test goes as expected
+
+6. Finally, we verify to see if the tested method has interacted correctly with the dependencies
+
+(In the rapport there is more detailed descriptions on how Mockito and JUnit has been used in our unit tests)
+
+    */
 
     @Test
     public void getProjectByUserIdTest_Success() throws SQLException {
-        //We mock Connection, PreparedStatement and ResultSet classes to be used to retrieve data
         Connection connectionMock = mock(Connection.class);
         PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
         ResultSet resultSetMock = mock(ResultSet.class);
 
-        // And then define what should happen when they are called
         when(connectionMock.prepareStatement(any(String.class))).thenReturn(preparedStatementMock);
         when(preparedStatementMock.executeQuery()).thenReturn(resultSetMock);
         when(resultSetMock.next()).thenReturn(true, false); // Returning true for the first row, then false for second time because there are no more rows
 
-        // And then we set up the results to get the data that we want to get from the mocked database
         when(resultSetMock.getInt("id")).thenReturn(1);
         when(resultSetMock.getString("name")).thenReturn("name");
         when(resultSetMock.getString("description")).thenReturn("description");
@@ -49,16 +66,12 @@ class ProjectRepositoryTest {
         when(resultSetMock.getDate("end_date")).thenReturn(endDate);
 
 
-        // We mock the DBManager
         DBManager dbManagerMock = mock(DBManager.class);
         when(dbManagerMock.getConnection()).thenReturn(connectionMock);
-        // And then create the projectRepository to use the mocked DBManager
         ProjectRepository projectRepository = new ProjectRepository(dbManagerMock);
 
-        // Call the method under test
         List<Project> projects = projectRepository.getProjectByUserId(1);
 
-        // And then see if the results are correct, according to what we set in the resultSetMock methods
         assertEquals(1, projects.size());
         assertEquals(1, projects.get(0).getId());
         assertEquals("name", projects.get(0).getName());
@@ -66,8 +79,7 @@ class ProjectRepositoryTest {
         assertEquals(startDate.toLocalDate(), projects.get(0).getStartDate());
         assertEquals(endDate.toLocalDate(), projects.get(0).getEndDate());
 
-        // At last, we verify to see if the right methods were called on the mocked objects,
-        // to make sure the test interacts correctly with the mocked database
+
         verify(connectionMock).prepareStatement(any(String.class));
         verify(preparedStatementMock).executeQuery();
         verify(resultSetMock, times(2)).next();
@@ -75,32 +87,25 @@ class ProjectRepositoryTest {
 
     @Test
     public void getProjectByUserIdTest_NoProjects() throws SQLException {
-        // Mocking required objects
         DBManager dbManagerMock = mock(DBManager.class);
         Connection connectionMock = mock(Connection.class);
         PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
         ResultSet resultSetMock = mock(ResultSet.class);
         User userMock = mock(User.class);
 
-        // Set up mock behavior
         when(dbManagerMock.getConnection()).thenReturn(connectionMock);
         when(connectionMock.prepareStatement(any(String.class))).thenReturn(preparedStatementMock);
         when(preparedStatementMock.executeQuery()).thenReturn(resultSetMock);
         when(resultSetMock.next()).thenReturn(false); // No projects associated with the user
 
-        // Create an instance of the class under test
         ProjectRepository projectRepository = new ProjectRepository(dbManagerMock);
 
-        // Set up test data
         int userId = 2;
 
-        // Invoke the method under test
         List<Project> projects = projectRepository.getProjectByUserId(userId);
 
-        // Verify the results
         assertTrue(projects.isEmpty());
 
-        // Verify mock interactions
         verify(connectionMock).prepareStatement(any(String.class));
         verify(preparedStatementMock).setInt(1, userId);
         verify(preparedStatementMock).executeQuery();
@@ -109,32 +114,25 @@ class ProjectRepositoryTest {
 
     @Test
     public void getProjectByUserIdTest_NoUser() throws SQLException {
-        // Mocking required objects
         DBManager dbManagerMock = mock(DBManager.class);
         Connection connectionMock = mock(Connection.class);
         PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
         ResultSet resultSetMock = mock(ResultSet.class);
         User userMock = mock(User.class);
 
-        // Set up mock behavior
         when(dbManagerMock.getConnection()).thenReturn(connectionMock);
         when(connectionMock.prepareStatement(any(String.class))).thenReturn(preparedStatementMock);
         when(preparedStatementMock.executeQuery()).thenReturn(resultSetMock);
         when(resultSetMock.next()).thenReturn(false); // User does not exist
 
-        // Create an instance of the class under test
         ProjectRepository projectRepository = new ProjectRepository(dbManagerMock);
 
-        // Set up test data
         int userId = 3;
 
-        // Invoke the method under test
         List<Project> projects = projectRepository.getProjectByUserId(userId);
 
-        // Verify the results
         assertTrue(projects.isEmpty());
 
-        // Verify mock interactions
         verify(connectionMock).prepareStatement(any(String.class));
         verify(preparedStatementMock).setInt(1, userId);
         verify(preparedStatementMock).executeQuery();
@@ -145,7 +143,6 @@ class ProjectRepositoryTest {
 
     @Test
     public void createProjectTest_Success() throws SQLException {
-        // Mocking required objects
         DBManager dbManagerMock = mock(DBManager.class);
         Connection connectionMock = mock(Connection.class);
         PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
@@ -153,7 +150,6 @@ class ProjectRepositoryTest {
         ResultSet resultSetMock = mock(ResultSet.class);
         User userMock = mock(User.class);
 
-        // Set up mock behavior
         when(dbManagerMock.getConnection()).thenReturn(connectionMock);
         when(connectionMock.prepareStatement(any(String.class), eq(Statement.RETURN_GENERATED_KEYS)))
                 .thenReturn(preparedStatementMock);
@@ -164,10 +160,8 @@ class ProjectRepositoryTest {
         when(resultSetMock.next()).thenReturn(true);
         when(resultSetMock.getInt(1)).thenReturn(1);
 
-        // Create an instance of the class under test
         ProjectRepository projectRepository = new ProjectRepository(dbManagerMock);
 
-        // Set up test data
         Project form = new Project();
         form.setName("Test Project");
         form.setDescription("Test project description");
@@ -176,17 +170,14 @@ class ProjectRepositoryTest {
         User user = new User();
         user.setId(1);
 
-        // Invoke the method under test
         Project result = projectRepository.createProject(form, user);
 
-        // Verify the results
         assertEquals(1, result.getId());
         assertEquals("Test Project", result.getName());
         assertEquals("Test project description", result.getDescription());
         assertEquals(LocalDate.of(2023, 5, 1), result.getStartDate());
         assertEquals(LocalDate.of(2023, 5, 22), result.getEndDate());
 
-        // Verify mock interactions
         verify(dbManagerMock).getConnection();
         verify(connectionMock).prepareStatement(any(String.class), eq(Statement.RETURN_GENERATED_KEYS));
         verify(preparedStatementMock).executeUpdate();
@@ -201,14 +192,12 @@ class ProjectRepositoryTest {
 
     @Test
     public void createProjectTest_Failure_NoGeneratedKeys() throws SQLException {
-        // Mocking required objects
         DBManager dbManagerMock = mock(DBManager.class);
         Connection connectionMock = mock(Connection.class);
         PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
         ResultSet resultSetMock = mock(ResultSet.class);
         User userMock = mock(User.class);
 
-        // Set up mock behavior
         when(dbManagerMock.getConnection()).thenReturn(connectionMock);
         when(connectionMock.prepareStatement(any(String.class), eq(Statement.RETURN_GENERATED_KEYS)))
                 .thenReturn(preparedStatementMock);
@@ -216,10 +205,8 @@ class ProjectRepositoryTest {
         when(preparedStatementMock.getGeneratedKeys()).thenReturn(resultSetMock);
         when(resultSetMock.next()).thenReturn(false); // Simulate no generated keys being returned
 
-        // Create an instance of the class under test
         ProjectRepository projectRepository = new ProjectRepository(dbManagerMock);
 
-        // Set up test data
         Project form = new Project();
         form.setName("Test Project");
         form.setDescription("Test project description");
@@ -228,10 +215,8 @@ class ProjectRepositoryTest {
         User user = new User();
         user.setId(1);
 
-        // Invoke the method under test and expect an exception
         assertThrows(RuntimeException.class, () -> projectRepository.createProject(form, user));
 
-        // Verify mock interactions
         InOrder inOrder = inOrder(connectionMock, preparedStatementMock);
         inOrder.verify(connectionMock).setAutoCommit(false);
         inOrder.verify(connectionMock).prepareStatement(any(String.class), eq(Statement.RETURN_GENERATED_KEYS));
@@ -242,23 +227,19 @@ class ProjectRepositoryTest {
 
     @Test
     public void createProjectTest_Failure_ExecuteUpdateThrowsSQLException() throws SQLException {
-        // Mocking required objects
         DBManager dbManagerMock = mock(DBManager.class);
         Connection connectionMock = mock(Connection.class);
         PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
         ResultSet resultSetMock = mock(ResultSet.class);
         User userMock = mock(User.class);
 
-        // Set up mock behavior
         when(dbManagerMock.getConnection()).thenReturn(connectionMock);
         when(connectionMock.prepareStatement(any(String.class), eq(Statement.RETURN_GENERATED_KEYS)))
                 .thenReturn(preparedStatementMock);
         when(preparedStatementMock.executeUpdate()).thenThrow(SQLException.class);
 
-        // Create an instance of the class under test
         ProjectRepository projectRepository = new ProjectRepository(dbManagerMock);
 
-        // Set up test data
         Project form = new Project();
         form.setName("Test Project");
         form.setDescription("Test project description");
@@ -267,10 +248,8 @@ class ProjectRepositoryTest {
         User user = new User();
         user.setId(1);
 
-        // Invoke the method under test and expect an exception
         assertThrows(RuntimeException.class, () -> projectRepository.createProject(form, user));
 
-        // Verify mock interactions
         verify(connectionMock).setAutoCommit(false);
         verify(connectionMock).prepareStatement(any(String.class), eq(Statement.RETURN_GENERATED_KEYS));
         verify(preparedStatementMock).executeUpdate();
@@ -284,17 +263,14 @@ class ProjectRepositoryTest {
 
     @Test
     public void getProjectByIdTest_Success() throws SQLException {
-        //We mock Connection, PreparedStatement and ResultSet classes to be used to retrieve data
         Connection connectionMock = mock(Connection.class);
         PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
         ResultSet resultSetMock = mock(ResultSet.class);
 
-        // And then define what should happen when they are called
         when(connectionMock.prepareStatement(any(String.class))).thenReturn(preparedStatementMock);
         when(preparedStatementMock.executeQuery()).thenReturn(resultSetMock);
         when(resultSetMock.next()).thenReturn(true, false); // Returning true for the first row, then false for second time because there are no more rows
 
-        // And then we set up the results to get the data that we want to get from the mocked database
         when(resultSetMock.getInt("id")).thenReturn(1);
         when(resultSetMock.getString("name")).thenReturn("name");
         when(resultSetMock.getString("description")).thenReturn("description");
@@ -303,25 +279,19 @@ class ProjectRepositoryTest {
         when(resultSetMock.getDate("start_date")).thenReturn(startDate);
         when(resultSetMock.getDate("end_date")).thenReturn(endDate);
 
-        // We mock the DBManager
         DBManager dbManagerMock = mock(DBManager.class);
         when(dbManagerMock.getConnection()).thenReturn(connectionMock);
 
-        // And then create the projectRepository to use the mocked DBManager
         ProjectRepository projectRepository = new ProjectRepository(dbManagerMock);
 
-        // Call the method under test
         Project project = projectRepository.getProjectById(1);
 
-        // And then see if the results are correct, according to what we set in the resultSetMock methods
         assertEquals(1, project.getId());
         assertEquals("name", project.getName());
         assertEquals("description", project.getDescription());
         assertEquals(startDate.toLocalDate(), project.getStartDate());
         assertEquals(endDate.toLocalDate(), project.getEndDate());
 
-        // At last, we verify to see if the right methods were called on the mocked objects,
-        // to make sure the test interacts correctly with the mocked database
         verify(connectionMock).prepareStatement(any(String.class));
         verify(preparedStatementMock).executeQuery();
         verify(resultSetMock, times(1)).next();
@@ -330,29 +300,22 @@ class ProjectRepositoryTest {
 
     @Test
     public void getProjectByIdTest_InvalidProjectId() throws SQLException {
-
-        // Mocking the necessary objects
         Connection connectionMock = mock(Connection.class);
         PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
         ResultSet resultSetMock = mock(ResultSet.class);
 
-        // Creating the project repository with the mocked DBManager
         DBManager dbManagerMock = mock(DBManager.class);
         when(dbManagerMock.getConnection()).thenReturn(connectionMock);
         ProjectRepository projectRepository = new ProjectRepository(dbManagerMock);
 
-        // Mocking the behavior when preparing the statement and executing the query
         when(connectionMock.prepareStatement(any(String.class))).thenReturn(preparedStatementMock);
         when(preparedStatementMock.executeQuery()).thenReturn(resultSetMock);
         when(resultSetMock.next()).thenReturn(false); // No rows returned
 
-        // Calling the method under test
         Project project = projectRepository.getProjectById(-1);
 
-        // Verifying the results
         assertNull(project);
 
-        // Verifying the method invocations on the mocked objects
         verify(connectionMock).prepareStatement(any(String.class));
         verify(preparedStatementMock).setInt(1, -1);
         verify(preparedStatementMock).executeQuery();
@@ -361,26 +324,20 @@ class ProjectRepositoryTest {
 
     @Test
     public void getProjectByIdTest_ProjectNotFound() throws SQLException {
-
-        // Mocking the necessary objects
         Connection connectionMock = mock(Connection.class);
         PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
         ResultSet resultSetMock = mock(ResultSet.class);
 
-        // Setting up the mocks for database interactions
         when(connectionMock.prepareStatement(any(String.class))).thenReturn(preparedStatementMock);
         when(preparedStatementMock.executeQuery()).thenReturn(resultSetMock);
         when(resultSetMock.next()).thenReturn(false); // No rows found in the result set
 
-        // Creating the project repository with the mocked DBManager
         DBManager dbManagerMock = mock(DBManager.class);
         when(dbManagerMock.getConnection()).thenReturn(connectionMock);
         ProjectRepository projectRepository = new ProjectRepository(dbManagerMock);
 
-        // Calling the method under test
         Project project = projectRepository.getProjectById(2);
 
-        // Verifying the results
         assertNull(project);
 
         // Verifying the method invocations on the mocked objects
@@ -392,30 +349,24 @@ class ProjectRepositoryTest {
 
     @Test
     public void deleteProjectTest() throws SQLException {
-        // Mocking required objects
         DBManager dbManagerMock = mock(DBManager.class);
         Connection connectionMock = mock(Connection.class);
         PreparedStatement preparedStatementMock1 = mock(PreparedStatement.class);
         PreparedStatement preparedStatementMock2 = mock(PreparedStatement.class);
 
-        // Set up mock behavior
         when(dbManagerMock.getConnection()).thenReturn(connectionMock);
         when(connectionMock.prepareStatement(eq("DELETE FROM project WHERE id = ?;")))
                 .thenReturn(preparedStatementMock1);
         when(connectionMock.prepareStatement(eq("DELETE FROM project_user WHERE user_id = ? AND project_id = ?;")))
                 .thenReturn(preparedStatementMock2);
 
-        // Create an instance of the class under test
         ProjectRepository projectRepository = new ProjectRepository(dbManagerMock);
 
-        // Set up test data
         int projectId = 1;
         int userId = 2;
 
-        // Invoke the method under test
         projectRepository.deleteProject(projectId, userId);
 
-        // Verify the interactions and order of method calls
         InOrder inOrder = inOrder(connectionMock, preparedStatementMock1, preparedStatementMock2);
         ((InOrder) inOrder).verify(connectionMock).setAutoCommit(false);
         inOrder.verify(connectionMock).prepareStatement(eq("DELETE FROM project WHERE id = ?;"));
@@ -432,20 +383,16 @@ class ProjectRepositoryTest {
 
     @Test
     public void editProjectTest() throws SQLException {
-        // Mocking required objects
         DBManager dbManagerMock = mock(DBManager.class);
         Connection connectionMock = mock(Connection.class);
         PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
 
-        // Set up mock behavior
         when(dbManagerMock.getConnection()).thenReturn(connectionMock);
         when(connectionMock.prepareStatement(eq("UPDATE project SET name = ?, description = ?, start_date = ?, end_date = ? WHERE id = ?;")))
                 .thenReturn(preparedStatementMock);
 
-        // Create an instance of the class under test
         ProjectRepository projectRepository = new ProjectRepository(dbManagerMock);
 
-        // Set up test data
         Project form = new Project();
         form.setName("Updated Project");
         form.setDescription("Updated project description");
@@ -453,10 +400,8 @@ class ProjectRepositoryTest {
         form.setEndDate(LocalDate.of(2023, 5, 22));
         int projectId = 1;
 
-        // Invoke the method under test
         projectRepository.editProject(form, projectId);
 
-        // Verify the interactions and order of method calls
         InOrder inOrder = inOrder(connectionMock, preparedStatementMock);
         inOrder.verify(connectionMock).setAutoCommit(false);
         inOrder.verify(connectionMock).prepareStatement(eq("UPDATE project SET name = ?, description = ?, start_date = ?, end_date = ? WHERE id = ?;"));
@@ -473,7 +418,6 @@ class ProjectRepositoryTest {
 
     @Test
     public void createGanttDataTest() {
-        // Set up test data
         DBManager dbManagerMock = mock(DBManager.class);
         List<TaskAndSubtaskDTO> tasksAndSubtasks = new ArrayList<>();
 
@@ -515,13 +459,10 @@ class ProjectRepositoryTest {
         subtask2.setStatus("in_progress");
         task2.getSubtasks().add(subtask2);
 
-        // Create an instance of the class under test
         ProjectRepository projectRepository = new ProjectRepository(dbManagerMock);
 
-        // Invoke the method under test
         List<Map<String, Object>> result = projectRepository.createGanttData(tasksAndSubtasks);
 
-        // Verify the results
         assertEquals(4, result.size());
 
         Map<String, Object> task1Data = result.get(0);
@@ -561,25 +502,20 @@ class ProjectRepositoryTest {
 
     @Test
     public void inviteMemberTest_Success() throws SQLException {
-        // Mocking required objects
         Connection connectionMock = mock(Connection.class);
         PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
         int senderId = 1;
         int recipientId = 2;
         int projectId = 3;
 
-        // We mock the DBManager
         DBManager dbManagerMock = mock(DBManager.class);
         when(dbManagerMock.getConnection()).thenReturn(connectionMock);
 
-        // We mock the PreparedStatement
         when(connectionMock.prepareStatement(anyString())).thenReturn(preparedStatementMock);
         when(preparedStatementMock.executeUpdate()).thenReturn(1);
 
-        // Create an instance of the class under test
         ProjectRepository projectRepository = new ProjectRepository(dbManagerMock);
 
-        // Invoke the method under test
         projectRepository.inviteMember(senderId, recipientId, projectId);
 
         // Verify the interactions and order of method calls
@@ -597,22 +533,18 @@ class ProjectRepositoryTest {
 
     @Test
     public void inviteMember_InvalidProjectId() throws SQLException {
-        // Mocking required objects
         Connection connectionMock = mock(Connection.class);
         PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
         int senderId = 1;
         int recipientId = 2;
         int projectId = -1; // Invalid projectId
 
-        // We mock the DBManager
         DBManager dbManagerMock = mock(DBManager.class);
         when(dbManagerMock.getConnection()).thenReturn(connectionMock);
 
-        // We mock the PreparedStatement
         when(connectionMock.prepareStatement(anyString())).thenReturn(preparedStatementMock);
         when(preparedStatementMock.executeUpdate()).thenReturn(1);
 
-        // Create an instance of the class under test
         ProjectRepository projectRepository = new ProjectRepository(dbManagerMock);
 
         // Expect the IllegalArgumentException to be thrown
@@ -632,31 +564,23 @@ class ProjectRepositoryTest {
 
     @Test
     public void deleteProjectMemberTest() throws SQLException {
-        // We mock Connection, PreparedStatement, and ResultSet classes to be used to retrieve data
         Connection connectionMock = mock(Connection.class);
         PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
         PreparedStatement preparedStatementMock2 = mock(PreparedStatement.class);
 
-        // And then define what should happen when they are called
         when(connectionMock.prepareStatement(any(String.class))).thenReturn(preparedStatementMock)
                 .thenReturn(preparedStatementMock2);
         when(preparedStatementMock.executeUpdate()).thenReturn(1); // indicate that one row was affected
         when(preparedStatementMock2.executeUpdate()).thenReturn(1); // indicate that one row was affected
 
-        // We mock the DBManager
         DBManager dbManagerMock = mock(DBManager.class);
         when(dbManagerMock.getConnection()).thenReturn(connectionMock);
 
-        // And then create the userRepository to use the mocked DBManager
         ProjectRepository projectRepository = new ProjectRepository(dbManagerMock);
 
-        // We call the method
         projectRepository.deleteProject(1, 1);
 
         // And since nothing will be returned (because method is void) there is no assertEquals, just verify methods at the end
-
-        // At last, we verify to see if the right methods were called on the mocked objects,
-        // to make sure the test interacts correctly with the mocked database
         verify(connectionMock, times(2)).prepareStatement(any(String.class));
         verify(preparedStatementMock).setInt(1, 1); // Verify that the prepared statement was set with the correct id
         verify(preparedStatementMock).executeUpdate();
@@ -666,29 +590,22 @@ class ProjectRepositoryTest {
 
     @Test
     public void deleteProjectMemberTest_MemberNotFound() throws SQLException {
-        // Mocking required objects
         Connection connectionMock = mock(Connection.class);
         PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
 
-        // We mock the DBManager
         DBManager dbManagerMock = mock(DBManager.class);
         when(dbManagerMock.getConnection()).thenReturn(connectionMock);
 
-        // We mock the PreparedStatement
         when(connectionMock.prepareStatement(anyString())).thenReturn(preparedStatementMock);
         when(preparedStatementMock.executeUpdate()).thenReturn(0); // Indicate that no rows were affected
 
-        // Create an instance of the class under test
         ProjectRepository projectRepository = new ProjectRepository(dbManagerMock);
 
-        // Set up test data
         int projectId = 1;
         int memberId = 100; // Non-existent member ID
 
-        // Invoke the method under test
         projectRepository.deleteProjectMember(projectId, memberId);
 
-        // Verify the interactions and order of method calls
         InOrder inOrder = inOrder(connectionMock, preparedStatementMock);
         inOrder.verify(connectionMock).setAutoCommit(false);
         inOrder.verify(connectionMock).prepareStatement(eq("DELETE FROM project_user WHERE project_id = ? AND user_id = ?;"));
@@ -701,16 +618,13 @@ class ProjectRepositoryTest {
 
     @Test
     public void getTotalProjectCostTest() throws SQLException {
-        // Mocking required objects
         Connection connectionMock = mock(Connection.class);
         PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
         ResultSet resultSetMock = mock(ResultSet.class);
 
-        // We mock the DBManager
         DBManager dbManagerMock = mock(DBManager.class);
         when(dbManagerMock.getConnection()).thenReturn(connectionMock);
 
-        // We mock the PreparedStatement and ResultSet
         when(connectionMock.prepareStatement(anyString())).thenReturn(preparedStatementMock);
         when(preparedStatementMock.executeQuery()).thenReturn(resultSetMock);
 
@@ -718,58 +632,45 @@ class ProjectRepositoryTest {
         when(resultSetMock.next()).thenReturn(true); // Simulate that there is a result
         when(resultSetMock.getInt("total_cost")).thenReturn(1000); // Set the total cost value
 
-        // Create an instance of the class under test
         ProjectRepository projectRepository = new ProjectRepository(dbManagerMock);
 
-        // Invoke the method under test
         int totalCost = projectRepository.getTotalProjectCost(1);
 
-        // Verify the interactions and order of method calls
+        assertEquals(1000, totalCost);
+
         verify(connectionMock).prepareStatement(anyString());
         verify(preparedStatementMock).setInt(1, 1);
         verify(preparedStatementMock).executeQuery();
         verify(resultSetMock).next();
         verify(resultSetMock).getInt("total_cost");
         verify(connectionMock).close();
-
-        // Assert the expected result
-        assertEquals(1000, totalCost);
     }
 
     @Test
     public void getTotalProjectCostTest_ProjectNotFound() throws SQLException {
-        // Mocking required objects
         Connection connectionMock = mock(Connection.class);
         PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
         ResultSet resultSetMock = mock(ResultSet.class);
 
-        // We mock the DBManager
         DBManager dbManagerMock = mock(DBManager.class);
         when(dbManagerMock.getConnection()).thenReturn(connectionMock);
 
-        // We mock the PreparedStatement and ResultSet
         when(connectionMock.prepareStatement(anyString())).thenReturn(preparedStatementMock);
         when(preparedStatementMock.executeQuery()).thenReturn(resultSetMock);
 
         // Set up the ResultSet to indicate no result
         when(resultSetMock.next()).thenReturn(false); // Simulate no result found
 
-        // Create an instance of the class under test
         ProjectRepository projectRepository = new ProjectRepository(dbManagerMock);
 
-        // Invoke the method under test
         int totalCost = projectRepository.getTotalProjectCost(551);
 
-        // Verify the interactions and order of method calls
+        assertEquals(0, totalCost);
+
         verify(connectionMock).prepareStatement(anyString());
         verify(preparedStatementMock).setInt(1, 551);
         verify(preparedStatementMock).executeQuery();
         verify(resultSetMock).next();
         verify(connectionMock).close();
-
-        // Assert the expected result
-        assertEquals(0, totalCost);
     }
-
-
 }
