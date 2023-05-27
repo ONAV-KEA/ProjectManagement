@@ -6,7 +6,8 @@ name: Build and deploy JAR app to Azure Web App - alphaprojectplanner
 on:
   push:
     branches:
-      - main
+      - '*'
+      - '!main' # Exclude the main branch
   workflow_dispatch:
 
 jobs:
