@@ -72,6 +72,53 @@ public class SubtaskRepositoryTest {
         verify(generatedKeysMock).next();
     }
 
+    @Test
+    public void createSubtaskTest_SQLException() throws SQLException {
+        //We mock Connection, PreparedStatement and ResultSet classes to be used to retrieve data
+        Connection connectionMock = mock(Connection.class);
+        PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
+        ResultSet generatedKeysMock = mock(ResultSet.class);
+
+        // And then define what should happen when they are called
+        when(connectionMock.prepareStatement(any(String.class), eq(Statement.RETURN_GENERATED_KEYS)))
+                .thenReturn(preparedStatementMock);
+        when(preparedStatementMock.executeUpdate()).thenThrow(new SQLException("SQL exception occurred")); // Simulate a SQL exception
+
+        // We mock DBManager
+        DBManager dbManagerMock = mock(DBManager.class);
+        when(dbManagerMock.getConnection()).thenReturn(connectionMock);
+
+        // We create the subtaskRepository with the mocked DBManager
+        SubtaskRepository subtaskRepository = new SubtaskRepository(dbManagerMock);
+
+        // Inputs for the createSubtask method
+        Subtask form = new Subtask("Subtask Title", "Subtask Description", LocalDate.now(), LocalDate.now().plusDays(7), 100.0, "todo");
+        int taskId = 1;
+        int projectId = 1;
+
+        // Call the method under test
+        Exception exception = assertThrows(RuntimeException.class, () -> {
+            subtaskRepository.createSubtask(form, taskId, projectId);
+        });
+
+        // Check the exception
+        assertTrue(exception.getCause() instanceof SQLException);
+        assertTrue(exception.getCause().getMessage().contains("SQL exception occurred"));
+
+        // Verify the interactions
+        verify(connectionMock).prepareStatement(any(String.class), eq(Statement.RETURN_GENERATED_KEYS));
+        verify(preparedStatementMock).setString(1, "Subtask Title");
+        verify(preparedStatementMock).setString(2, "Subtask Description");
+        verify(preparedStatementMock).setDate(3, Date.valueOf(LocalDate.now()));
+        verify(preparedStatementMock).setDate(4, Date.valueOf(LocalDate.now().plusDays(7)));
+        verify(preparedStatementMock).setDouble(5, 100.0);
+        verify(preparedStatementMock).setInt(6, taskId);
+        verify(preparedStatementMock).setInt(7, projectId);
+        verify(preparedStatementMock).setDouble(8, 0);
+        verify(preparedStatementMock).executeUpdate();
+        verify(generatedKeysMock, times(0)).next();
+    }
+
 
     @Test
     public void getSubtasksByTaskIdTest() throws SQLException {
@@ -868,6 +915,46 @@ public class SubtaskRepositoryTest {
     }
 
     @Test
+    public void addUserToSubtaskTest_SQLException() throws SQLException {
+        // Mocking Connection and PreparedStatement classes to be used to update data
+        Connection connectionMock = mock(Connection.class);
+        PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
+
+        // And then define what should happen when they are called
+        when(connectionMock.prepareStatement(any(String.class))).thenReturn(preparedStatementMock);
+        when(preparedStatementMock.executeUpdate()).thenThrow(new SQLException("SQL exception occurred")); // Simulate a SQL exception
+
+        // We mock DBManager
+        DBManager dbManagerMock = mock(DBManager.class);
+        when(dbManagerMock.getConnection()).thenReturn(connectionMock);
+
+        // We create the subtaskRepository with the mocked DBManager
+        SubtaskRepository subtaskRepository = new SubtaskRepository(dbManagerMock);
+
+        // Inputs for the addUserToSubtask method
+        int subtaskId = 1;
+        int userId = 1;
+
+        // Call the method under test
+        Exception exception = assertThrows(RuntimeException.class, () -> {
+            subtaskRepository.addUserToSubtask(subtaskId, userId);
+        });
+
+        // Check the exception
+        assertTrue(exception.getCause() instanceof SQLException);
+        assertTrue(exception.getCause().getMessage().contains("SQL exception occurred"));
+
+        // Verify the interactions
+        verify(connectionMock).prepareStatement(any(String.class));
+        verify(preparedStatementMock).setInt(1, userId);
+        verify(preparedStatementMock).setInt(2, subtaskId);
+        verify(preparedStatementMock).executeUpdate();
+        verify(connectionMock, times(0)).commit(); // There should be no commit after an exception
+    }
+
+
+
+    @Test
     public void updatePercentagePositiveTest() throws SQLException {
         // Mocking Connection, PreparedStatement, and DBManager
         Connection connectionMock = mock(Connection.class);
@@ -901,10 +988,48 @@ public class SubtaskRepositoryTest {
         verify(connectionMock).close();
     }
 
-/*
     @Test
-    public void getSubtasksByUserIdTest() throws SQLException {
+    public void updatePercentageNegativeTest_SQLException() throws SQLException {
+        // Mocking Connection, PreparedStatement, and DBManager
+        Connection connectionMock = mock(Connection.class);
+        PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
+        DBManager dbManagerMock = mock(DBManager.class);
 
-*/
+        // When the DBManager retrieves the connection, return the connection mock
+        when(dbManagerMock.getConnection()).thenReturn(connectionMock);
 
+        // When the connection prepares the statement, return the prepared statement mock
+        when(connectionMock.prepareStatement(any(String.class))).thenReturn(preparedStatementMock);
+
+        // Simulate a SQL exception when executeUpdate() is called
+        when(preparedStatementMock.executeUpdate()).thenThrow(new SQLException("SQL exception occurred"));
+
+        // Create the subtask repository with the mocked DBManager
+        SubtaskRepository subtaskRepository = new SubtaskRepository(dbManagerMock);
+
+        // Inputs for the updatePercentage method
+        int subtaskId = 1;
+        int percentage = 75;
+
+        // Call the method under test
+        Exception exception = assertThrows(RuntimeException.class, () -> {
+            subtaskRepository.updatePercentage(subtaskId, percentage);
+        });
+
+        // Check the exception
+        assertTrue(exception.getCause() instanceof SQLException);
+        assertTrue(exception.getCause().getMessage().contains("SQL exception occurred"));
+
+        // Verify the interactions with the mocked objects
+        verify(dbManagerMock).getConnection();
+        verify(connectionMock).prepareStatement(any(String.class));
+        verify(preparedStatementMock).setInt(1, percentage);
+        verify(preparedStatementMock).setInt(2, subtaskId);
+        verify(preparedStatementMock).executeUpdate();
+        verify(connectionMock, never()).commit(); // Ensure commit() is not invoked
+        verify(connectionMock).setAutoCommit(false);
+        verify(connectionMock).rollback();
+        verify(connectionMock).setAutoCommit(true);
+        verify(connectionMock).close();
+    }
 }

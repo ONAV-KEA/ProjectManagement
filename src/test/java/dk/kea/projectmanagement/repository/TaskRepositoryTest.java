@@ -71,7 +71,6 @@ public class TaskRepositoryTest {
         verify(resultSetMock, times(3)).next();
     }
 
-
     @Test
     public void createTaskTest() throws SQLException {
         // We mock Connection, PreparedStatement and ResultSet classes to be used to retrieve data
@@ -114,6 +113,43 @@ public class TaskRepositoryTest {
         verify(preparedStatementMock, times(1)).executeUpdate();
         verify(preparedStatementMock, times(1)).getGeneratedKeys();
         verify(resultSetMock, times(1)).next();
+    }
+
+    @Test
+    public void createTaskTest_sqlException() throws SQLException {
+        // We mock Connection, PreparedStatement and ResultSet classes to be used to retrieve data
+        Connection connectionMock = mock(Connection.class);
+        PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
+        ResultSet resultSetMock = mock(ResultSet.class);
+
+        // And then define what should happen when they are called
+        when(connectionMock.prepareStatement(any(String.class), anyInt())).thenReturn(preparedStatementMock);
+        doThrow(new SQLException()).when(preparedStatementMock).executeUpdate();
+
+        // We mock the DBManager
+        DBManager dbManagerMock = mock(DBManager.class);
+        when(dbManagerMock.getConnection()).thenReturn(connectionMock);
+
+        // We mock the SubtaskRepository
+        SubtaskRepository subtaskRepositoryMock = mock(SubtaskRepository.class);
+
+        // We create the TaskRepository with the mocked DBManager and SubtaskRepository
+        TaskRepository taskRepository = new TaskRepository(dbManagerMock, subtaskRepositoryMock);
+
+        // Create a Task object to be inserted
+        Task taskForm = new Task(0, "title", "description", null, null, 100.0, 1);
+
+        // Call the method under test and assert that an SQLException is thrown
+        Exception exception = assertThrows(RuntimeException.class, () -> taskRepository.createTask(taskForm, 1));
+        assertTrue(exception.getCause() instanceof SQLException);
+
+
+        // At last, we verify to see if the right methods were called on the mocked objects,
+        // to make sure the test interacts correctly with the mocked database
+        verify(connectionMock, times(1)).prepareStatement(any(String.class), anyInt());
+        verify(preparedStatementMock, times(1)).executeUpdate();
+        verify(preparedStatementMock, never()).getGeneratedKeys();
+        verify(resultSetMock, never()).next();
     }
 
 
@@ -200,6 +236,39 @@ public class TaskRepositoryTest {
         verify(connectionMock, times(1)).prepareStatement(any(String.class));
         verify(preparedStatementMock, times(1)).executeUpdate();
     }
+
+    @Test
+    public void editTaskTest_sqlException() throws SQLException {
+        // We mock Connection, PreparedStatement and ResultSet classes to be used to retrieve data
+        Connection connectionMock = mock(Connection.class);
+        PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
+
+        // And then define what should happen when they are called
+        when(connectionMock.prepareStatement(any(String.class))).thenReturn(preparedStatementMock);
+        doThrow(new SQLException()).when(preparedStatementMock).executeUpdate();
+
+        // We mock the DBManager
+        DBManager dbManagerMock = mock(DBManager.class);
+        when(dbManagerMock.getConnection()).thenReturn(connectionMock);
+
+        // We mock the SubtaskRepository
+        SubtaskRepository subtaskRepositoryMock = mock(SubtaskRepository.class);
+
+        // We create the TaskRepository with the mocked DBManager and SubtaskRepository
+        TaskRepository taskRepository = new TaskRepository(dbManagerMock, subtaskRepositoryMock);
+
+        // Create a Task form to use as input
+        Task form = new Task(1, "title", "description", null, null, 100.0, 1);
+
+        // Call the method under test and assert that a RuntimeException is thrown
+        assertThrows(RuntimeException.class, () -> taskRepository.editTask(form, 1, 1));
+
+        // At last, we verify to see if the right methods were called on the mocked objects,
+        // to make sure the test interacts correctly with the mocked database
+        verify(connectionMock, times(1)).prepareStatement(any(String.class));
+        verify(preparedStatementMock, times(1)).executeUpdate();
+    }
+
 
     @Test
     public void updateTaskStatusTest() throws SQLException {
@@ -478,6 +547,35 @@ public class TaskRepositoryTest {
     }
 
     @Test
+    public void getTasksWithSubtasksByProjectIdTest_sqlException() throws SQLException {
+        Connection connectionMock = mock(Connection.class);
+        PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
+
+        // And then define what should happen when they are called
+        when(connectionMock.prepareStatement(any(String.class))).thenReturn(preparedStatementMock);
+        doThrow(new SQLException()).when(preparedStatementMock).executeQuery();
+
+        // We mock the DBManager
+        DBManager dbManagerMock = mock(DBManager.class);
+        when(dbManagerMock.getConnection()).thenReturn(connectionMock);
+
+        // We mock the SubtaskRepository
+        SubtaskRepository subtaskRepositoryMock = mock(SubtaskRepository.class);
+
+        // We create the TaskRepository with the mocked DBManager and SubtaskRepository
+        TaskRepository taskRepository = new TaskRepository(dbManagerMock, subtaskRepositoryMock);
+
+        // Call the method under test and assert that a RuntimeException is thrown
+        assertThrows(RuntimeException.class, () -> taskRepository.getTasksWithSubtasksByProjectId(1));
+
+        // At last, we verify to see if the right methods were called on the mocked objects,
+        // to make sure the test interacts correctly with the mocked database
+        verify(connectionMock, times(1)).prepareStatement(any(String.class));
+        verify(preparedStatementMock, times(1)).executeQuery();
+    }
+
+
+    @Test
     public void addCommentToTaskTest() throws SQLException {
         Connection connectionMock = mock(Connection.class);
         PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
@@ -510,6 +608,36 @@ public class TaskRepositoryTest {
         verify(connectionMock).close();
     }
 
+    @Test
+    public void addCommentToTaskTest_sqlException() throws SQLException {
+        Connection connectionMock = mock(Connection.class);
+        PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
+
+        // And then define what should happen when they are called
+        when(connectionMock.prepareStatement(any(String.class))).thenReturn(preparedStatementMock);
+        doThrow(new SQLException()).when(preparedStatementMock).executeUpdate();
+
+        // We mock the DBManager
+        DBManager dbManagerMock = mock(DBManager.class);
+        when(dbManagerMock.getConnection()).thenReturn(connectionMock);
+
+        // We mock the SubtaskRepository
+        SubtaskRepository subtaskRepositoryMock = mock(SubtaskRepository.class);
+
+        // We create the TaskRepository with the mocked DBManager and SubtaskRepository
+        TaskRepository taskRepository = new TaskRepository(dbManagerMock, subtaskRepositoryMock);
+
+        // Call the method under test and assert that a RuntimeException is thrown
+        assertThrows(RuntimeException.class, () -> taskRepository.addCommentToTask(1, "New comment"));
+
+        // At last, we verify to see if the right methods were called on the mocked objects,
+        // to make sure the test interacts correctly with the mocked database
+        verify(connectionMock).prepareStatement(any(String.class));
+        verify(preparedStatementMock).setString(1, "New comment");
+        verify(preparedStatementMock).setInt(2, 1);
+        verify(preparedStatementMock).executeUpdate();
+    }
+
 
     @Test
     public void deleteCommentsForTaskTest() throws SQLException {
@@ -540,6 +668,35 @@ public class TaskRepositoryTest {
         verify(connectionMock).commit();
         verify(connectionMock).setAutoCommit(true);
         verify(connectionMock).close();
+    }
+
+    @Test
+    public void deleteCommentsForTaskTest_sqlException() throws SQLException {
+        Connection connectionMock = mock(Connection.class);
+        PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
+
+        // And then define what should happen when they are called
+        when(connectionMock.prepareStatement(any(String.class))).thenReturn(preparedStatementMock);
+        doThrow(new SQLException()).when(preparedStatementMock).executeUpdate();
+
+        // We mock the DBManager
+        DBManager dbManagerMock = mock(DBManager.class);
+        when(dbManagerMock.getConnection()).thenReturn(connectionMock);
+
+        // We mock the SubtaskRepository
+        SubtaskRepository subtaskRepositoryMock = mock(SubtaskRepository.class);
+
+        // We create the TaskRepository with the mocked DBManager and SubtaskRepository
+        TaskRepository taskRepository = new TaskRepository(dbManagerMock, subtaskRepositoryMock);
+
+        // Call the method under test and assert that a RuntimeException is thrown
+        assertThrows(RuntimeException.class, () -> taskRepository.deleteCommentsForTask(1));
+
+        // At last, we verify to see if the right methods were called on the mocked objects,
+        // to make sure the test interacts correctly with the mocked database
+        verify(connectionMock).prepareStatement(any(String.class));
+        verify(preparedStatementMock).setInt(1, 1);
+        verify(preparedStatementMock).executeUpdate();
     }
 
 
@@ -578,6 +735,37 @@ public class TaskRepositoryTest {
         verify(connectionMock).setAutoCommit(true);
         verify(connectionMock).close();
     }
+
+    @Test
+    public void deleteTaskTest_sqlException() throws SQLException {
+        Connection connectionMock = mock(Connection.class);
+        PreparedStatement subtaskPreparedStatementMock = mock(PreparedStatement.class);
+
+        when(connectionMock.prepareStatement(any(String.class))).thenReturn(subtaskPreparedStatementMock);
+        doThrow(new SQLException()).when(subtaskPreparedStatementMock).executeUpdate(); // Simulate an SQLException
+
+        // We mock the DBManager
+        DBManager dbManagerMock = mock(DBManager.class);
+        when(dbManagerMock.getConnection()).thenReturn(connectionMock);
+
+        // We mock the SubtaskRepository
+        SubtaskRepository subtaskRepositoryMock = mock(SubtaskRepository.class);
+
+        // We create the TaskRepository with the mocked DBManager
+        TaskRepository taskRepository = new TaskRepository(dbManagerMock, subtaskRepositoryMock);
+
+        // Call the method under test
+        taskRepository.deleteTask(1);
+
+        // Verify the calls
+        verify(connectionMock, times(1)).prepareStatement(any(String.class)); // Changed times(2) to times(1)
+        verify(subtaskPreparedStatementMock).setInt(1, 1);
+        verify(subtaskPreparedStatementMock).executeUpdate();
+        verify(connectionMock).rollback(); // Verify that a rollback was performed
+        verify(connectionMock).setAutoCommit(true);
+        verify(connectionMock).close();
+    }
+
 
     @Test
     public void addMemberToTaskTest() throws SQLException {
