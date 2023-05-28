@@ -26,10 +26,7 @@ public class ProjectRepository implements IProjectRepository{
 
     @Override
     public List<Project> getProjectByUserId(int id) {
-        Connection con = null;
-        try {
-            con = dbManager.getConnection();
-            con.setAutoCommit(false);
+        try (Connection con = dbManager.getConnection()) {
             String SQL = "SELECT project.* " +
                     "FROM project_user " +
                     "INNER JOIN project ON project_user.project_id = project.id " +
@@ -47,29 +44,12 @@ public class ProjectRepository implements IProjectRepository{
                 Project project = new Project(projectId, name, description, startDate, endDate);
                 projects.add(project);
             }
-            con.commit();
             return projects;
-            // Catch block will rollback the transaction if it fails
         } catch (SQLException e) {
-            if (con != null) {
-                try {
-                    con.rollback();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
-            // Finally block will always run and commit the transaction if it was successful
-        } finally {
-            if (con != null) {
-                try {
-                    con.setAutoCommit(true);
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
+            throw new RuntimeException("Could not get projects by user id", e);
         }
-        return null;
     }
+
 
     @Override
     public Project createProject(Project form, User user) {
@@ -130,8 +110,7 @@ public class ProjectRepository implements IProjectRepository{
 
     @Override
     public Project getProjectById(int id) {
-        try {
-            Connection con = dbManager.getConnection();
+        try (Connection con = dbManager.getConnection()) {
             String SQL = "SELECT * FROM project WHERE id = ?;";
             PreparedStatement ps = con.prepareStatement(SQL);
             ps.setInt(1, id);
@@ -145,10 +124,11 @@ public class ProjectRepository implements IProjectRepository{
             } else {
                 return null;
             }
-        } catch (SQLException ex) {
-            throw new RuntimeException(ex);
+        } catch (SQLException e) {
+            throw new RuntimeException("Could not get project by id", e);
         }
     }
+
 
     @Override
     public void deleteProject(int projectId, int userId) {
@@ -190,9 +170,7 @@ public class ProjectRepository implements IProjectRepository{
 
     @Override
     public void editProject(Project form, int projectId) {
-        Connection con = null;
-        try {
-            con = dbManager.getConnection();
+        try (Connection con = dbManager.getConnection()) {
             con.setAutoCommit(false);
             String SQL = "UPDATE project SET name = ?, description = ?, start_date = ?, end_date = ? WHERE id = ?;";
             PreparedStatement ps = con.prepareStatement(SQL);
@@ -204,23 +182,10 @@ public class ProjectRepository implements IProjectRepository{
             ps.executeUpdate();
             con.commit();
         } catch (SQLException e) {
-            if (con != null) {
-                try {
-                    con.rollback();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
             throw new RuntimeException("Could not edit project", e);
-        } finally {
-            try {
-                con.setAutoCommit(true);
-                con.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
+
 
     @Override
     public List<Map<String, Object>> createGanttData(List<TaskAndSubtaskDTO> tasksAndSubtasks) {
@@ -263,9 +228,7 @@ public class ProjectRepository implements IProjectRepository{
 
     @Override
     public void inviteMember(int senderId, int recipientId, int projectId) {
-        Connection con = null;
-        try {
-            con = dbManager.getConnection();
+        try (Connection con = dbManager.getConnection()) {
             con.setAutoCommit(false);
             String SQL = "INSERT INTO invitations (project_id, sender_id, recipient_id, status) VALUES (?, ?, ?, 'pending')";
             PreparedStatement ps = con.prepareStatement(SQL);
@@ -279,29 +242,14 @@ public class ProjectRepository implements IProjectRepository{
             ps.executeUpdate();
             con.commit();
         } catch (SQLException e) {
-            if (con != null) {
-                try {
-                    con.rollback();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
             throw new RuntimeException("Could not invite member", e);
-        } finally {
-            try {
-                con.setAutoCommit(true);
-                con.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 
+
     @Override
     public void deleteProjectMember(int projectId, int userId) {
-        Connection con = null;
-        try {
-            con = dbManager.getConnection();
+        try (Connection con = dbManager.getConnection()) {
             con.setAutoCommit(false);
             String SQL = "DELETE FROM project_user WHERE project_id = ? AND user_id = ?;";
             PreparedStatement ps = con.prepareStatement(SQL);
@@ -310,29 +258,14 @@ public class ProjectRepository implements IProjectRepository{
             ps.executeUpdate();
             con.commit();
         } catch (SQLException e) {
-            if (con != null) {
-                try {
-                    con.rollback();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
             throw new RuntimeException("Could not delete project member", e);
-        } finally {
-            try {
-                con.setAutoCommit(true);
-                con.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 
+
     @Override
     public int getTotalProjectCost(int projectId) {
-        Connection con = null;
-        try {
-            con = dbManager.getConnection();
+        try (Connection con = dbManager.getConnection()) {
             String SQL = "SELECT SUM(cost) AS total_cost FROM task WHERE project_id = ?;";
             PreparedStatement ps = con.prepareStatement(SQL);
             ps.setInt(1, projectId);
@@ -343,12 +276,7 @@ public class ProjectRepository implements IProjectRepository{
             return 0;
         } catch (SQLException e) {
             throw new RuntimeException("Could not get total project cost", e);
-        } finally {
-            try {
-                con.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
+
 }

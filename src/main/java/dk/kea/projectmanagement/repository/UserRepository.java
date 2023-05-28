@@ -97,100 +97,61 @@ public class UserRepository implements IUserRepository {
 
     @Override
     public void createUser(User form) {
-        Connection con = null;
-        try {
-            con = dbManager.getConnection();
-            if (con == null) {
-                throw new RuntimeException("Could not create a database connection");
-            }
-            con.setAutoCommit(false);
+        try (Connection con = dbManager.getConnection()) {
+
             String SQL = "INSERT INTO user (username, password, first_name, last_name, birthday, role) VALUES (?, ?, ?, ?, ?, ?);";
-            PreparedStatement ps = con.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, form.getUsername());
-            ps.setString(2, form.getPassword());
-            ps.setString(3, form.getFirstName());
-            ps.setString(4, form.getLastName());
-            ps.setDate(5, form.getBirthday() != null ? Date.valueOf(form.getBirthday()) : null);
-            ps.setString(6, form.getRole());
+            try (PreparedStatement ps = con.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS)) {
+                ps.setString(1, form.getUsername());
+                ps.setString(2, form.getPassword());
+                ps.setString(3, form.getFirstName());
+                ps.setString(4, form.getLastName());
+                ps.setDate(5, form.getBirthday() != null ? Date.valueOf(form.getBirthday()) : null);
+                ps.setString(6, form.getRole());
 
-            int affectedRows = ps.executeUpdate();
-            if (affectedRows == 0) {
-                throw new RuntimeException("Could not create user");
+                int affectedRows = ps.executeUpdate();
+                if (affectedRows == 0) {
+                    throw new RuntimeException("Could not create user");
+                }
+
+                ResultSet generatedKeys = ps.getGeneratedKeys();
+                if (generatedKeys.next()) {
+                    form.setId(generatedKeys.getInt(1));
+                } else {
+                    throw new RuntimeException("Could not create user");
+                }
             }
-
-            ResultSet generatedKeys = ps.getGeneratedKeys();
-            if (generatedKeys.next()) {
-                form.setId(generatedKeys.getInt(1));
-            } else {
-                throw new RuntimeException("Could not create user");
-            }
-
-            con.commit();
         } catch (SQLException e) {
-            if (con != null) {
-                try {
-                    con.rollback();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
             throw new RuntimeException("Could not create user", e);
-        } finally {
-            try {
-                if (con != null) {
-                    con.setAutoCommit(true);
-                    con.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
+
 
 
     @Override
     public User editUser(User form, int userId) {
-        Connection con = null;
-        System.out.println(form.getFirstName() + ' ' +  form.getLastName() + ' ' +  form.getBirthday() + ' ' + userId);
-        try {
-            con = dbManager.getConnection();
-            con.setAutoCommit(false);
+        try (Connection con = dbManager.getConnection()) {
             String SQL = "UPDATE user SET username = ?, password = ?, first_name = ?, last_name = ?, birthday = ?, role = ? WHERE id = ?;";
-            PreparedStatement ps = con.prepareStatement(SQL);
-            ps.setString(1, form.getUsername() != null ? form.getUsername() : getUserByID(userId).getUsername());
-            ps.setString(2, form.getPassword() != null ? form.getPassword() : getUserByID(userId).getPassword());
-            ps.setString(3, form.getFirstName() != null ? form.getFirstName() : getUserByID(userId).getFirstName());
-            ps.setString(4, form.getLastName() != null ? form.getLastName() : getUserByID(userId).getLastName());
-            ps.setDate(5, form.getBirthday() != null ? Date.valueOf(form.getBirthday()) : Date.valueOf(getUserByID(userId).getBirthday()));
-            ps.setString(6, form.getRole() != null ? form.getRole() : getUserByID(userId).getRole());
-            ps.setInt(7, userId);
-            int affectedRows = ps.executeUpdate();
-            if (affectedRows == 1) {
-                con.commit();
-                return getUserByID(userId);
-            } else {
-                throw new RuntimeException("Could not edit user");
+            try (PreparedStatement ps = con.prepareStatement(SQL)) {
+                ps.setString(1, form.getUsername() != null ? form.getUsername() : getUserByID(userId).getUsername());
+                ps.setString(2, form.getPassword() != null ? form.getPassword() : getUserByID(userId).getPassword());
+                ps.setString(3, form.getFirstName() != null ? form.getFirstName() : getUserByID(userId).getFirstName());
+                ps.setString(4, form.getLastName() != null ? form.getLastName() : getUserByID(userId).getLastName());
+                ps.setDate(5, form.getBirthday() != null ? Date.valueOf(form.getBirthday()) : Date.valueOf(getUserByID(userId).getBirthday()));
+                ps.setString(6, form.getRole() != null ? form.getRole() : getUserByID(userId).getRole());
+                ps.setInt(7, userId);
+
+                int affectedRows = ps.executeUpdate();
+                if (affectedRows == 1) {
+                    return getUserByID(userId);
+                } else {
+                    throw new RuntimeException("Could not edit user");
+                }
             }
         } catch (SQLException e) {
-            if (con != null) {
-                try {
-                    con.rollback();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
             throw new RuntimeException("Could not edit user", e);
-        } finally {
-            try {
-                if (con != null) {
-                    con.setAutoCommit(true);
-                    con.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
+
 
 
     @Override
@@ -279,62 +240,44 @@ public class UserRepository implements IUserRepository {
 
     @Override
     public User getAssignedUserBySubtaskId(int subtaskId) {
-        Connection con = null;
-        User user = null;
-        try {
-            con = dbManager.getConnection();
+        try (Connection con = dbManager.getConnection()) {
             String SQL = "SELECT * FROM subtask WHERE id = ?;";
-            PreparedStatement ps = con.prepareStatement(SQL);
-            ps.setInt(1, subtaskId);
+            try (PreparedStatement ps = con.prepareStatement(SQL)) {
+                ps.setInt(1, subtaskId);
 
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                int assigneeId = rs.getInt("assignee_id");
-                // Retrieve the user information based on the userId
-                user = getUserByID(assigneeId);
+                ResultSet rs = ps.executeQuery();
+                if (rs.next()) {
+                    int assigneeId = rs.getInt("assignee_id");
+                    // Retrieve the user information based on the userId
+                    return getUserByID(assigneeId);
+                }
             }
         } catch (SQLException e) {
             throw new RuntimeException("Could not get assigned user for subtask", e);
-        } finally {
-            try {
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
-        return user;
+        return null;
     }
+
 
     @Override
     public List<User> getAllTaskAssignees(int taskId) {
-        Connection con = null;
         List<User> users = new ArrayList<>();
-        try{
-            con = dbManager.getConnection();
+        try (Connection con = dbManager.getConnection()) {
             String SQL = "SELECT user_id FROM task_assignee WHERE task_id = ?;";
-            PreparedStatement ps = con.prepareStatement(SQL);
-            ps.setInt(1, taskId);
-            ResultSet rs = ps.executeQuery();
+            try (PreparedStatement ps = con.prepareStatement(SQL)) {
+                ps.setInt(1, taskId);
+                ResultSet rs = ps.executeQuery();
 
-            while (rs.next()) {
-                int userId = rs.getInt("user_id");
-                User user = getUserByID(userId);
-                if (user != null) {
-                    users.add(user);
+                while (rs.next()) {
+                    int userId = rs.getInt("user_id");
+                    User user = getUserByID(userId);
+                    if (user != null) {
+                        users.add(user);
+                    }
                 }
             }
         } catch (SQLException e) {
             throw new RuntimeException("Could not get all task assignees", e);
-        } finally {
-            try {
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
         return users;
     }

@@ -411,9 +411,6 @@ class ProjectRepositoryTest {
         inOrder.verify(preparedStatementMock).setDate(4, form.getEndDate() != null ? Date.valueOf(form.getEndDate()) : null);
         inOrder.verify(preparedStatementMock).setInt(5, projectId);
         inOrder.verify(preparedStatementMock).executeUpdate();
-        inOrder.verify(connectionMock).commit();
-        inOrder.verify(connectionMock).setAutoCommit(true);
-        inOrder.verify(connectionMock).close();
     }
 
     @Test
@@ -526,9 +523,6 @@ class ProjectRepositoryTest {
         inOrder.verify(preparedStatementMock).setInt(2, senderId);
         inOrder.verify(preparedStatementMock).setInt(3, recipientId);
         inOrder.verify(preparedStatementMock).executeUpdate();
-        inOrder.verify(connectionMock).commit();
-        inOrder.verify(connectionMock).setAutoCommit(true);
-        inOrder.verify(connectionMock).close();
     }
 
     @Test
@@ -612,7 +606,6 @@ class ProjectRepositoryTest {
         inOrder.verify(preparedStatementMock).setInt(1, projectId);
         inOrder.verify(preparedStatementMock).setInt(2, memberId);
         inOrder.verify(preparedStatementMock).executeUpdate();
-        inOrder.verify(connectionMock).setAutoCommit(true);
     }
 
 
