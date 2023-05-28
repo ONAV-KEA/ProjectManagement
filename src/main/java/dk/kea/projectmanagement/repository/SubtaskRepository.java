@@ -20,9 +20,7 @@ public class SubtaskRepository implements ISubtaskRepository{
 
     @Override
     public void addCommentToSubtask(int subtaskId, String comment) {
-        Connection con = null;
-        try {
-            con = dbManager.getConnection();
+        try (Connection con = dbManager.getConnection()) {
             con.setAutoCommit(false);
             String SQL = "INSERT INTO comments (comment, subtask_id) VALUES (?, ?);";
             PreparedStatement ps = con.prepareStatement(SQL);
@@ -35,29 +33,14 @@ public class SubtaskRepository implements ISubtaskRepository{
             }
             con.commit();
         } catch (SQLException e) {
-            if (con != null) {
-                try {
-                    con.rollback();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
             throw new RuntimeException("Could not add comment to subtask", e);
-        } finally {
-            try {
-                con.setAutoCommit(true);
-                con.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 
+
     @Override
     public Subtask createSubtask(Subtask form, int taskId, int projectId) {
-        Connection con = null;
-        try {
-            con = dbManager.getConnection();
+        try (Connection con = dbManager.getConnection()) {
             con.setAutoCommit(false);
             String SQL = "INSERT INTO subtask (title, description, start_date, end_date, cost, task_id, project_id, completion_percentage) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
             PreparedStatement ps = con.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
@@ -85,29 +68,14 @@ public class SubtaskRepository implements ISubtaskRepository{
                 throw new RuntimeException("Could not create subtask");
             }
         } catch (SQLException e) {
-            if (con != null) {
-                try {
-                    con.rollback();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
             throw new RuntimeException("Could not create subtask", e);
-        } finally {
-            try {
-                con.setAutoCommit(true);
-                con.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 
+
     @Override
     public void deleteSubtask(int taskId) {
-        Connection con = null;
-        try {
-            con = dbManager.getConnection();
+        try (Connection con = dbManager.getConnection()) {
             con.setAutoCommit(false);
             String SQL = "DELETE FROM subtask WHERE id = ?";
             PreparedStatement ps = con.prepareStatement(SQL);
@@ -115,33 +83,14 @@ public class SubtaskRepository implements ISubtaskRepository{
             ps.executeUpdate();
             con.commit();
         } catch (SQLException e) {
-            if (con != null) {
-                try {
-                    con.rollback();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                    throw new RuntimeException("Could not delete subtask", ex);
-                }
-            }
             throw new RuntimeException("Could not delete subtask", e);
-        }finally {
-            if (con != null) {
-                try {
-                    con.setAutoCommit(true);
-                    con.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
         }
     }
 
+
     @Override
     public Subtask getSubtaskByTaskIdAndSubtaskId(int subtaskId, int taskId) {
-        Connection con = null;
-        Subtask subtask = null;
-        try {
-            con = dbManager.getConnection();
+        try (Connection con = dbManager.getConnection()) {
             String SQL = "SELECT * FROM subtask WHERE id = ? AND task_id = ?;";
             PreparedStatement ps = con.prepareStatement(SQL);
             ps.setInt(1, subtaskId);
@@ -156,28 +105,19 @@ public class SubtaskRepository implements ISubtaskRepository{
                 double cost = rs.getDouble("cost");
                 int projectId = rs.getInt("project_id");
                 double percentageCompletion = rs.getDouble("completion_percentage");
-                subtask = new Subtask(subtaskId, title, description, startDate, endDate, cost, taskId, projectId, percentageCompletion);
+                return new Subtask(subtaskId, title, description, startDate, endDate, cost, taskId, projectId, percentageCompletion);
             }
         } catch (SQLException e) {
             throw new RuntimeException("Could not get subtask", e);
-        } finally {
-            try {
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
-        return subtask;
+        return null;
     }
+
 
     @Override
     public List<Subtask> getSubtasksByTaskId(int taskId) {
-        Connection con = null;
         List<Subtask> subtasks = new ArrayList<>();
-        try {
-            con = dbManager.getConnection();
+        try (Connection con = dbManager.getConnection()) {
             String SQL = "SELECT * FROM subtask WHERE task_id = ?;";
             PreparedStatement ps = con.prepareStatement(SQL);
             ps.setInt(1, taskId);
@@ -198,25 +138,16 @@ public class SubtaskRepository implements ISubtaskRepository{
             }
         } catch (SQLException e) {
             throw new RuntimeException("Could not get subtasks by task id", e);
-        } finally {
-            try {
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
         return subtasks;
     }
 
+
     @Override
     public boolean editSubtask(Subtask form, int subtaskId, int taskId) {
-        Connection con = null;
-        try {
-            con = dbManager.getConnection();
+        try (Connection con = dbManager.getConnection()) {
             con.setAutoCommit(false);
-            String SQL = "UPDATE subtask SET title = ?, description = ?, start_date = ?, cost = ?, end_date = ?, status = ? WHERE id = ? AND `task_id` = ?;";
+            String SQL = "UPDATE subtask SET title = ?, description = ?, start_date = ?, cost = ?, end_date = ?, status = ? WHERE id = ? AND task_id = ?;";
             PreparedStatement ps = con.prepareStatement(SQL);
             ps.setString(1, form.getTitle());
             ps.setString(2, form.getDescription());
@@ -235,23 +166,10 @@ public class SubtaskRepository implements ISubtaskRepository{
                 throw new RuntimeException("Could not edit subtask");
             }
         } catch (SQLException e) {
-            if (con != null) {
-                try {
-                    con.rollback();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
             throw new RuntimeException("Could not edit subtask", e);
-        } finally {
-            try {
-                con.setAutoCommit(true);
-                con.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
+
 
     @Override
     public void updateSubtaskStatus(int taskId, String subtaskStatus) {
@@ -296,9 +214,7 @@ public class SubtaskRepository implements ISubtaskRepository{
     @Override
     public List<String> getCommentsForSubtask(int subtaskId) {
         List<String> comments = new ArrayList<>();
-        Connection con = null;
-        try {
-            con = dbManager.getConnection();
+        try (Connection con = dbManager.getConnection()) {
             String SQL = "SELECT comment FROM comments WHERE subtask_id = ?;";
             PreparedStatement ps = con.prepareStatement(SQL);
             ps.setInt(1, subtaskId);
@@ -309,23 +225,14 @@ public class SubtaskRepository implements ISubtaskRepository{
             }
         } catch (SQLException e) {
             throw new RuntimeException("Could not get comments for subtask", e);
-        } finally {
-            try {
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
         return comments;
     }
 
+
     @Override
     public void deleteCommentsForSubtask(int subtaskId) {
-        Connection con = null;
-        try{
-            con = dbManager.getConnection();
+        try (Connection con = dbManager.getConnection()) {
             con.setAutoCommit(false);
 
             // Delete the comments for the subtask
@@ -335,31 +242,16 @@ public class SubtaskRepository implements ISubtaskRepository{
             ps.executeUpdate();
 
             con.commit();
-        } catch(SQLException e){
-            if(con != null) {
-                try {
-                    con.rollback();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
+        } catch (SQLException e) {
             throw new RuntimeException("Could not delete comments", e);
-        } finally {
-            try {
-                con.setAutoCommit(true);
-                con.close();
-            } catch(SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 
+
     @Override
     public List<Subtask> getSubtasksByProjectId(int projectId) {
-        Connection con = null;
-        List<Subtask> subtasks = new ArrayList<>();
-        try {
-            con = dbManager.getConnection();
+        try (Connection con = dbManager.getConnection()) {
+            List<Subtask> subtasks = new ArrayList<>();
             String SQL = "SELECT * FROM subtask WHERE project_id = ?;";
             PreparedStatement ps = con.prepareStatement(SQL);
             ps.setInt(1, projectId);
@@ -373,136 +265,80 @@ public class SubtaskRepository implements ISubtaskRepository{
                 LocalDate endDate = rs.getDate("end_date") == null ? null : rs.getDate("end_date").toLocalDate();
                 double cost = rs.getDouble("cost");
                 int task_id = rs.getInt("task_id");
-                int project_id = rs.getInt("project_id");
                 double completionPercentage = rs.getDouble("completion_percentage");
-                Subtask subtask = new Subtask(subtaskId, title, description, startDate, endDate, cost, task_id, project_id, completionPercentage);
+                Subtask subtask = new Subtask(subtaskId, title, description, startDate, endDate, cost, task_id, projectId, completionPercentage);
                 subtasks.add(subtask);
             }
+            return subtasks;
         } catch (SQLException e) {
             throw new RuntimeException("Could not get subtasks by project id", e);
-        } finally {
-            try {
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
-        return subtasks;
     }
+
 
     @Override
     public void completeSubtask(int subtaskId) {
-        Connection con = null;
-        try{
-            con = dbManager.getConnection();
-            con.setAutoCommit(false);
-
-
+        try (Connection con = dbManager.getConnection()) {
             String SQL = "UPDATE subtask SET completion_percentage = 100, end_date = ?, status = 'completed' WHERE id = ?;";
             PreparedStatement ps = con.prepareStatement(SQL);
             ps.setDate(1, Date.valueOf(LocalDate.now()));
             ps.setInt(2, subtaskId);
-            ps.executeUpdate();
+            int affectedRows = ps.executeUpdate();
 
-            con.commit();
-        } catch(SQLException e){
-            if(con != null) {
-                try {
-                    con.rollback();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
+            if (affectedRows != 1) {
+                throw new RuntimeException("Could not complete subtask");
             }
+        } catch (SQLException e) {
             throw new RuntimeException("Could not complete subtask", e);
-        } finally {
-            try {
-                con.setAutoCommit(true);
-                con.close();
-            } catch(SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 
+
     @Override
     public void addUserToSubtask(int subtaskId, int userId) {
-        Connection con = null;
-        try{
-            con = dbManager.getConnection();
-            con.setAutoCommit(false);
-
+        try (Connection con = dbManager.getConnection()) {
             String SQL = "UPDATE subtask SET assignee_id = ? WHERE id = ?;";
             PreparedStatement ps = con.prepareStatement(SQL);
             ps.setInt(1, userId);
             ps.setInt(2, subtaskId);
-            ps.executeUpdate();
+            int affectedRows = ps.executeUpdate();
 
-            con.commit();
-        } catch(SQLException e){
-            if(con != null) {
-                try {
-                    con.rollback();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
+            if (affectedRows != 1) {
+                throw new RuntimeException("Could not add user to subtask");
             }
+        } catch (SQLException e) {
             throw new RuntimeException("Could not add user to subtask", e);
-        } finally {
-            try {
-                con.setAutoCommit(true);
-                con.close();
-            } catch(SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 
+
     @Override
     public void updatePercentage(int subtaskId, int percentage) {
-        Connection con = null;
-        try{
-            con = dbManager.getConnection();
-            con.setAutoCommit(false);
-
+        try (Connection con = dbManager.getConnection()) {
             String SQL = "UPDATE subtask SET completion_percentage = ? WHERE id = ?;";
             PreparedStatement ps = con.prepareStatement(SQL);
             ps.setInt(1, percentage);
             ps.setInt(2, subtaskId);
-            ps.executeUpdate();
+            int affectedRows = ps.executeUpdate();
 
-            con.commit();
-        } catch(SQLException e){
-            if(con != null) {
-                try {
-                    con.rollback();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
+            if (affectedRows != 1) {
+                throw new RuntimeException("Could not update percentage");
             }
+        } catch (SQLException e) {
             throw new RuntimeException("Could not update percentage", e);
-        } finally {
-            try {
-                con.setAutoCommit(true);
-                con.close();
-            } catch(SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 
+
     @Override
     public List<Subtask> getSubtasksByUserId(int userId) {
-        Connection con = null;
-        List<Subtask> subtasks = new ArrayList<>();
-        try {
-            con = dbManager.getConnection();
+        try (Connection con = dbManager.getConnection()) {
             String SQL = "SELECT * FROM subtask WHERE assignee_id = ?;";
             PreparedStatement ps = con.prepareStatement(SQL);
             ps.setInt(1, userId);
 
             ResultSet rs = ps.executeQuery();
+            List<Subtask> subtasks = new ArrayList<>();
             while (rs.next()) {
                 int subtaskId = rs.getInt("id");
                 String title = rs.getString("title");
@@ -516,32 +352,22 @@ public class SubtaskRepository implements ISubtaskRepository{
                 Subtask subtask = new Subtask(subtaskId, title, description, startDate, endDate, cost, task_id, project_id, completionPercentage);
                 subtasks.add(subtask);
             }
+            return subtasks;
         } catch (SQLException e) {
             throw new RuntimeException("Could not get subtasks by user id", e);
-        } finally {
-            try {
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
-        return subtasks;
     }
+
 
     @Override
     public Subtask getSubtaskById(int subtaskId) {
-        Connection con = null;
-        Subtask subtask = null;
-        try {
-            con = dbManager.getConnection();
+        try (Connection con = dbManager.getConnection()) {
             String SQL = "SELECT * FROM subtask WHERE id = ?;";
             PreparedStatement ps = con.prepareStatement(SQL);
             ps.setInt(1, subtaskId);
 
             ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
+            if (rs.next()) {
                 int id = rs.getInt("id");
                 String title = rs.getString("title");
                 String description = rs.getString("description");
@@ -551,19 +377,12 @@ public class SubtaskRepository implements ISubtaskRepository{
                 int task_id = rs.getInt("task_id");
                 int project_id = rs.getInt("project_id");
                 double completionPercentage = rs.getDouble("completion_percentage");
-                subtask = new Subtask(id, title, description, startDate, endDate, cost, task_id, project_id, completionPercentage);
+                return new Subtask(id, title, description, startDate, endDate, cost, task_id, project_id, completionPercentage);
             }
+            return null; // Return null if no subtask is found with the specified ID
         } catch (SQLException e) {
             throw new RuntimeException("Could not get subtask by id", e);
-        } finally {
-            try {
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
-        return subtask;
     }
+
 }

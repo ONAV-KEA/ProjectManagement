@@ -336,13 +336,16 @@ public class TaskRepositoryTest {
     @Test
     public void addAllSubtaskAssigneesToMainTaskTest() throws SQLException {
         Connection connectionMock = mock(Connection.class);
-        PreparedStatement preparedStatementMock1 = mock(PreparedStatement.class);
-        PreparedStatement preparedStatementMock2 = mock(PreparedStatement.class);
+        PreparedStatement deleteStatementMock = mock(PreparedStatement.class);
+        PreparedStatement insertStatementMock = mock(PreparedStatement.class);
+        PreparedStatement selectStatementMock = mock(PreparedStatement.class);
         ResultSet resultSetMock = mock(ResultSet.class);
 
-        when(connectionMock.prepareStatement(any(String.class))).thenReturn(preparedStatementMock1, preparedStatementMock2);
-        when(preparedStatementMock1.executeQuery()).thenReturn(resultSetMock);
-        when(resultSetMock.next()).thenReturn(true, false); // Simulate one row in the result set
+        when(connectionMock.prepareStatement(any(String.class))).thenReturn(deleteStatementMock, insertStatementMock, selectStatementMock);
+        when(deleteStatementMock.executeUpdate()).thenReturn(1);
+        when(insertStatementMock.executeUpdate()).thenReturn(1);
+        when(selectStatementMock.executeQuery()).thenReturn(resultSetMock);
+        when(resultSetMock.next()).thenReturn(true, false);
         when(resultSetMock.getInt("assignee_id")).thenReturn(1);
 
         DBManager dbManagerMock = mock(DBManager.class);
@@ -353,14 +356,20 @@ public class TaskRepositoryTest {
 
         taskRepository.addAllSubtaskAssigneesToMainTask(1);
 
-        verify(connectionMock, times(2)).prepareStatement(any(String.class));
-        verify(preparedStatementMock1, times(1)).executeQuery();
+        verify(connectionMock, times(3)).prepareStatement(any(String.class));
+        verify(deleteStatementMock, times(1)).setInt(1, 1);
+        verify(deleteStatementMock, times(1)).executeUpdate();
+        verify(insertStatementMock, times(1)).setInt(1, 1);
+        verify(insertStatementMock, times(1)).setInt(2, 1);
+        verify(insertStatementMock, times(1)).executeUpdate();
+        verify(selectStatementMock, times(1)).setInt(1, 1);
+        verify(selectStatementMock, times(1)).executeQuery();
         verify(resultSetMock, times(2)).next();
         verify(resultSetMock, times(1)).getInt("assignee_id");
-        verify(preparedStatementMock2, times(1)).setInt(1, 1);
-        verify(preparedStatementMock2, times(1)).setInt(2, 1);
-        verify(preparedStatementMock2, times(1)).executeUpdate();
+        verify(connectionMock, times(1)).commit();
+        verify(connectionMock, times(1)).close();
     }
+
 
     @Test
     public void getTasksWithSubtasksByProjectIdTest() throws SQLException {
@@ -495,9 +504,6 @@ public class TaskRepositoryTest {
         verify(preparedStatementMock).setString(1, "New comment");
         verify(preparedStatementMock).setInt(2, 1);
         verify(preparedStatementMock).executeUpdate();
-        verify(connectionMock).setAutoCommit(false);
-        verify(connectionMock).commit();
-        verify(connectionMock).setAutoCommit(true);
         verify(connectionMock).close();
     }
 
@@ -544,9 +550,6 @@ public class TaskRepositoryTest {
         verify(connectionMock).prepareStatement(any(String.class));
         verify(preparedStatementMock).setInt(1, 1);
         verify(preparedStatementMock).executeUpdate();
-        verify(connectionMock).setAutoCommit(false);
-        verify(connectionMock).commit();
-        verify(connectionMock).setAutoCommit(true);
         verify(connectionMock).close();
     }
 
