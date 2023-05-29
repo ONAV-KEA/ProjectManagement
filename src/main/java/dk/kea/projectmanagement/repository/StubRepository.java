@@ -154,6 +154,16 @@ public class StubRepository implements IUserRepository, IProjectRepository, ITas
     }
 
     @Override
+    public void deleteUserByUsername(String username) {
+        for (User user : users) {
+            if (user.getUsername().equals(username)) {
+                users.remove(user);
+                break;
+            }
+        }
+    }
+
+    @Override
     public List<User> getAllMembers() {
         List<User> members = new ArrayList<>();
         for (User user : users) {

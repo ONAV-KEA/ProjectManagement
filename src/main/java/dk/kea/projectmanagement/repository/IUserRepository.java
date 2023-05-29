@@ -17,6 +17,8 @@ public interface IUserRepository {
 
     void deleteUser(int id);
 
+    void deleteUserByUsername(String username);
+
     List<User> getAllMembers();
 
     List<User> getMembersOfProject(int projectId);

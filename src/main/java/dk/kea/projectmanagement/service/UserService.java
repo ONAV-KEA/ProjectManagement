@@ -26,6 +26,9 @@ public class UserService {
     public User getUserByID(int id){
         return repository.getUserByID(id);
     }
+    public void deleteUserByUsername(String username) {
+        repository.deleteUserByUsername(username);
+    }
 
     public User login(String username, String password) throws LoginSampleException {
         return repository.login(username, password);

@@ -46,7 +46,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-@Transactional
 @ActiveProfiles("test")
 public class ProjectControllerIntegrationTest {
     @Autowired
@@ -57,9 +56,6 @@ public class ProjectControllerIntegrationTest {
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
 
     // We mock the session object
     MockHttpSession session = new MockHttpSession();
@@ -80,12 +76,12 @@ public class ProjectControllerIntegrationTest {
     }
 
     @AfterEach
-    public void tearDown() throws Exception {
-
+    public void tearDown() {
+        userService.deleteUserByUsername("testUsername");
     }
 
+
     @Test
-    @Rollback
     public void projectCrudTest() throws Exception {
         // We prepare a project and set some values for it - name and dates
         Project form = new Project();
