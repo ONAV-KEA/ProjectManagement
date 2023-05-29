@@ -60,7 +60,9 @@
         <hr>
         <div>
             <ul class="list-unstyled">
-                <li th:each="invitation : ${invitationsDTO}" th:if="${invitation.invitation.status.equals('pending')}">
+                <li th:each="invitation, invitationStatus : ${invitationsDTO}"
+                    th:if="${invitation.invitation.status.equals('pending')}">
+
                     <p>Project: <span th:text="${invitation.project.name}"></span></p>
                     <p>Status: <span th:text="${invitation.invitation.status}"></span></p>
                     <div class="btn-group">
@@ -75,6 +77,8 @@
                             <button type="submit" class="btn btn-danger m-2">Decline</button>
                         </form>
                     </div>
+                    <!--making a line between each invitation except the last/only invitation-->
+                    <hr th:if="${!invitationStatus.last}"/>
                 </li>
             </ul>
         </div>

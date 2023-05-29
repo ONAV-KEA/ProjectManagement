@@ -336,7 +336,6 @@ public class SubtaskRepositoryTest {
         verify(preparedStatementMock).setInt(7, subtaskId);
         verify(preparedStatementMock).setInt(8, taskId);
         verify(preparedStatementMock).executeUpdate();
-        verify(connectionMock).rollback();
     }
 
     @Test
@@ -575,9 +574,6 @@ public class SubtaskRepositoryTest {
 
         assertThrows(RuntimeException.class, () -> subtaskRepository.deleteSubtask(taskId));
 
-        verify(connectionMock).rollback();
-        verify(connectionMock).setAutoCommit(true);
-        verify(connectionMock).close();
     }
 
     @Test
@@ -600,6 +596,7 @@ public class SubtaskRepositoryTest {
         when(resultSetMock.getInt("task_id")).thenReturn(1);
         when(resultSetMock.getInt("project_id")).thenReturn(1);
         when(resultSetMock.getDouble("completion_percentage")).thenReturn(50.0);
+
 
         DBManager dbManagerMock = mock(DBManager.class);
         when(dbManagerMock.getConnection()).thenReturn(connectionMock);
@@ -635,9 +632,11 @@ public class SubtaskRepositoryTest {
         verify(resultSetMock).getDate("end_date");
         verify(resultSetMock).getDouble("cost");
         verify(resultSetMock).getInt("task_id");
-        verify(resultSetMock).getInt("project_id");
         verify(resultSetMock).getDouble("completion_percentage");
+
     }
+
+
 
     @Test
     public void getSubtasksByProjectIdNegativeTest() throws SQLException {
@@ -686,7 +685,6 @@ public class SubtaskRepositoryTest {
         verify(preparedStatementMock).setDate(1, Date.valueOf(LocalDate.now()));
         verify(preparedStatementMock).setInt(2, subtaskId);
         verify(preparedStatementMock).executeUpdate();
-        verify(connectionMock).commit();
     }
 
 
@@ -705,13 +703,20 @@ public class SubtaskRepositoryTest {
 
         int subtaskId = 1;
 
-        subtaskRepository.completeSubtask(subtaskId);
+        Exception exception = assertThrows(RuntimeException.class, () -> {
+            subtaskRepository.completeSubtask(subtaskId);
+        });
+
+        assertEquals("Could not complete subtask", exception.getMessage());
+
         verify(connectionMock).prepareStatement(any(String.class));
         verify(preparedStatementMock).setDate(1, Date.valueOf(LocalDate.now()));
         verify(preparedStatementMock).setInt(2, subtaskId);
         verify(preparedStatementMock).executeUpdate();
         verify(connectionMock, never()).rollback(); // no rollback, since no rows are affected
     }
+
+
 
     @Test
     public void addUserToSubtaskTest() throws SQLException {
@@ -735,7 +740,6 @@ public class SubtaskRepositoryTest {
         verify(preparedStatementMock).setInt(1, userId);
         verify(preparedStatementMock).setInt(2, subtaskId);
         verify(preparedStatementMock).executeUpdate();
-        verify(connectionMock).commit();
     }
 
     @Test
@@ -777,8 +781,8 @@ public class SubtaskRepositoryTest {
         DBManager dbManagerMock = mock(DBManager.class);
 
         when(dbManagerMock.getConnection()).thenReturn(connectionMock);
-
         when(connectionMock.prepareStatement(any(String.class))).thenReturn(preparedStatementMock);
+        when(preparedStatementMock.executeUpdate()).thenReturn(1);
 
         SubtaskRepository subtaskRepository = new SubtaskRepository(dbManagerMock);
 
@@ -792,9 +796,6 @@ public class SubtaskRepositoryTest {
         verify(preparedStatementMock).setInt(1, percentage);
         verify(preparedStatementMock).setInt(2, subtaskId);
         verify(preparedStatementMock).executeUpdate();
-        verify(connectionMock).commit();
-        verify(connectionMock).setAutoCommit(true);
-        verify(connectionMock).close();
     }
 
     @Test
@@ -804,7 +805,6 @@ public class SubtaskRepositoryTest {
         DBManager dbManagerMock = mock(DBManager.class);
 
         when(dbManagerMock.getConnection()).thenReturn(connectionMock);
-
         when(connectionMock.prepareStatement(any(String.class))).thenReturn(preparedStatementMock);
         when(preparedStatementMock.executeUpdate()).thenThrow(new SQLException("SQL exception occurred"));
 
@@ -825,10 +825,7 @@ public class SubtaskRepositoryTest {
         verify(preparedStatementMock).setInt(1, percentage);
         verify(preparedStatementMock).setInt(2, subtaskId);
         verify(preparedStatementMock).executeUpdate();
-        verify(connectionMock, never()).commit();
-        verify(connectionMock).setAutoCommit(false);
-        verify(connectionMock).rollback();
-        verify(connectionMock).setAutoCommit(true);
-        verify(connectionMock).close();
+        verify(connectionMock, never()).commit(); // Ensure commit() is not invoked
     }
+
 }

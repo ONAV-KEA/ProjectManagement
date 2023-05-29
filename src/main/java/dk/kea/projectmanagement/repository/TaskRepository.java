@@ -30,10 +30,7 @@ public class TaskRepository implements ITaskRepository{
 
     @Override
     public List<Task> getTasksByProjectId(int projectId) {
-        Connection con = null;
-        try {
-            con = dbManager.getConnection();
-            con.setAutoCommit(false);
+        try (Connection con = dbManager.getConnection()) {
             String SQL = "SELECT * FROM task WHERE project_id = ?;";
             PreparedStatement ps = con.prepareStatement(SQL);
             ps.setInt(1, projectId);
@@ -53,36 +50,17 @@ public class TaskRepository implements ITaskRepository{
                 Task task = new Task(id, title, description, startDate, endDate, assigneeId, cost, status, comments, project_Id);
                 tasks.add(task);
             }
-            con.commit();
             return tasks;
         } catch (SQLException e) {
-            if (con != null) {
-                try {
-                    con.rollback();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
-        } finally {
-            if (con != null) {
-                try {
-                    con.setAutoCommit(true);
-                    con.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
+            throw new RuntimeException("Could not get tasks by project ID", e);
         }
-        return null;
     }
+
 
     @Override
     public Task createTask(Task form, int projectId) {
-        Connection con = null;
-        try {
-            con = dbManager.getConnection();
-            con.setAutoCommit(false);
-            String SQL = "INSERT INTO task (title, description, start_date, end_date, cost, project_id) VALUES (?, ?, ?, ?, ?,?);";
+        try (Connection con = dbManager.getConnection()) {
+            String SQL = "INSERT INTO task (title, description, start_date, end_date, cost, project_id) VALUES (?, ?, ?, ?, ?, ?);";
             PreparedStatement ps = con.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, form.getTitle());
             ps.setString(2, form.getDescription());
@@ -97,7 +75,6 @@ public class TaskRepository implements ITaskRepository{
                 if (rs.next()) {
                     int id = rs.getInt(1);
                     Task task = new Task(id, form.getTitle(), form.getDescription(), form.getStartDate(), form.getEndDate(), form.getCost(), projectId);
-                    con.commit();
                     return task;
                 } else {
                     throw new RuntimeException("Could not create task");
@@ -106,23 +83,10 @@ public class TaskRepository implements ITaskRepository{
                 throw new RuntimeException("Could not create task");
             }
         } catch (SQLException e) {
-            if (con != null) {
-                try {
-                    con.rollback();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
             throw new RuntimeException("Could not create task", e);
-        } finally {
-            try {
-                con.setAutoCommit(true);
-                con.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
+
 
     @Override
     public void deleteTask(int taskId) {
@@ -166,10 +130,7 @@ public class TaskRepository implements ITaskRepository{
 
     @Override
     public Task getTaskById(int taskId, int projectId) {
-        Connection con = null;
-        Task task = null;
-        try {
-            con = dbManager.getConnection();
+        try (Connection con = dbManager.getConnection()) {
             String SQL = "SELECT * FROM task WHERE id = ? AND project_id = ?;";
             PreparedStatement ps = con.prepareStatement(SQL);
             ps.setInt(1, taskId);
@@ -182,28 +143,18 @@ public class TaskRepository implements ITaskRepository{
                 LocalDate startDate = rs.getDate("start_date") == null ? null : rs.getDate("start_date").toLocalDate();
                 LocalDate endDate = rs.getDate("end_date") == null ? null : rs.getDate("end_date").toLocalDate();
                 double cost = rs.getDouble("cost");
-                task = new Task(taskId, title, description, startDate, endDate, cost, projectId);
+                return new Task(taskId, title, description, startDate, endDate, cost, projectId);
             }
         } catch (SQLException e) {
             throw new RuntimeException("Could not get task", e);
-        } finally {
-            try {
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
-        return task;
+        return null;
     }
+
 
     @Override
     public boolean editTask(Task form, int taskId, int projectId) {
-        Connection con = null;
-        try {
-            con = dbManager.getConnection();
-            con.setAutoCommit(false);
+        try (Connection con = dbManager.getConnection()) {
             String SQL = "UPDATE task SET title = ?, description = ?, start_date = ?, cost = ?, end_date = ?, status = ? WHERE id = ? AND project_id = ?;";
             PreparedStatement ps = con.prepareStatement(SQL);
             ps.setString(1, form.getTitle());
@@ -217,103 +168,48 @@ public class TaskRepository implements ITaskRepository{
 
             int affectedRows = ps.executeUpdate();
             if (affectedRows == 1) {
-                con.commit();
                 return true;
             } else {
                 throw new RuntimeException("Could not edit task");
             }
         } catch (SQLException e) {
-            if (con != null) {
-                try {
-                    con.rollback();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
             throw new RuntimeException("Could not edit task", e);
-        } finally {
-            try {
-                con.setAutoCommit(true);
-                con.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 
     @Override
     public void updateTaskStatus(int taskId, String status) {
-        Connection con = null;
-        try {
-            con = dbManager.getConnection();
-            con.setAutoCommit(false);
+        try (Connection con = dbManager.getConnection()) {
             String SQL = "UPDATE task SET status = ? WHERE id = ?";
             PreparedStatement ps = con.prepareStatement(SQL);
             ps.setString(1, status);
             ps.setInt(2, taskId);
             ps.executeUpdate();
-            con.commit();
         } catch (SQLException e) {
-            if (con != null) {
-                try {
-                    con.rollback();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
-        }finally {
-            if (con != null) {
-                try {
-                    con.setAutoCommit(true);
-                    con.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
+            throw new RuntimeException("Could not update task status", e);
         }
     }
 
+
     @Override
     public void completeTask(int taskId) {
-        Connection con = null;
-        try{
-            con = dbManager.getConnection();
-            con.setAutoCommit(false);
-
-
-            String SQL = "UPDATE task SET completion_percentage = 100, end_date = ?, status = 'completed' WHERE id = ?;";
+        try (Connection con = dbManager.getConnection()) {
+            String SQL = "UPDATE task SET completion_percentage = 100, end_date = ?, status = 'completed' WHERE id = ?";
             PreparedStatement ps = con.prepareStatement(SQL);
             ps.setDate(1, Date.valueOf(LocalDate.now()));
             ps.setInt(2, taskId);
             ps.executeUpdate();
-
-            con.commit();
-        } catch(SQLException e){
-            if(con != null) {
-                try {
-                    con.rollback();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
+        } catch (SQLException e) {
             throw new RuntimeException("Could not complete task", e);
-        } finally {
-            try {
-                con.setAutoCommit(true);
-                con.close();
-            } catch(SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
+
 
     @Override
     public List<String> getCommentsForTask(int taskId) {
         List<String> comments = new ArrayList<>();
-        Connection con = null;
-        try {
-            con = dbManager.getConnection();
-            String SQL = "SELECT comment FROM comments WHERE task_id = ?;";
+        try (Connection con = dbManager.getConnection()) {
+            String SQL = "SELECT comment FROM comments WHERE task_id = ?";
             PreparedStatement ps = con.prepareStatement(SQL);
             ps.setInt(1, taskId);
             ResultSet rs = ps.executeQuery();
@@ -323,59 +219,28 @@ public class TaskRepository implements ITaskRepository{
             }
         } catch (SQLException e) {
             throw new RuntimeException("Could not get comments for task", e);
-        } finally {
-            try {
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
         return comments;
     }
 
+
     @Override
     public void deleteCommentsForTask(int taskId) {
-        Connection con = null;
-        try{
-            con = dbManager.getConnection();
-            con.setAutoCommit(false);
-
-
-            // Delete the comments for the main task
-            String SQL = "DELETE FROM comments WHERE task_id = ?;";
+        try (Connection con = dbManager.getConnection()) {
+            String SQL = "DELETE FROM comments WHERE task_id = ?";
             PreparedStatement ps = con.prepareStatement(SQL);
             ps.setInt(1, taskId);
             ps.executeUpdate();
-
-            con.commit();
-        } catch(SQLException e){
-            if(con != null) {
-                try {
-                    con.rollback();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
+        } catch (SQLException e) {
             throw new RuntimeException("Could not delete comments", e);
-        } finally {
-            try {
-                con.setAutoCommit(true);
-                con.close();
-            } catch(SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 
+
     @Override
     public void addCommentToTask(int taskId, String comment) {
-        Connection con = null;
-        try {
-            con = dbManager.getConnection();
-            con.setAutoCommit(false);
-            String SQL = "INSERT INTO comments (comment, task_id) VALUES (?, ?);";
+        try (Connection con = dbManager.getConnection()) {
+            String SQL = "INSERT INTO comments (comment, task_id) VALUES (?, ?)";
             PreparedStatement ps = con.prepareStatement(SQL);
             ps.setString(1, comment);
             ps.setInt(2, taskId);
@@ -384,30 +249,15 @@ public class TaskRepository implements ITaskRepository{
             if (affectedRows == 0) {
                 throw new RuntimeException("Could not add comment to task");
             }
-            con.commit();
         } catch (SQLException e) {
-            if (con != null) {
-                try {
-                    con.rollback();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
             throw new RuntimeException("Could not add comment to task", e);
-        } finally {
-            try {
-                con.setAutoCommit(true);
-                con.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 
+
     @Override
     public List<TaskAndSubtaskDTO> getTasksWithSubtasksByProjectId(int id) {
-        try {
-            Connection con = dbManager.getConnection();
+        try (Connection con = dbManager.getConnection()) {
             String SQL = "SELECT " +
                     "t.id AS task_id, " +
                     "t.title AS task_title, " +
@@ -477,11 +327,11 @@ public class TaskRepository implements ITaskRepository{
             }
 
             return new ArrayList<>(taskMap.values());
-
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
         }
     }
+
 
     private LocalDate convertToUTC(LocalDate date) {
         if (date == null) {
@@ -526,9 +376,7 @@ public class TaskRepository implements ITaskRepository{
     }
     @Override
     public void addMemberToTask(int taskId, int memberId) {
-        Connection con = null;
-        try {
-            con = dbManager.getConnection();
+        try (Connection con = dbManager.getConnection()) {
             String sql = "INSERT INTO task_assignee (task_id, user_id) VALUES (?, ?);";
             PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setInt(1, taskId);
@@ -536,21 +384,12 @@ public class TaskRepository implements ITaskRepository{
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (con != null) {
-                try {
-                    con.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
         }
     }
+
     @Override
     public void removeMemberFromTask(int taskId, int memberId) {
-        Connection con = null;
-        try {
-            con = dbManager.getConnection();
+        try (Connection con = dbManager.getConnection()) {
             String sql = "DELETE FROM task_assignee WHERE task_id = ? AND user_id = ?;";
             PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setInt(1, taskId);
@@ -558,42 +397,57 @@ public class TaskRepository implements ITaskRepository{
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (con != null) {
-                try {
-                    con.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
         }
     }
+
 
 
     @Override
     public void addAllSubtaskAssigneesToMainTask(int taskId) {
         Connection con = null;
-        try{
+        try {
             con = dbManager.getConnection();
-            String SQL1 = "SELECT assignee_id FROM subtask WHERE task_id = ?;";
-            PreparedStatement ps1 = con.prepareStatement(SQL1);
-            ps1.setInt(1, taskId);
-            ResultSet rs = ps1.executeQuery();
+            con.setAutoCommit(false);
 
-            String SQL2 = "INSERT INTO task_assignee (task_id, user_id) VALUES (?, ?);";
-            PreparedStatement ps2 = con.prepareStatement(SQL2);
-            ps2.setInt(1, taskId);
-            while(rs.next()){
+            // Remove existing assignees for the task
+            String deleteSQL = "DELETE FROM task_assignee WHERE task_id = ?;";
+            PreparedStatement deleteStatement = con.prepareStatement(deleteSQL);
+            deleteStatement.setInt(1, taskId);
+            deleteStatement.executeUpdate();
+
+            // Add assignees from subtasks
+            String insertSQL = "INSERT INTO task_assignee (task_id, user_id) VALUES (?, ?);";
+            PreparedStatement insertStatement = con.prepareStatement(insertSQL);
+            insertStatement.setInt(1, taskId);
+
+            String selectSQL = "SELECT DISTINCT assignee_id FROM subtask WHERE task_id = ?;";
+            PreparedStatement selectStatement = con.prepareStatement(selectSQL);
+            selectStatement.setInt(1, taskId);
+            ResultSet rs = selectStatement.executeQuery();
+
+            while (rs.next()) {
                 int assigneeId = rs.getInt("assignee_id");
-                ps2.setInt(2, assigneeId);
-                ps2.executeUpdate();
+                insertStatement.setInt(2, assigneeId);
+                insertStatement.executeUpdate();
             }
-        } catch(SQLException ex){
+
+            con.commit();
+        } catch (SQLException ex) {
+            if (con != null) {
+                try {
+                    con.rollback();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
             throw new RuntimeException(ex);
         } finally {
-            try{
-                con.close();
-            } catch(SQLException e){
+            try {
+                if (con != null) {
+                    con.setAutoCommit(true);
+                    con.close();
+                }
+            } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
@@ -601,36 +455,27 @@ public class TaskRepository implements ITaskRepository{
 
     @Override
     public void updateTaskCompletionPercentage(int taskId, double percentageCompletion) {
-        Connection con = null;
-        try{
-            con = dbManager.getConnection();
+        try (Connection con = dbManager.getConnection()) {
             String SQL = "UPDATE task SET completion_percentage = ? WHERE id = ?;";
             PreparedStatement ps = con.prepareStatement(SQL);
             ps.setDouble(1, percentageCompletion);
             ps.setInt(2, taskId);
             ps.executeUpdate();
-        } catch(SQLException ex){
+        } catch (SQLException ex) {
             throw new RuntimeException(ex);
-        } finally {
-            try{
-                con.close();
-            } catch(SQLException e){
-                e.printStackTrace();
-            }
         }
     }
 
+
     @Override
     public Task getTaskById(int taskId) {
-        Connection con = null;
-        try{
-            con = dbManager.getConnection();
+        try (Connection con = dbManager.getConnection()) {
             String SQL = "SELECT * FROM task WHERE id = ?;";
             PreparedStatement ps = con.prepareStatement(SQL);
             ps.setInt(1, taskId);
             ResultSet rs = ps.executeQuery();
 
-            if(rs.next()){
+            if (rs.next()) {
                 String title = rs.getString("title");
                 String description = rs.getString("description");
                 LocalDate startDate = rs.getDate("start_date") == null ? null : rs.getDate("start_date").toLocalDate();
@@ -646,14 +491,9 @@ public class TaskRepository implements ITaskRepository{
                 return task;
             }
             return null;
-        } catch(SQLException ex){
+        } catch (SQLException ex) {
             throw new RuntimeException(ex);
-        } finally {
-            try{
-                con.close();
-            } catch(SQLException e){
-                e.printStackTrace();
-            }
         }
     }
+
 }
