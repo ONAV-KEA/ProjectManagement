@@ -84,7 +84,9 @@ public class UserRepositoryTest {
 
         when(connectionMock.prepareStatement(any(String.class))).thenReturn(preparedStatementMock);
         when(preparedStatementMock.executeQuery()).thenReturn(resultSetMock);
-        when(resultSetMock.next()).thenReturn(true);
+        when(resultSetMock.next()).thenReturn(true); // Return true which indicates a user was found
+
+
 
         when(resultSetMock.getString("username")).thenReturn("username");
         when(resultSetMock.getString("password")).thenReturn("password");

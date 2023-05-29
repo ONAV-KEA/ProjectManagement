@@ -77,7 +77,7 @@ public class TaskRepositoryTest {
         assertEquals("status", task.getStatus());
         assertEquals(1, task.getProjectId());
 
-        verify(connectionMock, times(2)).prepareStatement(any(String.class));
+        verify(connectionMock, times(2)).prepareStatement(any(String.class)); // 2 times because of the subtask query
         verify(preparedStatementMock, times(2)).executeQuery();
         verify(resultSetMock, times(3)).next();
     }
@@ -88,7 +88,7 @@ public class TaskRepositoryTest {
         PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
         ResultSet resultSetMock = mock(ResultSet.class);
 
-        when(connectionMock.prepareStatement(any(String.class), anyInt())).thenReturn(preparedStatementMock);
+        when(connectionMock.prepareStatement(any(String.class), anyInt())).thenReturn(preparedStatementMock); // anyInt() is for the auto generated keys
         when(preparedStatementMock.executeUpdate()).thenReturn(1);
         when(preparedStatementMock.getGeneratedKeys()).thenReturn(resultSetMock);
         when(resultSetMock.next()).thenReturn(true);
@@ -239,8 +239,8 @@ public class TaskRepositoryTest {
         Connection connectionMock = mock(Connection.class);
         PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
 
-        when(connectionMock.prepareStatement(any(String.class))).thenReturn(preparedStatementMock);
-        // Do nothing when preparedStatementMock.executeUpdate() is called
+        when(connectionMock.prepareStatement(any(String.class))).thenReturn(preparedStatementMock); // Simulate one row in the result set
+        when(preparedStatementMock.executeUpdate()).thenReturn(1);
 
         DBManager dbManagerMock = mock(DBManager.class);
         when(dbManagerMock.getConnection()).thenReturn(connectionMock);
@@ -261,8 +261,8 @@ public class TaskRepositoryTest {
         Connection connectionMock = mock(Connection.class);
         PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
 
-        when(connectionMock.prepareStatement(any(String.class))).thenReturn(preparedStatementMock);
-        // Do nothing when preparedStatementMock.executeUpdate() is called
+        when(connectionMock.prepareStatement(any(String.class))).thenReturn(preparedStatementMock); // Simulate one row in the result set
+        when(preparedStatementMock.executeUpdate()).thenReturn(1);
 
         DBManager dbManagerMock = mock(DBManager.class);
         when(dbManagerMock.getConnection()).thenReturn(connectionMock);
@@ -284,8 +284,8 @@ public class TaskRepositoryTest {
         Connection connectionMock = mock(Connection.class);
         PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
 
-        when(connectionMock.prepareStatement(any(String.class))).thenReturn(preparedStatementMock);
-        // Do nothing when preparedStatementMock.executeUpdate() is called
+        when(connectionMock.prepareStatement(any(String.class))).thenReturn(preparedStatementMock);// Simulate one row in the result set
+        when(preparedStatementMock.executeUpdate()).thenReturn(1);
 
         DBManager dbManagerMock = mock(DBManager.class);
         when(dbManagerMock.getConnection()).thenReturn(connectionMock);
@@ -353,6 +353,7 @@ public class TaskRepositoryTest {
 
         taskRepository.addAllSubtaskAssigneesToMainTask(1);
 
+
         verify(connectionMock, times(2)).prepareStatement(any(String.class));
         verify(preparedStatementMock1, times(1)).executeQuery();
         verify(resultSetMock, times(2)).next();
@@ -417,7 +418,7 @@ public class TaskRepositoryTest {
 
         verify(connectionMock, times(2)).prepareStatement(any(String.class));
         verify(preparedStatementMock, times(2)).executeQuery();
-        verify(resultSetMock, times(3)).next();
+        verify(resultSetMock, times(3)).next(); // One for the task, two for the subtasks
     }
 
 
@@ -619,7 +620,7 @@ public class TaskRepositoryTest {
 
         taskRepository.deleteTask(1);
 
-        verify(connectionMock, times(1)).prepareStatement(any(String.class)); // Changed times(2) to times(1)
+        verify(connectionMock, times(1)).prepareStatement(any(String.class));
         verify(subtaskPreparedStatementMock).setInt(1, 1);
         verify(subtaskPreparedStatementMock).executeUpdate();
         verify(connectionMock).rollback(); // Verify that a rollback was performed
@@ -673,7 +674,5 @@ public class TaskRepositoryTest {
         verify(preparedStatementMock).executeUpdate();
         verify(connectionMock).close();
     }
-
-
 }
 

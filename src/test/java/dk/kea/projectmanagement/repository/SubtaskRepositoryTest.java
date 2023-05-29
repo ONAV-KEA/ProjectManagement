@@ -825,7 +825,7 @@ public class SubtaskRepositoryTest {
         verify(preparedStatementMock).setInt(1, percentage);
         verify(preparedStatementMock).setInt(2, subtaskId);
         verify(preparedStatementMock).executeUpdate();
-        verify(connectionMock, never()).commit(); // Ensure commit() is not invoked
+        verify(connectionMock, never()).commit();
         verify(connectionMock).setAutoCommit(false);
         verify(connectionMock).rollback();
         verify(connectionMock).setAutoCommit(true);
