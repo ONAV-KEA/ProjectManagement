@@ -99,8 +99,8 @@ public class SubtaskRepositoryTest {
         SubtaskRepository subtaskRepository = new SubtaskRepository(dbManagerMock);
 
         Subtask form = new Subtask("Subtask Title", "Subtask Description", LocalDate.now(), LocalDate.now().plusDays(7), 100.0, "todo");
-        int taskId = 1;
-        int projectId = 1;
+        int taskId = -1;
+        int projectId = -1;
 
         Exception exception = assertThrows(RuntimeException.class, () -> {
             subtaskRepository.createSubtask(form, taskId, projectId);
@@ -182,7 +182,7 @@ public class SubtaskRepositoryTest {
 
         SubtaskRepository subtaskRepository = new SubtaskRepository(dbManagerMock);
 
-        int taskId = 1;
+        int taskId = -1;
 
         Exception exception = assertThrows(RuntimeException.class, () -> subtaskRepository.getSubtasksByTaskId(taskId));
         assertEquals("Could not get subtasks by task id", exception.getMessage());
@@ -256,8 +256,8 @@ public class SubtaskRepositoryTest {
         SubtaskRepository subtaskRepository = new SubtaskRepository(dbManagerMock);
 
         // Inputs for the getSubtaskByTaskIdAndSubtaskId method
-        int taskId = 1;
-        int subtaskId = 1;
+        int taskId = -1;
+        int subtaskId = -1;
 
         // Call the method under test and expect a RuntimeException
         Exception exception = assertThrows(RuntimeException.class, () -> subtaskRepository.getSubtaskByTaskIdAndSubtaskId(subtaskId, taskId));
@@ -320,8 +320,8 @@ public class SubtaskRepositoryTest {
         SubtaskRepository subtaskRepository = new SubtaskRepository(dbManagerMock);
 
         Subtask form = new Subtask("Edited Subtask Title", "Edited Subtask Description", LocalDate.now(), LocalDate.now().plusDays(7), 200.0, "done");
-        int taskId = 1;
-        int subtaskId = 1;
+        int taskId = -1;
+        int subtaskId = -1;
 
         Exception exception = assertThrows(RuntimeException.class, () -> subtaskRepository.editSubtask(form, subtaskId, taskId));
         assertEquals("Could not edit subtask", exception.getMessage());
@@ -378,7 +378,7 @@ public class SubtaskRepositoryTest {
         SubtaskRepository subtaskRepository = new SubtaskRepository(dbManagerMock);
 
         int taskId = 1;
-        String subtaskStatus = "done";
+        String subtaskStatus = "notavalidstatus";
 
         subtaskRepository.updateSubtaskStatus(taskId, subtaskStatus);
 
@@ -437,7 +437,7 @@ public class SubtaskRepositoryTest {
 
         SubtaskRepository subtaskRepository = new SubtaskRepository(dbManagerMock);
 
-        int subtaskId = 1;
+        int subtaskId = -1;
 
         assertThrows(RuntimeException.class, () -> subtaskRepository.getCommentsForSubtask(subtaskId));
 
@@ -484,7 +484,7 @@ public class SubtaskRepositoryTest {
 
         SubtaskRepository subtaskRepository = new SubtaskRepository(dbManagerMock);
 
-        int subtaskId = 1;
+        int subtaskId = -1;
         String comment = "Test Comment";
 
         assertThrows(RuntimeException.class, () -> {
@@ -530,7 +530,7 @@ public class SubtaskRepositoryTest {
 
         SubtaskRepository subtaskRepository = new SubtaskRepository(dbManagerMock);
 
-        int subtaskId = 1;
+        int subtaskId = -1;
 
         assertThrows(RuntimeException.class, () -> subtaskRepository.deleteCommentsForSubtask(subtaskId));
     }
@@ -570,7 +570,7 @@ public class SubtaskRepositoryTest {
 
         SubtaskRepository subtaskRepository = new SubtaskRepository(dbManagerMock);
 
-        int taskId = 1;
+        int taskId = -1;
 
         assertThrows(RuntimeException.class, () -> subtaskRepository.deleteSubtask(taskId));
 
@@ -655,7 +655,7 @@ public class SubtaskRepositoryTest {
 
         SubtaskRepository subtaskRepository = new SubtaskRepository(dbManagerMock);
 
-        int projectId = 1;
+        int projectId = -1;
 
         assertThrows(RuntimeException.class, () -> subtaskRepository.getSubtasksByProjectId(projectId));
 
@@ -701,7 +701,7 @@ public class SubtaskRepositoryTest {
 
         SubtaskRepository subtaskRepository = new SubtaskRepository(dbManagerMock);
 
-        int subtaskId = 1;
+        int subtaskId = -1;
 
         Exception exception = assertThrows(RuntimeException.class, () -> {
             subtaskRepository.completeSubtask(subtaskId);
@@ -755,8 +755,8 @@ public class SubtaskRepositoryTest {
 
         SubtaskRepository subtaskRepository = new SubtaskRepository(dbManagerMock);
 
-        int subtaskId = 1;
-        int userId = 1;
+        int subtaskId = -1;
+        int userId = -1;
 
         Exception exception = assertThrows(RuntimeException.class, () -> {
             subtaskRepository.addUserToSubtask(subtaskId, userId);
@@ -810,8 +810,8 @@ public class SubtaskRepositoryTest {
 
         SubtaskRepository subtaskRepository = new SubtaskRepository(dbManagerMock);
 
-        int subtaskId = 1;
-        int percentage = 75;
+        int subtaskId = -1;
+        int percentage = 300;
 
         Exception exception = assertThrows(RuntimeException.class, () -> {
             subtaskRepository.updatePercentage(subtaskId, percentage);
