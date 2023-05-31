@@ -246,7 +246,7 @@ class ProjectRepositoryTest {
         form.setStartDate(LocalDate.of(2023, 5, 1));
         form.setEndDate(LocalDate.of(2023, 5, 22));
         User user = new User();
-        user.setId(1);
+        user.setId(-1);
 
         assertThrows(RuntimeException.class, () -> projectRepository.createProject(form, user));
 
@@ -596,7 +596,7 @@ class ProjectRepositoryTest {
         ProjectRepository projectRepository = new ProjectRepository(dbManagerMock);
 
         int projectId = 1;
-        int memberId = 100; // Non-existent member ID
+        int memberId = -1; // Non-existent member ID
 
         projectRepository.deleteProjectMember(projectId, memberId);
 

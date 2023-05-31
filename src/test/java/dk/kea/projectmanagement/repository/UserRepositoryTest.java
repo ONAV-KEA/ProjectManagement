@@ -268,14 +268,14 @@ public class UserRepositoryTest {
 
         LocalDate birthday = LocalDate.of(2000, 1, 1);
         User existingUser = new User("existingUsername", "existingPassword", "existingFirstName", "existingLastName", birthday, "existingRole");
-        existingUser.setId(1);
-        doReturn(existingUser).when(userRepositorySpy).getUserByID(1);
+        existingUser.setId(-1);
+        doReturn(existingUser).when(userRepositorySpy).getUserByID(-1);
 
         // We prepare a user to be edited
         User user = new User("newUsername", "newPassword", "newFirstName", "newLastName", null, "newRole");
 
         // Call the method under test
-        Exception exception = assertThrows(RuntimeException.class, () -> userRepositorySpy.editUser(user, 1));
+        Exception exception = assertThrows(RuntimeException.class, () -> userRepositorySpy.editUser(user, -1));
 
         // Assert the exception message
         assertEquals("Could not edit user", exception.getMessage());
@@ -360,12 +360,12 @@ public class UserRepositoryTest {
         UserRepository userRepository = new UserRepository(dbManagerMock);
 
         assertThrows(LoginSampleException.class, () -> {
-            userRepository.login("username", "password");
+            userRepository.login("wrongUsername", "wrongPassword");
         });
 
         verify(connectionMock).prepareStatement(any(String.class));
-        verify(preparedStatementMock).setString(1, "username");
-        verify(preparedStatementMock).setString(2, "password");
+        verify(preparedStatementMock).setString(1, "wrongUsername");
+        verify(preparedStatementMock).setString(2, "wrongPassword");
         verify(preparedStatementMock).executeQuery();
     }
 
