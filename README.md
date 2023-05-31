@@ -38,7 +38,7 @@ To run the project, you first need to install the necessary dependencies and the
     ('J.H.Andreasen', 'password', 'Jakob', 'Huus Andreasen', '1974-09-09', 'project_manager'),
     ('UlrikThørner', 'password', 'Ulrik', 'Thørner', '1970-04-04', 'project_member');
     ```
-5. Edit the following fields according to your preferences and save the file. 
+5. Edit the following fields in `application.properties` according to your preferences and save the file. 
     ```
     spring.datasource.url=
     spring.datasource.username=
