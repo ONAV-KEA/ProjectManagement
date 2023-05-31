@@ -17,8 +17,8 @@ CREATE TABLE `project` (
   `id` INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
   `name` VARCHAR(250) NOT NULL,
   `description` TEXT,
-  `start_date` DATE,
-  `end_date` DATE
+  `start_date` DATE NOT NULL,
+  `end_date` DATE NOT NULL
 );
 
 CREATE TABLE `task` (
@@ -75,11 +75,6 @@ CREATE TABLE `task_assignee` (
   `user_id` INT UNSIGNED
 );
 
-CREATE TABLE `subtask_assignee` (
-  `subtask_id` INT UNSIGNED,
-  `user_id` INT UNSIGNED
-);
-
 CREATE TABLE comments (
   `id` INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
   `comment` TEXT,
@@ -99,7 +94,6 @@ CREATE TABLE invitations (
 CREATE INDEX `project_user_project_id_idx` ON `project_user` (`project_id`);
 CREATE INDEX `project_user_user_id_idx` ON `project_user` (`user_id`);
 
-CREATE INDEX `task_assignee_id_idx` ON `task` (`assignee_id`);
 CREATE INDEX `task_project_id_idx` ON `task` (`project_id`);
 
 CREATE INDEX `subtask_assignee_id_idx` ON `subtask` (`assignee_id`);
@@ -111,9 +105,6 @@ CREATE INDEX `organization_user_user_id_idx` ON `organization_user` (`user_id`);
 
 CREATE INDEX `project_organization_project_id_idx` ON `project_organization` (`project_id`);
 CREATE INDEX `project_organization_organization_id_idx` ON `project_organization` (`organization_id`);
-
-CREATE INDEX `gantt_chart_task_id_idx` ON `gantt_chart` (`task_id`);
-CREATE INDEX `gantt_chart_subtask_id_idx` ON `gantt_chart` (`subtask_id`);
 
 CREATE INDEX `task_assignee_task_id_idx` ON `task_assignee` (`task_id`);
 CREATE INDEX `task_assignee_user_id_idx` ON `task_assignee` (`user_id`);
