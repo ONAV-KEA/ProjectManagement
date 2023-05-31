@@ -133,7 +133,7 @@ public class TaskRepositoryTest {
         SubtaskRepository subtaskRepositoryMock = mock(SubtaskRepository.class);
         TaskRepository taskRepository = new TaskRepository(dbManagerMock, subtaskRepositoryMock);
 
-        Task taskForm = new Task(0, "title", "description", null, null, 100.0, 1);
+        Task taskForm = new Task(0, "title", "description", null, null, 100.0, -1);
 
         Exception exception = assertThrows(RuntimeException.class, () -> taskRepository.createTask(taskForm, 1));
         assertTrue(exception.getCause() instanceof SQLException);
@@ -225,9 +225,9 @@ public class TaskRepositoryTest {
 
         TaskRepository taskRepository = new TaskRepository(dbManagerMock, subtaskRepositoryMock);
 
-        Task form = new Task(1, "title", "description", null, null, 100.0, 1);
+        Task form = new Task(-1, "title", "description", null, null, 100.0, 1);
 
-        assertThrows(RuntimeException.class, () -> taskRepository.editTask(form, 1, 1));
+        assertThrows(RuntimeException.class, () -> taskRepository.editTask(form, -1, 1));
 
         verify(connectionMock, times(1)).prepareStatement(any(String.class));
         verify(preparedStatementMock, times(1)).executeUpdate();
@@ -477,7 +477,7 @@ public class TaskRepositoryTest {
         SubtaskRepository subtaskRepositoryMock = mock(SubtaskRepository.class);
         TaskRepository taskRepository = new TaskRepository(dbManagerMock, subtaskRepositoryMock);
 
-        assertThrows(RuntimeException.class, () -> taskRepository.getTasksWithSubtasksByProjectId(1));
+        assertThrows(RuntimeException.class, () -> taskRepository.getTasksWithSubtasksByProjectId(-1));
 
         verify(connectionMock, times(1)).prepareStatement(any(String.class));
         verify(preparedStatementMock, times(1)).executeQuery();
@@ -521,11 +521,11 @@ public class TaskRepositoryTest {
         SubtaskRepository subtaskRepositoryMock = mock(SubtaskRepository.class);
         TaskRepository taskRepository = new TaskRepository(dbManagerMock, subtaskRepositoryMock);
 
-        assertThrows(RuntimeException.class, () -> taskRepository.addCommentToTask(1, "New comment"));
+        assertThrows(RuntimeException.class, () -> taskRepository.addCommentToTask(-1, "New comment"));
 
         verify(connectionMock).prepareStatement(any(String.class));
         verify(preparedStatementMock).setString(1, "New comment");
-        verify(preparedStatementMock).setInt(2, 1);
+        verify(preparedStatementMock).setInt(2, -1);
         verify(preparedStatementMock).executeUpdate();
     }
 
@@ -568,10 +568,10 @@ public class TaskRepositoryTest {
 
         TaskRepository taskRepository = new TaskRepository(dbManagerMock, subtaskRepositoryMock);
 
-        assertThrows(RuntimeException.class, () -> taskRepository.deleteCommentsForTask(1));
+        assertThrows(RuntimeException.class, () -> taskRepository.deleteCommentsForTask(-1));
 
         verify(connectionMock).prepareStatement(any(String.class));
-        verify(preparedStatementMock).setInt(1, 1);
+        verify(preparedStatementMock).setInt(1, -1);
         verify(preparedStatementMock).executeUpdate();
     }
 
@@ -620,10 +620,10 @@ public class TaskRepositoryTest {
         SubtaskRepository subtaskRepositoryMock = mock(SubtaskRepository.class);
         TaskRepository taskRepository = new TaskRepository(dbManagerMock, subtaskRepositoryMock);
 
-        taskRepository.deleteTask(1);
+        taskRepository.deleteTask(-1);
 
         verify(connectionMock, times(1)).prepareStatement(any(String.class));
-        verify(subtaskPreparedStatementMock).setInt(1, 1);
+        verify(subtaskPreparedStatementMock).setInt(1, -1);
         verify(subtaskPreparedStatementMock).executeUpdate();
         verify(connectionMock).rollback(); // Verify that a rollback was performed
         verify(connectionMock).setAutoCommit(true);
