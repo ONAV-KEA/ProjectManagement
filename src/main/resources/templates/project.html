@@ -346,7 +346,6 @@
                 // Parse the ganttData string
                 let ganttData = JSON.parse(ganttDataStr);
                 console.log("Parsed Gantt Data: ", ganttData);
-
                 // Format the Gantt chart data
                 ganttData = ganttData.map(function (task) {
                     return {
@@ -356,7 +355,7 @@
                         end: task.end,
                         completed: task.completed,
                         parent: ganttData.find(t => t.id === task.parent) ? task.parent : undefined,
-                        percentComplete: task.completed * 100 // Add percentComplete property
+                        percentComplete: task.completed * 100
                     };
                 });
 
@@ -377,7 +376,7 @@
                     },
                 });
             } catch (error) {
-                console.log("Error in script: ", error);
+                console.log("Error in the script: ", error);
             }
         } else {
             console.log("Gantt Data not received");

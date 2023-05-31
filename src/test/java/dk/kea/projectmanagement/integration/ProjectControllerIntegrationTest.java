@@ -62,7 +62,7 @@ public class ProjectControllerIntegrationTest {
 
 
     @BeforeEach
-    public void setUp() throws Exception {
+    public void setUp() {
         User form = new User();
         form.setUsername("testUsername");
         form.setPassword("testPassword");
@@ -94,7 +94,7 @@ public class ProjectControllerIntegrationTest {
                         .flashAttr("project", form)
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED))
                 .andExpect(status().isFound())
-                .andExpect(redirectedUrl("/dashboard")); // After project has been created, we send the user back to the dashboard
+                .andExpect(redirectedUrl("/dashboard"));
 
         // We then test opening the projects page
         this.mockMvc.perform(get("/projects").session(session))

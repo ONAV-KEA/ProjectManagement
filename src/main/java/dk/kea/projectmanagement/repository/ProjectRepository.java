@@ -193,7 +193,7 @@ public class ProjectRepository implements IProjectRepository{
 
         for (TaskAndSubtaskDTO task : tasksAndSubtasks) {
             Map<String, Object> taskData = new HashMap<>();
-            taskData.put("id", String.valueOf(task.getId()));  // Convert to string
+            taskData.put("id", String.valueOf(task.getId()));
             taskData.put("name", task.getName());
             taskData.put("start", getEpochMillis(task.getStartDate()));
             taskData.put("end", getEpochMillis(task.getEndDate()));
@@ -203,8 +203,8 @@ public class ProjectRepository implements IProjectRepository{
 
             for (Subtask subtask : task.getSubtasks()) {
                 Map<String, Object> subtaskData = new HashMap<>();
-                subtaskData.put("id", String.valueOf(subtask.getId()));  // Convert to string
-                subtaskData.put("parent", String.valueOf(task.getId()));  // Convert to string
+                subtaskData.put("id", String.valueOf(subtask.getId()));
+                subtaskData.put("parent", String.valueOf(task.getId()));
                 subtaskData.put("name", subtask.getTitle());
                 subtaskData.put("start", getEpochMillis(subtask.getStartDate()));
                 subtaskData.put("end", getEpochMillis(subtask.getEndDate()));
@@ -213,7 +213,6 @@ public class ProjectRepository implements IProjectRepository{
                 ganttData.add(subtaskData);
             }
         }
-
         return ganttData;
     }
 
