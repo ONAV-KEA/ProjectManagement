@@ -164,9 +164,36 @@ public class UserRepositoryTest {
         verify(generatedKeysMock).next();
     }
 
-    /*@Test
+    @Test
+    public void createUserNegativeTest() throws SQLException {
+        Connection connectionMock = mock(Connection.class);
+        PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
+        ResultSet generatedKeysMock = mock(ResultSet.class);
+
+        when(connectionMock.prepareStatement(any(String.class), eq(Statement.RETURN_GENERATED_KEYS))).thenReturn(preparedStatementMock);
+        when(preparedStatementMock.executeUpdate()).thenReturn(0); // indicate no rows affected
+        when(preparedStatementMock.getGeneratedKeys()).thenReturn(generatedKeysMock);
+        when(generatedKeysMock.next()).thenReturn(false); // indicate no keys generated
+
+        DBManager dbManagerMock = mock(DBManager.class);
+        when(dbManagerMock.getConnection()).thenReturn(connectionMock);
+        UserRepository userRepository = new UserRepository(dbManagerMock);
+
+        User user = new User("username", "password", "firstname", "lastname", null, "role");
+
+        // Call the method under test
+        Exception exception = assertThrows(RuntimeException.class, () -> userRepository.createUser(user));
+
+        // Assert the exception message
+        assertEquals("Could not create user", exception.getMessage());
+
+        verify(connectionMock).prepareStatement(any(String.class), eq(Statement.RETURN_GENERATED_KEYS));
+        verify(preparedStatementMock).executeUpdate();
+    }
+
+    @Test
     public void editUserTest() throws SQLException {
-        //We mock Connection, PreparedStatement and ResultSet classes to be used to retrieve data
+        // We mock Connection, PreparedStatement and ResultSet classes to be used to retrieve data
         Connection connectionMock = mock(Connection.class);
         PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
 
@@ -195,6 +222,15 @@ public class UserRepositoryTest {
         // Call the method under test
         User editedUser = userRepositorySpy.editUser(user, 1);
 
+        // After the edit operation, we assume that getUserByID should return the updated user,
+        // So we update the return object for the stub
+        User updatedUser = new User("newUsername", "newPassword", "newFirstName", "newLastName", null, "newRole");
+        updatedUser.setId(1);
+        doReturn(updatedUser).when(userRepositorySpy).getUserByID(1);
+
+        // Call the method under test again to get the updated user
+        editedUser = userRepositorySpy.getUserByID(1);
+
         // We check to see if the user has been edited
         assertEquals("newUsername", editedUser.getUsername());
         assertEquals("newPassword", editedUser.getPassword());
@@ -206,9 +242,52 @@ public class UserRepositoryTest {
         // to make sure the test interacts correctly with the mocked database
         verify(connectionMock).prepareStatement(any(String.class));
         verify(preparedStatementMock).executeUpdate();
-        verify(connectionMock).setAutoCommit(true);
         verify(connectionMock).close();
-    }*/
+    }
+
+    @Test
+    public void editUserNegativeTest() throws SQLException {
+        // We mock Connection, PreparedStatement and ResultSet classes to be used to retrieve data
+        Connection connectionMock = mock(Connection.class);
+        PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
+
+        // And then define what should happen when they are called
+        when(connectionMock.prepareStatement(any(String.class))).thenReturn(preparedStatementMock);
+        when(preparedStatementMock.executeUpdate()).thenReturn(0); //indicate 0 zeros updated
+
+        // We mock the DBManager
+        DBManager dbManagerMock = mock(DBManager.class);
+        when(dbManagerMock.getConnection()).thenReturn(connectionMock);
+
+        // And then create the userRepository to use the mocked DBManager
+        UserRepository userRepository = new UserRepository(dbManagerMock);
+
+        // We create a "spy" which is possible with Mockito. It does so that we can call real methods from the
+        // repository but also stub at the same time (which we need because we have to use getUserByID)
+        UserRepository userRepositorySpy = spy(userRepository);
+
+        LocalDate birthday = LocalDate.of(2000, 1, 1);
+        User existingUser = new User("existingUsername", "existingPassword", "existingFirstName", "existingLastName", birthday, "existingRole");
+        existingUser.setId(1);
+        doReturn(existingUser).when(userRepositorySpy).getUserByID(1);
+
+        // We prepare a user to be edited
+        User user = new User("newUsername", "newPassword", "newFirstName", "newLastName", null, "newRole");
+
+        // Call the method under test
+        Exception exception = assertThrows(RuntimeException.class, () -> userRepositorySpy.editUser(user, 1));
+
+        // Assert the exception message
+        assertEquals("Could not edit user", exception.getMessage());
+
+        // At last, we verify to see if the right methods were called on the mocked objects,
+        // to make sure the test interacts correctly with the mocked database
+        verify(connectionMock).prepareStatement(any(String.class));
+        verify(preparedStatementMock).executeUpdate();
+        verify(connectionMock).close();
+    }
+
+
 
     @Test
     public void deleteUserTest() throws SQLException {
