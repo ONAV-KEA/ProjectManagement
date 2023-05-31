@@ -8,8 +8,8 @@
           integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" th:href="@{/main.css}" href="/static/main.css">
-    <link rel="icon" type="image/x-icon" href="/../src/main/resources/static/images/favicon.png"
-          th:src="@{/images/favicon.png}">
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico"
+          th:src="@{/images/favicon.ico}">
     <link href='https://fonts.googleapis.com/css?family=IBM Plex Sans Condensed' rel='stylesheet'>
 </head>
 <body>
@@ -91,7 +91,7 @@
             <div class="container col-sm-10 col-md-7 p-4 mb-5">
                 <h3>Projects:</h3>
                 <hr>
-                <table class="table-light table">
+                <table class="table-light table" th:if="${not #lists.isEmpty(projects)}">
                     <thead>
                     <tr>
                         <th scope="col">#</th>
@@ -124,7 +124,7 @@
                 <h3>Assigned tasks:</h3>
                 <hr>
 
-                <table class="table-light table">
+                <table class="table-light table" th:if="${not #lists.isEmpty(userSubtasks)}">
                     <thead>
                     <tr>
                         <th scope="col">Task</th>
