@@ -35,8 +35,8 @@ To run the project, you first need to install the necessary dependencies and the
     INSERT INTO user (username, password, first_name, last_name, birthday, role)
     VALUES 
     ('KlausPetersen', 'password', 'Klaus', 'Petersen', '1967-01-01', 'admin'),
-    ('J.H.Andreasen', 'password', 'Jakob', 'Huus Andreasen', '1974-09-09', 'admin'),
-    ('UlrikThørner', 'password', 'Ulrik', 'Thørner', '1970-04-04', 'admin');
+    ('J.H.Andreasen', 'password', 'Jakob', 'Huus Andreasen', '1974-09-09', 'project_manager'),
+    ('UlrikThørner', 'password', 'Ulrik', 'Thørner', '1970-04-04', 'project_member');
     ```
 5. Edit the following fields according to your preferences and save the file. 
     ```
